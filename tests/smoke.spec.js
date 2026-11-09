@@ -47,3 +47,19 @@ test('EMPTYHELL persists the first discovery objective state', async ({ page }) 
   await expect(page.locator('#world-status')).toContainText('SIGNALS 3 / 3');
   await expect(page.locator('#world-status')).toContainText('ROUTE OPEN');
 });
+
+
+test('EMPTYHELL restores completed transmission progression', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => localStorage.setItem('emptyhell.transmission.v1', 'complete'));
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page.locator('#world-status')).toContainText('TRANSMISSION');
+  await expect(page.locator('#world-status')).toContainText('ENCOUNTER ACTIVE');
+});
+
+test('EMPTYHELL restores completed encounter progression', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => localStorage.setItem('emptyhell.encounter.v1', 'complete'));
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page.locator('#world-status')).toContainText('ENCOUNTER COMPLETE');
+});
