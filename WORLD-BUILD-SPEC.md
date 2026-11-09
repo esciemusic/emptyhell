@@ -296,7 +296,7 @@ No game geometry has been changed.
 
 ## First-sector physical-scale audit — VERIFIED
 
-The current prototype blockout was compared against the current Ville de Montréal Géobase road-centerline dataset. The source describes the road network as centerline-based street segments and is updated weekly. citeturn471146search1
+The current prototype blockout was compared against the current Ville de Montréal Géobase road-centerline dataset. The source describes the road network as centerline-based street segments and is updated weekly.
 
 Verified nearest centerline positions relative to Parc du Centenaire anchor:
 
