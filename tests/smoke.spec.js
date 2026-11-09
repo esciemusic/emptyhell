@@ -95,3 +95,11 @@ test('EMPTYHELL restores the local power reaction', async ({ page }) => {
   await page.reload({ waitUntil: 'networkidle' });
   await expect(page.locator('#world-status')).toContainText('POWER RESTORED');
 });
+
+
+test('EMPTYHELL keeps restored power visible after reload', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => localStorage.setItem('emptyhell.power.v1', 'restored'));
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page.locator('#world-status')).toContainText('POWER RESTORED');
+});
