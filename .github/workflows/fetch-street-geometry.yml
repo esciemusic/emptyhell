@@ -1,0 +1,81 @@
+name: Fetch first-sector street geometry
+
+on:
+  push:
+    paths:
+      - ".github/workflows/fetch-street-geometry.yml"
+  workflow_dispatch:
+
+jobs:
+  streets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Montréal road centerlines
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --retry-all-errors \
+            -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
+            "https://donnees.montreal.ca/dataset/984f7a68-ab34-4092-9204-4bdfcca767c5/resource/9d3d60d8-4e7f-493e-8d6a-dcd040319d8d/download/geobase.json" \
+            -o geobase.json
+          test -s geobase.json
+
+      - name: Extract first-sector streets
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pyproj shapely
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from pyproj import Transformer
+          from shapely.geometry import shape, box, mapping
+          from shapely.ops import transform
+
+          data=json.loads(Path("geobase.json").read_text())
+          names={
+              "AVENUE DE L'ÉPÉE","AVENUE BLOOMFIELD","AVENUE CHAMPAGNEUR",
+              "AVENUE DUROCHER","AVENUE STUART","AVENUE WISEMAN",
+              "RUE SAINT-ROCH","RUE BALL","AVENUE OGILVY","RUE JARRY",
+              "RUE D'OUTREMONT","AVENUE BEAUBIEN"
+          }
+          target=box(-73.640,45.515,-73.615,45.545)
+          to_mtm8=Transformer.from_crs("EPSG:4326","EPSG:32188",always_xy=True)
+          selected=[]
+          for f in data.get("features",[]):
+              p=f.get("properties",{})
+              od=str(p.get("ODONYME") or p.get("odonyme") or "").upper()
+              if od not in {n.upper() for n in names}:
+                  continue
+              g=shape(f["geometry"])
+              if not g.intersects(target):
+                  continue
+              gm=transform(to_mtm8.transform,g)
+              selected.append({
+                  "type":"Feature",
+                  "properties":p,
+                  "geometry_wgs84":f["geometry"],
+                  "geometry_mtm8":mapping(gm)
+              })
+
+          report={
+              "source":"Ville de Montréal — Géobase - réseau routier",
+              "dataset_id":"984f7a68-ab34-4092-9204-4bdfcca767c5",
+              "source_resource":"9d3d60d8-4e7f-493e-8d6a-dcd040319d8d",
+              "target_bbox_wgs84":[-73.640,45.515,-73.615,45.545],
+              "requested_streets":sorted(names),
+              "feature_count":len(selected),
+              "features":selected
+          }
+          Path("first_sector_street_geometry.json").write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          counts={}
+          for f in selected:
+              n=str(f["properties"].get("ODONYME") or f["properties"].get("odonyme") or "UNKNOWN")
+              counts[n]=counts.get(n,0)+1
+          print(json.dumps({"feature_count":len(selected),"counts":counts},ensure_ascii=False,indent=2))
+          PY
+
+      - name: Upload street reconciliation source
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-sector-street-geometry
+          if-no-files-found: error
+          path: first_sector_street_geometry.json
