@@ -683,6 +683,8 @@ addEventListener('keydown', event => {
 mapOverlay.addEventListener('click', event => {
   if (event.target === mapOverlay) toggleMap(false);
 });
+const mapClose = document.querySelector('#map-close');
+mapClose.addEventListener('click', () => toggleMap(false));
 
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
