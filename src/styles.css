@@ -74,16 +74,13 @@ canvas { display:block; width:100%; height:100%; }
   linear-gradient(90deg,rgba(216,212,202,.04) 1px,transparent 1px);
   background-size:32px 32px;
 }
-.map-road { position:absolute; color:rgba(216,212,202,.45); font-size:7px; letter-spacing:.12em; text-align:center; background:#34373a; height:3px; transform-origin:center; padding-top:4px; }
-.map-road.verified-road { left:8%; width:84%; }
-.map-road.stuart { top:55%; transform:rotate(23deg); }
-.map-road.wiseman { top:47%; transform:rotate(21deg); }
-.map-road.saint-roch { top:52%; transform:rotate(-67deg); }
-.map-road.champagneur { top:42%; transform:rotate(23deg); }
-.map-road.bloomfield { top:48%; transform:rotate(22deg); }
-.map-road.de-lepee { top:37%; transform:rotate(23deg); }
-.map-road.ogilvy { top:42%; transform:rotate(-67deg); }
-.map-park { position:absolute; left:36%; top:38%; width:15%; height:18%; border:1px solid rgba(216,212,202,.22); background:rgba(199,201,198,.12); display:grid; place-items:center; text-align:center; font-size:7px; letter-spacing:.08em; }
+.map-darkness { position:absolute; inset:0; background:rgba(0,0,0,.54); z-index:1; pointer-events:none; }
+.map-lit-zone { position:absolute; left:8%; top:10%; width:84%; height:80%; background:radial-gradient(ellipse at 50% 50%, rgba(47,128,255,.12), rgba(47,128,255,.035) 48%, rgba(0,0,0,.12) 100%); border:1px solid rgba(47,128,255,.18); box-shadow:inset 0 0 80px rgba(47,128,255,.04); z-index:1; pointer-events:none; }
+.world-map-svg { position:absolute; inset:0; width:100%; height:100%; z-index:2; overflow:visible; }
+.world-map-svg #map-roads line { stroke:rgba(216,212,202,.32); stroke-width:2.4; vector-effect:non-scaling-stroke; }
+.world-map-svg #map-roads line.major { stroke:rgba(216,212,202,.5); stroke-width:3.2; }
+.world-map-svg #map-rail line { stroke:rgba(111,63,175,.78); stroke-width:2.2; vector-effect:non-scaling-stroke; }
+.world-map-svg #map-park { fill:rgba(199,201,198,.13); stroke:rgba(216,212,202,.34); stroke-width:1.5; vector-effect:non-scaling-stroke; }
 .map-rail { position:absolute; background:rgba(111,63,175,.65); }
 .map-player { position:absolute; width:10px; height:10px; margin:-5px 0 0 -5px; border:2px solid var(--blue); border-radius:50%; background:rgba(47,128,255,.2); box-shadow:0 0 12px rgba(47,128,255,.7); z-index:4; }
 .map-foot { margin-top:12px; font-size:8px; letter-spacing:.12em; opacity:.45; }
@@ -94,20 +91,5 @@ canvas { display:block; width:100%; height:100%; }
 }
 
 
-.map-city {
-  position:absolute; inset:0; display:grid; place-items:center;
-  color:rgba(216,212,202,.08); font-size:clamp(34px,8vw,82px);
-  letter-spacing:.28em; font-weight:600; pointer-events:none;
-}
-.map-zone-label {
-  position:absolute; left:34%; top:9%; z-index:3;
-  color:rgba(47,128,255,.9); font-size:8px; letter-spacing:.2em;
-  text-shadow:0 0 12px rgba(47,128,255,.5); pointer-events:none;
-}
-.map:after {
-  content:""; position:absolute; left:28%; top:6%; width:39%; height:48%;
-  background:rgba(47,128,255,.055); border:1px solid rgba(47,128,255,.25);
-  box-shadow:0 0 28px rgba(47,128,255,.08), inset 0 0 24px rgba(47,128,255,.035);
-  pointer-events:none; z-index:2;
-}
+.map-city { position:absolute; inset:0; display:grid; place-items:center; color:rgba(216,212,202,.08); font-size:clamp(34px,8vw,82px); letter-spacing:.28em; font-weight:600; pointer-events:none; z-index:1; }
 .map-road,.map-park,.map-rail,.map-player { z-index:3; }
