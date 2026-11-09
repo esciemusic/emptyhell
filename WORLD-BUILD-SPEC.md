@@ -258,3 +258,25 @@ Implementation decision:
 5. Once that sheet is identified, use the two source sheets together to reconcile the first-sector street network, railway alignment and crossings before replacing the provisional geometry.
 
 **Gate:** 31H12-010-0530 STREET/PARK SOURCE CONFIRMED / RAILWAY SOURCE STILL PENDING.
+
+
+### Official railway extraction route — added 2026-11-09
+
+A current official railway-network source has been identified to complement the 1:1000 cartography:
+- ARTM/Adresses Québec **Réseau ferroviaire** dataset.
+- The official service exposes railway segments as polylines and supports GeoJSON output.
+- The published service was last updated in June 2026 and identifies the geometry as the Québec railway network.
+- The ArcGIS layer used for extraction is **Réseau ferroviaire (ID 14)**.
+
+This source is being used only as a **reconciliation/reference layer**. It does not replace the 1:1000 municipal cartography for street/building geometry.
+
+The EMPTYHELL retrieval workflow now:
+1. Downloads the Montréal SQRC 1:1000 index.
+2. Correctly transforms SQRC geometry from WGS84 into NAD83 MTM8 before measuring distances.
+3. Queries the official railway layer around the Parc-Extension first sector.
+4. Produces a railway reconciliation report with segment geometry and distances to Parc du Centenaire and Gare Parc.
+5. Stores the results as an Actions artifact for inspection.
+
+**Important:** the workflow has been updated, but no Actions run is currently exposed through the connected GitHub status endpoint. Therefore the exact extracted sheet identifier and railway segment coordinates remain **UNVERIFIED AT RUNTIME**.
+
+No game geometry has been changed.
