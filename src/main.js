@@ -482,6 +482,7 @@ const savedTransmission = (() => {
 })();
 const encounterStorageKey = 'emptyhell.encounter.v1';
 const doorStorageKey = 'emptyhell.door.v1';
+const fragmentStorageKey = 'emptyhell.fragment.v1';
 const savedEncounter = (() => {
   try {
     return localStorage.getItem(encounterStorageKey) === 'complete';
@@ -499,6 +500,14 @@ const savedDoor = (() => {
   }
 })();
 let doorOpen = savedDoor;
+const savedFragment = (() => {
+  try {
+    return localStorage.getItem(fragmentStorageKey) === 'found';
+  } catch {
+    return false;
+  }
+})();
+let fragmentFound = savedFragment;
 const savedDiscovery = (() => {
   try {
     const raw = localStorage.getItem(discoveryStorageKey);
@@ -518,8 +527,10 @@ const worldStatus = document.querySelector('#world-status');
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = doorOpen
-      ? 'PATH OPEN'
+    const stage = fragmentFound
+      ? 'FRAGMENT FOUND'
+      : doorOpen
+        ? 'PATH OPEN'
       : encounterComplete
         ? 'ENCOUNTER COMPLETE'
         : transmissionComplete
@@ -692,10 +703,34 @@ function openEncounterDoor() {
   encounterDoor.userData.interaction.text = 'The barrier has moved. The route continues beyond the receiver.';
   doorOpen = true;
   encounterDoor.position.x += 3.2;
+  signalFragment.visible = true;
+  signalFragment.userData.fragmentState = fragmentFound ? 'found' : 'active';
   const index = colliders.indexOf(encounterDoorCollider);
   if (index >= 0) colliders.splice(index, 1);
   try {
     localStorage.setItem(doorStorageKey, 'open');
+  } catch {}
+  updateWorldStatus();
+}
+
+const signalFragment = interactable(
+  box(.28,.52,.28,glassMat,306,.42,-164),
+  savedFragment ? 'FRAGMENT / FOUND' : 'FRAGMENT / LISTEN',
+  savedFragment
+    ? 'The fragment is quiet now. Its signal has already been carried forward.'
+    : 'A small physical fragment sits beyond the opened path. Stay close enough to hear the next transmission.'
+);
+signalFragment.visible = doorOpen;
+signalFragment.userData.fragmentState = savedFragment ? 'found' : (doorOpen ? 'active' : 'locked');
+
+function findSignalFragment() {
+  if (signalFragment.userData.fragmentState !== 'active') return;
+  signalFragment.userData.fragmentState = 'found';
+  signalFragment.userData.interaction.title = 'FRAGMENT / FOUND';
+  signalFragment.userData.interaction.text = 'The fragment is quiet now. Its signal has already been carried forward.';
+  fragmentFound = true;
+  try {
+    localStorage.setItem(fragmentStorageKey, 'found');
   } catch {}
   updateWorldStatus();
 }
@@ -1001,6 +1036,7 @@ function openInteraction(target) {
   if (target.userData === nextTransmission?.userData && target.userData.routeState === 'active') completeTransmission();
   if (target.userData === encounterSite?.userData && target.userData.encounterState === 'active') completeEncounter();
   if (target.userData === encounterDoor?.userData && target.userData.doorState === 'active') openEncounterDoor();
+  if (target.userData === signalFragment?.userData && target.userData.fragmentState === 'active') findSignalFragment();
   const data = target.userData.interaction;
   interactionTitle.textContent = data.title;
   interactionText.textContent = data.text;
