@@ -92,14 +92,76 @@ jobs:
           }, ensure_ascii=False, indent=2))
           PY
 
-      - name: Fetch current official railway geometry around the first sector
+      - name: Fetch official Montréal railway geometry around the first sector
         run: |
           set -euo pipefail
-          curl -fL --retry 3 --retry-all-errors \
-            "https://services1.arcgis.com/wyvhRSHkhCSY7ojh/ArcGIS/rest/services/R%C3%A9seau_ferroviaire_AQReseau/FeatureServer/14/query?where=1%3D1&outFields=OBJECTID%2Cnomvoie%2Cclassvoie%2Ctypeutilis%2Cetat%2Cnmfrexploi%2Cnmfrpropr%2Cnomsubdiv1&returnGeometry=true&outSR=4326&geometry=-8198123.899%2C5702965.373%2C-8194227.717%2C5706937.852&geometryType=esriGeometryEnvelope&inSR=3857&spatialRel=esriSpatialRelIntersects&f=geojson" \
-            -o railway_parc_extension.geojson
-          test -s railway_parc_extension.geojson
-          wc -c railway_parc_extension.geojson
+          urls=(
+            "https://donnees.montreal.ca/fr/dataset/e135b6df-5bfc-43bc-a743-5f306c8900fb/resource/fe46cc87-f2d2-4b2d-9134-9e0dc431f21c/download/voies-ferrees-2020.zip"
+            "https://www.donneesquebec.ca/recherche/fr/dataset/vmtl-voies-ferrees-3d/resource/fe46cc87-f2d2-4b2d-9134-9e0dc431f21c/download/voies-ferrees-2020.zip"
+          )
+          rm -rf railway_src railway_extract
+          mkdir -p railway_src railway_extract
+          ok=0
+          for url in "\${urls[@]}"; do
+            echo "Trying: \$url"
+            if curl -fL --retry 2 --retry-all-errors \
+              -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
+              "\$url" -o railway_src/voies-ferrees-2020.zip; then
+              ok=1
+              break
+            fi
+            rm -f railway_src/voies-ferrees-2020.zip
+          done
+          test "\$ok" = "1"
+          unzip -q railway_src/voies-ferrees-2020.zip -d railway_extract
+          find railway_extract -maxdepth 2 -type f | sort
+          python -m pip install --quiet pyshp shapely pyproj
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import shapefile
+          from shapely.geometry import shape, box, mapping
+
+          shp_paths = list(Path("railway_extract").rglob("*.shp"))
+          if not shp_paths:
+              raise SystemExit("No SHP file found in official Montréal railway archive")
+
+          target = box(-73.645, 45.515, -73.610, 45.540)
+          selected = []
+          source_files = []
+
+          for shp_path in shp_paths:
+              reader = shapefile.Reader(str(shp_path))
+              fields = [f[0] for f in reader.fields[1:]]
+              source_files.append({"path": str(shp_path), "fields": fields, "records": len(reader)})
+              for sr in reader.iterShapeRecords():
+                  geom = shape(sr.shape.__geo_interface__)
+                  if not geom.intersects(target):
+                      continue
+                  props = dict(zip(fields, sr.record))
+                  selected.append({"type":"Feature","properties":props,"geometry":mapping(geom)})
+
+          report = {
+              "source": "Ville de Montréal — Voies ferrées 3D (2020)",
+              "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
+              "target_bbox_wgs84": [-73.645,45.515,-73.610,45.540],
+              "source_files": source_files,
+              "feature_count": len(selected),
+              "features": selected,
+          }
+
+          Path("railway_parc_extension.geojson").write_text(
+              json.dumps({"type":"FeatureCollection","features":selected}, ensure_ascii=False)
+          )
+          Path("railway_source_inventory.json").write_text(
+              json.dumps(report, ensure_ascii=False, indent=2)
+          )
+          print(json.dumps({
+              "source_files": source_files,
+              "selected_features": len(selected),
+              "property_keys": sorted({k for f in selected for k in f["properties"]}),
+          }, ensure_ascii=False, indent=2))
+          PY
 
       - name: Build railway reconciliation report
         run: |
@@ -136,9 +198,9 @@ jobs:
               })
 
           report = {
-              "source": "Adresses Québec / official railway network ArcGIS service",
-              "layer": 14,
-              "query_bbox_wgs84": [-73.645, 45.515, -73.610, 45.540],
+              "source": "Ville de Montréal — Voies ferrées 3D (2020)",
+              "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
+              "target_bbox_wgs84": [-73.645, 45.515, -73.610, 45.540],
               "feature_count": len(features),
               "park_wgs84": {"lat": 45.526943, "lon": -73.630554},
               "gare_parc_wgs84": {"lat": 45.53164, "lon": -73.62467},
