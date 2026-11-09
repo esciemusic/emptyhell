@@ -31,6 +31,11 @@ jobs:
           from shapely.ops import transform
 
           data=json.loads(Path("geobase.json").read_text())
+          print("top-level keys:", list(data.keys()))
+          print("feature count:", len(data.get("features", [])))
+          if data.get("features"):
+              print("sample property keys:", sorted(data["features"][0].get("properties", {}).keys()))
+              print("sample properties:", json.dumps(data["features"][0].get("properties", {}), ensure_ascii=False)[:3000])
           names={
               "AVENUE DE L'ÉPÉE","AVENUE BLOOMFIELD","AVENUE CHAMPAGNEUR",
               "AVENUE DUROCHER","AVENUE STUART","AVENUE WISEMAN",
