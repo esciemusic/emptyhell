@@ -558,9 +558,11 @@ const worldStatus = document.querySelector('#world-status');
 
 const powerAccess = interactable(
   box(1.4,2.3,.16,darkMat,382,1.15,-204),
-  powerRestored ? 'ACCESS / POWERED' : 'ACCESS / LOCKED',
-  powerRestored
-    ? 'Power has reached the structure. The entrance is no longer dead.'
+  accessOpen ? 'ACCESS / OPEN' : (powerRestored ? 'ACCESS / POWERED' : 'ACCESS / LOCKED'),
+  accessOpen
+    ? 'The entrance is already open. Whatever is inside belongs to the next layer.'
+    : powerRestored
+      ? 'Power has reached the structure. The entrance is no longer dead.'
     : 'The entrance has no power. Nothing responds.'
 );
 powerAccess.visible = powerRestored;
