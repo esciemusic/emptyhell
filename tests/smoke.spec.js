@@ -13,6 +13,9 @@ test('EMPTYHELL boots and exposes the playable shell', async ({ page }) => {
   await page.screenshot({ path: 'test-results/emptyhell-map.png', fullPage: true });
 
   await page.keyboard.press('Escape');
+  await expect(page.locator('#map-overlay')).toHaveClass(/hidden/);
+
+  await page.keyboard.press('Escape');
   await expect(page.locator('#pause')).not.toHaveClass(/hidden/);
   await page.screenshot({ path: 'test-results/emptyhell-pause.png', fullPage: true });
 });
