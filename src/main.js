@@ -512,7 +512,7 @@ function updateWorldStatus() {
     const stage = encounterComplete
       ? 'ENCOUNTER COMPLETE'
       : transmissionComplete
-        ? 'ENCOUNTER ACTIVE'
+        ? 'TRANSMISSION COMPLETE · ENCOUNTER ACTIVE'
         : count === discoveryState.total
           ? 'ROUTE OPEN'
           : 'WORLD STATE ACTIVE';
