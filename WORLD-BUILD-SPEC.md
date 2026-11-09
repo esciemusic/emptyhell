@@ -448,3 +448,13 @@ The current 12 source-traced frontage footprints remain the only building geomet
 **Gate:** VECTOR EXTRACTION GREEN / GEOREFERENCE VALIDATION PENDING / GAME GEOMETRY UNCHANGED.
 
 Next operation: use the authoritative MTM8 road/park geometry to solve the PDF-to-local transform, then promote only validated polygons and rerun build + browser QA.
+
+
+## Building validation gate — 2026-11-09
+The 1:1000 extraction produced 141 candidate building outlines from 31H12-010-0530. A runtime safety audit confirms that none of those candidates are consumed by the game yet. A road-proximity screen finds 36 candidates under 10 m from a verified road centerline, 44 at 10–25 m, and 61 over 25 m; this is screening only and does not establish correct georeferencing or setbacks.
+
+**Gate:** EXTRACTION GREEN / ROAD SCREEN COMPLETE / GEOREFERENCE PENDING / PROMOTION BLOCKED.
+
+The next building operation is to solve the PDF-to-local transform against authoritative MTM8 park/road geometry, validate candidate footprints and park/road overlaps, then promote only source-ID-linked polygons. No expansion or invented frontage is permitted during this gate.
+
+Audit record: `data/first_sector_building_validation.md`.
