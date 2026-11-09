@@ -550,6 +550,38 @@ lowGarage(52,54);
 lowGarage(104,-36);
 lowGarage(190,-118);
 
+
+// Lived-in street layer: sparse parked vehicles sit beside verified roads.
+// These are visual world props only; they do not alter the authoritative street geometry.
+const carBodyMat = new THREE.MeshStandardMaterial({ color:0x24272b, roughness:.72, metalness:.28 });
+const carGlassMat = new THREE.MeshStandardMaterial({ color:0x18232a, roughness:.24, metalness:.32 });
+const carLampMat = new THREE.MeshBasicMaterial({ color:0xffd5a1 });
+function parkedCar(x,z,rotation=0,scale=1) {
+  const root = new THREE.Group();
+  root.position.set(x,.22,z);
+  root.rotation.y = rotation;
+  root.scale.setScalar(scale);
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.8,.55,4.1),carBodyMat);
+  body.position.y=.48;
+  body.castShadow=true;
+  root.add(body);
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.48,.5,2.0),carGlassMat);
+  cabin.position.set(0,.86,-.05);
+  cabin.castShadow=true;
+  root.add(cabin);
+  for (const side of [-1,1]) {
+    const lamp = new THREE.Mesh(new THREE.BoxGeometry(.34,.16,.06),carLampMat);
+    lamp.position.set(side*.52,.53,-2.06);
+    root.add(lamp);
+  }
+  scene.add(root);
+}
+parkedCar(-24.5,5.2,Math.atan2(-0.9,1),.95);
+parkedCar(54.5,-15.5,Math.atan2(0.7,1),1.0);
+parkedCar(101,-47,Math.atan2(0.55,1),.9);
+parkedCar(173,-109,Math.atan2(0.55,1),.95);
+parkedCar(292,72,Math.atan2(0.38,1),.9);
+
 // Streetlights are placed near the verified road network rather than on the old axis-aligned grid.
 for (const p of [[-34,30],[22,45],[65,-5],[112,-52],[165,-105],[250,60]]) lamp(p[0],p[1]);
 
