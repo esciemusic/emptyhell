@@ -14,15 +14,31 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download SQRC 1:1000 GeoJSON
+        id: sqrc
+        continue-on-error: true
         run: |
-          set -euo pipefail
-          curl -fL --retry 3 --retry-all-errors \
-            "https://donnees.montreal.ca/fr/dataset/e160983c-f5d2-49ec-9b81-d0f6fb66518a/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson" \
-            -o sqrc_1000.geojson
-          test -s sqrc_1000.geojson
-          wc -c sqrc_1000.geojson
+          set -u
+          urls=(
+            "https://donnees.montreal.ca/fr/dataset/e160983c-f5d2-49ec-9b81-d0f6fb66518a/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson"
+            "https://www.donneesquebec.ca/recherche/dataset/vmtl-quadrillage-sqrc/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson"
+          )
+          rm -f sqrc_1000.geojson
+          for url in "\${urls[@]}"; do
+            echo "Trying: \$url"
+            if curl -fL --retry 2 --retry-all-errors \
+              -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
+              "\$url" -o sqrc_1000.geojson && test -s sqrc_1000.geojson; then
+              wc -c sqrc_1000.geojson
+              echo "SQRC_DOWNLOAD=success" >> "\$GITHUB_OUTPUT"
+              exit 0
+            fi
+            rm -f sqrc_1000.geojson
+          done
+          echo "SQRC_DOWNLOAD=blocked" >> "\$GITHUB_OUTPUT"
+          echo "Official SQRC download endpoints are blocked from this GitHub runner; continuing so independent railway extraction can run."
 
       - name: Inspect grid and identify sheets around Parc du Centenaire
+        if: steps.sqrc.outputs.SQRC_DOWNLOAD == 'success'
         run: |
           python -m pip install --quiet pyproj shapely
           python - <<'PY'
@@ -79,12 +95,15 @@ jobs:
       - name: Fetch current official railway geometry around the first sector
         run: |
           set -euo pipefail
-          curl -fL --retry 3 --retry-all-errors             "https://services1.arcgis.com/wyvhRSHkhCSY7ojh/ArcGIS/rest/services/R%C3%A9seau_ferroviaire_AQReseau/FeatureServer/14/query?where=1%3D1&outFields=OBJECTID%2Cnomvoie%2Cclassvoie%2Ctypeutilis%2Cetat%2Cnmfrexploi%2Cnmfrpropr%2Cnomsubdiv1&returnGeometry=true&outSR=4326&geometry=-73.645%2C45.515%2C-73.610%2C45.540&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&f=geojson"             -o railway_parc_extension.geojson
+          curl -fL --retry 3 --retry-all-errors \
+            "https://services1.arcgis.com/wyvhRSHkhCSY7ojh/ArcGIS/rest/services/R%C3%A9seau_ferroviaire_AQReseau/FeatureServer/14/query?where=1%3D1&outFields=OBJECTID%2Cnomvoie%2Cclassvoie%2Ctypeutilis%2Cetat%2Cnmfrexploi%2Cnmfrpropr%2Cnomsubdiv1&returnGeometry=true&outSR=4326&geometry=-73.645%2C45.515%2C-73.610%2C45.540&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&f=geojson" \
+            -o railway_parc_extension.geojson
           test -s railway_parc_extension.geojson
           wc -c railway_parc_extension.geojson
 
       - name: Build railway reconciliation report
         run: |
+          python -m pip install --quiet pyproj shapely
           python - <<'PY'
           import json
           from pathlib import Path
@@ -141,13 +160,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sqrc-1000-source
+          if-no-files-found: error
           path: |
-            sqrc_1000.geojson
-            sqrc_1000_parc_extension_report.json
             railway_parc_extension.geojson
             railway_parc_extension_report.json
+            sqrc_1000.geojson
+            sqrc_1000_parc_extension_report.json
 
       - name: Persist the verified sheet report
+        if: steps.sqrc.outputs.SQRC_DOWNLOAD == 'success'
         run: |
           set -euo pipefail
           mkdir -p data
