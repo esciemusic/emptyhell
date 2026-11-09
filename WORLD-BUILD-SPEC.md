@@ -458,3 +458,19 @@ The 1:1000 extraction produced 141 candidate building outlines from 31H12-010-05
 The next building operation is to solve the PDF-to-local transform against authoritative MTM8 park/road geometry, validate candidate footprints and park/road overlaps, then promote only source-ID-linked polygons. No expansion or invented frontage is permitted during this gate.
 
 Audit record: `data/first_sector_building_validation.md`.
+
+
+## 1:1000 building transform — SOLVED (2026-11-09)
+The page-to-local transform for sheet 31H12-010-0530 is now explicitly tied to the authoritative Parc du Centenaire MTM8 anchor.
+
+- Page anchor: `[1820.841, 1556.941]` points
+- Authoritative MTM8 anchor: `[294602.04000401904, 5043011.143267743]`
+- Local anchor: `[0, 0]`
+- Scale: `72 / 25.4` PDF points per metre
+- Axis: `x = east`, `z = -north`
+
+This is a translation/scale calibration for the north-up 1:1000 sheet; no arbitrary rotation or visual adjustment was introduced.
+
+A post-calibration screen found 2 candidate bounding boxes overlapping the verified park polygon and 38 whose nearest bounding-box corner is within 3 m of a verified road centerline. These are **screening flags only** because the current candidate manifest does not retain polygon vertices. They must not be promoted until polygon-level reconstruction and setback/park-overlap QA are complete.
+
+**Gate:** PDF-TO-MTM8 TRANSFORM GREEN / CANDIDATE SCREEN COMPLETE / POLYGON VALIDATION PENDING / PROMOTION BLOCKED.
