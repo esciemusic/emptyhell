@@ -38,3 +38,12 @@ test('EMPTYHELL exposes the first discovery state', async ({ page }) => {
   await expect(page.locator('#world-status')).toContainText('SIGNALS 0 / 3');
   await expect(page.locator('#world-status')).toContainText('WORLD STATE ACTIVE');
 });
+
+
+test('EMPTYHELL persists the first discovery objective state', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => localStorage.setItem('emptyhell.discovery.v1', JSON.stringify(['north','east','rail'])));
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page.locator('#world-status')).toContainText('SIGNALS 3 / 3');
+  await expect(page.locator('#world-status')).toContainText('ROUTE OPEN');
+});
