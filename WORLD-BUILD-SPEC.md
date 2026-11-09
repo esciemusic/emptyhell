@@ -415,3 +415,16 @@ The first visual frontage pass now replaces the remaining invented rectangular f
 - Automated browser QA: GREEN — run 42658881374 succeeded on the same commit.
 
 Current gate: the first-sector environment is technically healthy and now materially closer to the verified Montréal street fabric. The next fidelity pass should reconcile the remaining sheet footprints across the loaded slice rather than inventing new buildings, and should then revisit collision envelopes around irregular footprints.
+
+
+## Irregular-footprint collision QA — PASS 4
+
+The verified frontage buildings now use their traced polygon footprints for player collision instead of only axis-aligned bounding boxes. This prevents the collision system from blocking the player across empty corners of irregular Montréal building outlines while retaining the existing mesh-based camera collision.
+
+- Polygon collision geometry: GREEN.
+- Player-radius edge buffering: GREEN.
+- Camera collision mesh linkage: GREEN.
+- Build: GREEN — commit 5ee27d254e6c85c51335d3c5be9ec50fcdb16b66.
+- Browser QA: GREEN — run 42659954740.
+
+The next fidelity gate remains source-backed building coverage across the rest of the loaded first sector. No unsupported building footprints or railway geometry are being added.
