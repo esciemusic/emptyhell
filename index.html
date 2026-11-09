@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <title>EMPTYHELL — ESCIE</title>
+  <link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+  <div id="loading" class="loading">EMPTYHELL <span>INITIALIZING</span></div>
+  <div id="game"></div>
+
+  <div id="hud" class="hud" aria-hidden="true">
+    <div class="hud-brand">EMPTYHELL</div>
+    <div class="hud-state">PARC-EXTENSION / PROTOTYPE</div>
+    <div class="hud-crosshair">+</div>
+    <div class="hud-hint">WASD MOVE · MOUSE LOOK · ESC PAUSE</div>
+  </div>
+
+  <div id="pause" class="pause hidden">
+    <div class="pause-panel">
+      <div class="pause-kicker">EMPTYHELL</div>
+      <h1>PAUSED</h1>
+      <p>MAP / SYSTEMS / EXIT</p>
+      <button id="resume">RESUME</button>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
