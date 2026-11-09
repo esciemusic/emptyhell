@@ -1,0 +1,26 @@
+{
+  "source": "Ville de Montréal — Grands parcs, parcs d'arrondissements et espaces publics",
+  "dataset_id": "2e9e4d2f-173a-4c3d-a5e3-565d79baa27d",
+  "resource": "35796624-15df-4503-a569-797665f8768e",
+  "park": "Centenaire-de-Parc-Extension",
+  "objectid": "5587",
+  "num_index": "1282-000",
+  "area_m2": 1003.2443081627213,
+  "bounds_mtm8": [
+    294576.65067093226,
+    5042995.583141044,
+    294616.15860343544,
+    5043037.9208629085
+  ],
+  "anchor_mtm8": [
+    294602.04000401904,
+    5043011.143267743
+  ],
+  "local_bounds_relative_to_anchor_m": [
+    -25.38933308678,
+    15.56072426878,
+    14.11859941644,
+    -26.77759016514
+  ],
+  "consequence": "The current prototype park rectangle (27m x 30m at local x=63,z=18) is not the verified park footprint. Use the verified footprint/bounds when rebuilding the first-sector geometry."
+}
