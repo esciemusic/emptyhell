@@ -483,6 +483,7 @@ const savedTransmission = (() => {
 const encounterStorageKey = 'emptyhell.encounter.v1';
 const doorStorageKey = 'emptyhell.door.v1';
 const fragmentStorageKey = 'emptyhell.fragment.v1';
+const trailStorageKey = 'emptyhell.trail.v1';
 const savedEncounter = (() => {
   try {
     return localStorage.getItem(encounterStorageKey) === 'complete';
@@ -508,6 +509,14 @@ const savedFragment = (() => {
   }
 })();
 let fragmentFound = savedFragment;
+const savedTrail = (() => {
+  try {
+    return localStorage.getItem(trailStorageKey) === 'reached';
+  } catch {
+    return false;
+  }
+})();
+let trailReached = savedTrail;
 const savedDiscovery = (() => {
   try {
     const raw = localStorage.getItem(discoveryStorageKey);
@@ -527,9 +536,11 @@ const worldStatus = document.querySelector('#world-status');
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = fragmentFound
-      ? 'FRAGMENT FOUND'
-      : doorOpen
+    const stage = trailReached
+      ? 'SIGNAL TRAIL COMPLETE'
+      : fragmentFound
+        ? 'FRAGMENT FOUND'
+        : doorOpen
         ? 'PATH OPEN'
       : encounterComplete
         ? 'ENCOUNTER COMPLETE'
@@ -731,6 +742,51 @@ function findSignalFragment() {
   fragmentFound = true;
   try {
     localStorage.setItem(fragmentStorageKey, 'found');
+  } catch {}
+  signalTrail.visible = true;
+  signalTerminal.visible = true;
+  signalTerminal.userData.trailState = trailReached ? 'reached' : 'active';
+  try {
+    localStorage.setItem(fragmentStorageKey, 'found');
+  } catch {}
+  updateWorldStatus();
+}
+
+const signalTrail = new THREE.Group();
+const trailMat = new THREE.MeshStandardMaterial({
+  color: 0x26303a,
+  roughness: .3,
+  metalness: .4,
+  emissive: 0x28145a,
+  emissiveIntensity: .35
+});
+for (const [x,z] of [[318,-169],[330,-176],[342,-182],[354,-188]]) {
+  const node = new THREE.Mesh(new THREE.TorusGeometry(.28,.025,6,18), trailMat);
+  node.rotation.x = Math.PI / 2;
+  node.position.set(x,.08,z);
+  signalTrail.add(node);
+}
+signalTrail.visible = trailReached || fragmentFound;
+scene.add(signalTrail);
+
+const signalTerminal = interactable(
+  box(.36,.72,.36,glassMat,354,.42,-188),
+  savedTrail ? 'TRAIL / COMPLETE' : 'TRAIL / FOLLOW',
+  savedTrail
+    ? 'The last receiver has gone quiet. The signal continues beyond this slice.'
+    : 'The fragment leaves a physical trail. Follow the receivers to the last point in this slice.'
+);
+signalTerminal.visible = savedTrail || fragmentFound;
+signalTerminal.userData.trailState = savedTrail ? 'reached' : (fragmentFound ? 'active' : 'locked');
+
+function reachSignalTrail() {
+  if (signalTerminal.userData.trailState !== 'active') return;
+  signalTerminal.userData.trailState = 'reached';
+  signalTerminal.userData.interaction.title = 'TRAIL / COMPLETE';
+  signalTerminal.userData.interaction.text = 'The last receiver has gone quiet. The signal continues beyond this slice.';
+  trailReached = true;
+  try {
+    localStorage.setItem(trailStorageKey, 'reached');
   } catch {}
   updateWorldStatus();
 }
@@ -1037,6 +1093,7 @@ function openInteraction(target) {
   if (target.userData === encounterSite?.userData && target.userData.encounterState === 'active') completeEncounter();
   if (target.userData === encounterDoor?.userData && target.userData.doorState === 'active') openEncounterDoor();
   if (target.userData === signalFragment?.userData && target.userData.fragmentState === 'active') findSignalFragment();
+  if (target.userData === signalTerminal?.userData && target.userData.trailState === 'active') reachSignalTrail();
   const data = target.userData.interaction;
   interactionTitle.textContent = data.title;
   interactionText.textContent = data.text;
