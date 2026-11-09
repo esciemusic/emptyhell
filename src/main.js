@@ -43,6 +43,8 @@ const brickDarkMat = new THREE.MeshStandardMaterial({ color:0x4c4140, roughness:
 const concreteMat = new THREE.MeshStandardMaterial({ color:0x626467, roughness:.94 });
 const darkMat = new THREE.MeshStandardMaterial({ color:0x1c2024, roughness:.82 });
 const glassMat = new THREE.MeshStandardMaterial({ color:0x29353e, roughness:.35, metalness:.18 });
+const windowDarkMat = new THREE.MeshStandardMaterial({ color:0x172027, roughness:.32, metalness:.08, emissive:0x071016, emissiveIntensity:.18 });
+const windowWarmMat = new THREE.MeshStandardMaterial({ color:0x8a765d, roughness:.28, metalness:.04, emissive:0xffb56a, emissiveIntensity:.55 });
 
 function box(w,h,d,mat,x,y,z,opts={}) {
   const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
@@ -126,14 +128,15 @@ function building(w,d,h,x,z,mat=brickMat) {
   const frontZ = z - d/2 - .025;
   const rows = Math.max(2, Math.floor(h / 3.2));
   const columns = Math.max(2, Math.floor(w / 4.2));
-  const windowMat = new THREE.MeshStandardMaterial({
-    color:0x24343d, roughness:.28, metalness:.12, emissive:0x0a1116, emissiveIntensity:.25
-  });
+  const windowMat = windowDarkMat;
   for (let row=0; row<rows; row++) {
     for (let col=0; col<columns; col++) {
       const wx = x - w/2 + 2.0 + col * ((w-4) / Math.max(1, columns-1));
       const wy = 2.0 + row * 3.0;
-      if (wy < h-.8) box(1.15,1.45,.08,windowMat,wx,wy,frontZ,{castShadow:false});
+      if (wy < h-.8) {
+        const lit = ((row * 17 + col * 31 + Math.round(x * 3)) % 9) === 0;
+        box(1.15,1.45,.08,lit ? windowWarmMat : windowMat,wx,wy,frontZ,{castShadow:false});
+      }
     }
   }
 
@@ -169,6 +172,10 @@ function lamp(x,z) {
   const light = new THREE.PointLight(0xffd7a3, 10, 11, 2);
   light.position.set(x,5,z);
   scene.add(light);
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(.12,8,6), new THREE.MeshBasicMaterial({ color:0xffd7a3 }));
+  bulb.position.set(x,4.93,z);
+  bulb.castShadow = false;
+  scene.add(bulb);
   streetLights.push({ light, base:10, seed:x * 7.13 + z * 3.71 });
   return pole;
 }
@@ -219,7 +226,7 @@ function footprintBuilding(points, h, mat=brickMat) {
       const x=minX+(col+1)*w/(cols+1);
       const win=box(1.15,.9,.06,glassMat,x,y,minZ-.035,{castShadow:false});
       win.receiveShadow=false;
-      const back=box(1.15,.9,.06,glassMat,x,y,maxZ+.035,{castShadow:false});
+      const back=box(1.15,.9,.06,((row * 19 + col * 23 + Math.round(x * 2)) % 11 === 0) ? windowWarmMat : glassMat,x,y,maxZ+.035,{castShadow:false});
       back.receiveShadow=false;
     }
   }
@@ -228,9 +235,9 @@ function footprintBuilding(points, h, mat=brickMat) {
     const y=2.2+row*3.0;
     if(y>h-1.0) continue;
     const z=minZ+(row+1)*d/(sideRows+1);
-    const left=box(.06,.9,1.15,glassMat,minX-.035,y,z,{castShadow:false});
+    const left=box(.06,.9,1.15,((row * 11 + Math.round(z * 2)) % 10 === 0) ? windowWarmMat : glassMat,minX-.035,y,z,{castShadow:false});
     left.receiveShadow=false;
-    const right=box(.06,.9,1.15,glassMat,maxX+.035,y,z,{castShadow:false});
+    const right=box(.06,.9,1.15,((row * 13 + Math.round(z * 2)) % 10 === 0) ? windowWarmMat : glassMat,maxX+.035,y,z,{castShadow:false});
     right.receiveShadow=false;
   }
   const door=box(1.15,2.2,.08,darkMat,(minX+maxX)/2,1.1,minZ-.06,{castShadow:false});
