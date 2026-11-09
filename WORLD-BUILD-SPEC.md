@@ -293,3 +293,33 @@ No game geometry has been changed.
 - Consequence: the previous provisional railway meshes and railway camera barriers inside the first-sector prototype were not geographically justified and have been removed.
 - The railway is now **deferred**, not guessed. It remains a future adjacent-sector geometry task.
 - No railway expansion, crossing, camera boundary, or invisible clamp may be added until the adjacent 1:1000 sheets are reconciled with the official Montréal railway linework.
+
+## First-sector physical-scale audit — VERIFIED
+
+The current prototype blockout was compared against the current Ville de Montréal Géobase road-centerline dataset. The source describes the road network as centerline-based street segments and is updated weekly. citeturn471146search1
+
+Verified nearest centerline positions relative to Parc du Centenaire anchor:
+
+- Stuart: approximately **(-8 m, +20 m)**
+- Wiseman: approximately **(+15 m, -37 m)**
+- Saint-Roch: approximately **(-28 m, -12 m)**
+- Champagneur: approximately **(+66 m, -159 m)**
+- Bloomfield: approximately **(+91 m, -219 m)**
+- De l'Épée: approximately **(+117 m, -280 m)**
+- Ogilvy: approximately **(+269 m, +112 m)**
+- Durocher: approximately **(+1,090 m, +31 m)**
+
+The existing prototype positions are substantially different and the real street centerlines are not axis-aligned. Therefore the current street blockout is **not yet physically scaled/geographically reconciled**.
+
+### Required consequence
+
+- Do not tune the current street positions by eye.
+- Rebuild the first-sector road corridors from the verified centerline source.
+- Preserve the park anchor as the local origin.
+- Keep railway geometry deferred outside the first-sector sheet.
+- Rebuild sidewalks/intersections after road centerlines are locked.
+- Reposition frontage/buildings after the road grid is locked.
+- Only then perform final traversal/collision QA.
+
+Current status: **Physical-scale QA = FAIL / REBUILD REQUIRED.**
+
