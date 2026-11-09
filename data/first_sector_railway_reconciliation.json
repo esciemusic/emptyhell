@@ -1,99 +1,33 @@
 {
-  "status": "verified",
-  "first_sector_sheet": "31H12-010-0530",
-  "park_anchor": {
-    "lat": 45.526943,
-    "lon": -73.630554
+  "status": "RECONCILIATION_REVIEW",
+  "target_bbox_wgs84": [
+    -73.64,
+    45.515,
+    -73.615,
+    45.545
+  ],
+  "authoritative_anchor_mtm8": [
+    294602.04000401904,
+    5043011.143267743
+  ],
+  "local_transform": "x=east_mtm8_delta, z=-north_mtm8_delta",
+  "sources": {
+    "montreal": {
+      "dataset_id": "30028e66-e3b1-4478-8349-149b7c046932",
+      "resource_id": "d2d8d721-208d-4a4d-b016-24567862e638",
+      "url": "https://donnees.montreal.ca/fr/dataset/30028e66-e3b1-4478-8349-149b7c046932/resource/d2d8d721-208d-4a4d-b016-24567862e638/download/reseauferroviaire.geojson",
+      "feature_count": 21
+    },
+    "quebec": {
+      "dataset_id": "c2c4f386-a736-4eaa-b5b6-28c3a8f75466",
+      "url": "https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=2.0.0&request=getfeature&typename=ms:reseau_chfer_qc&outfile=ReseauFerroviaire&srsname=EPSG:4326&outputformat=geojson",
+      "feature_count": 30
+    }
   },
-  "official_rail_dataset": "Ville de Montréal — Voies ferrées 3D (2020)",
-  "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
-  "source_crs": "NAD83 / MTM zone 8 (EPSG:32188)",
-  "source_accuracy_planimetric_m": "±0.30 to ±0.40",
-  "park_adjacent_sheets": [
-    {
-      "sheet": "31H12-010-0430",
-      "distance_to_park_m": 215.93
-    },
-    {
-      "sheet": "31H12-010-0531",
-      "distance_to_park_m": 433.84
-    },
-    {
-      "sheet": "31H12-010-0630",
-      "distance_to_park_m": 478.64
-    },
-    {
-      "sheet": "31H12-010-0431",
-      "distance_to_park_m": 484.61
-    }
-  ],
-  "railway_intersects_first_sector_sheet": false,
-  "nearest_rail_tracks": [
-    {
-      "id": 1619,
-      "distance_to_park_m": 611.2,
-      "sheets": [
-        "31H12-010-0630",
-        "31H12-010-0531",
-        "31H12-010-0631",
-        "31H12-010-0629",
-        "31H12-010-0628",
-        "31H12-010-0728"
-      ]
-    },
-    {
-      "id": 774,
-      "distance_to_park_m": 615.1,
-      "sheets": [
-        "31H12-010-0630",
-        "31H12-010-0531",
-        "31H12-010-0631",
-        "31H12-010-0629",
-        "31H12-010-0628",
-        "31H12-010-0728"
-      ]
-    },
-    {
-      "id": 1450,
-      "distance_to_park_m": 857,
-      "sheets": [
-        "31H12-010-0431",
-        "31H12-010-0531"
-      ]
-    },
-    {
-      "id": 2399,
-      "distance_to_park_m": 861.2,
-      "sheets": [
-        "31H12-010-0431",
-        "31H12-010-0531"
-      ]
-    },
-    {
-      "id": 1490,
-      "distance_to_park_m": 869.7,
-      "sheets": [
-        "31H12-010-0431",
-        "31H12-010-0531",
-        "31H12-010-0532"
-      ]
-    },
-    {
-      "id": 435,
-      "distance_to_park_m": 874.1,
-      "sheets": [
-        "31H12-010-0431",
-        "31H12-010-0531",
-        "31H12-010-0532"
-      ]
-    },
-    {
-      "id": 1618,
-      "distance_to_park_m": 880.2,
-      "sheets": [
-        "31H12-010-0531"
-      ]
-    }
-  ],
-  "consequence": "Do not place railway track, crossing, camera barrier, or invisible rail clamp inside the 31H12-010-0530 first-sector slice. Reconcile adjacent 1:1000 sheets before railway expansion."
+  "geometry_comparison_m": {
+    "hausdorff_distance": 4304.638163419528,
+    "intersection_length": 0.0,
+    "union_length": 51843.915316409904
+  },
+  "note": "No railway geometry is promoted into EMPTYHELL runtime from this pass. The two authoritative datasets are reconciled first; runtime promotion remains gated."
 }

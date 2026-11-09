@@ -1,0 +1,5081 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 11835.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 41
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.630844,
+            45.514891
+          ],
+          [
+            -73.630361,
+            45.515397
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294577.20489968074,
+            5041671.8312756615
+          ],
+          [
+            294615.0327943498,
+            5041728.002054406
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -24.83510433830088,
+            1339.3119920818135
+          ],
+          [
+            12.992790330783464,
+            1283.1412133369595
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 1795.0,
+        "nomvoie": "Outremont",
+        "classvoie": "Épi",
+        "classvoic": 3,
+        "typeutilis": "Marchandises",
+        "typeutilic": 1,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "Aucun",
+        "siguti1vo": "Aucun",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon essentiel",
+        "nivhierarc": 1.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 1782
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.629335,
+            45.516261
+          ],
+          [
+            -73.629212,
+            45.516339
+          ],
+          [
+            -73.629046,
+            45.516453
+          ],
+          [
+            -73.628827,
+            45.516593
+          ],
+          [
+            -73.628603,
+            45.516726
+          ],
+          [
+            -73.628421,
+            45.516835
+          ],
+          [
+            -73.628121,
+            45.517006
+          ],
+          [
+            -73.626207,
+            45.518065
+          ],
+          [
+            -73.62554,
+            45.518439
+          ],
+          [
+            -73.625162,
+            45.518649
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294695.34772111144,
+            5041823.88940583
+          ],
+          [
+            294704.97138059704,
+            5041832.542135248
+          ],
+          [
+            294717.9609260447,
+            5041845.190187312
+          ],
+          [
+            294735.0958023328,
+            5041860.721022213
+          ],
+          [
+            294752.61998354964,
+            5041875.4733632915
+          ],
+          [
+            294766.8584867211,
+            5041887.563861706
+          ],
+          [
+            294790.3268899138,
+            5041906.5297852
+          ],
+          [
+            294940.0463765746,
+            5042023.980489528
+          ],
+          [
+            294992.22089266666,
+            5042065.4617255945
+          ],
+          [
+            295021.78841478814,
+            5042088.753095785
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            93.30771709239343,
+            1187.2538619134575
+          ],
+          [
+            102.93137657799525,
+            1178.6011324953288
+          ],
+          [
+            115.92092202563072,
+            1165.9530804315582
+          ],
+          [
+            133.05579831375508,
+            1150.4222455304116
+          ],
+          [
+            150.57997953059385,
+            1135.6699044518173
+          ],
+          [
+            164.8184827020741,
+            1123.5794060369954
+          ],
+          [
+            188.2868858947768,
+            1104.6134825432673
+          ],
+          [
+            338.0063725555665,
+            987.1627782154828
+          ],
+          [
+            390.18088864762103,
+            945.6815421488136
+          ],
+          [
+            419.748410769098,
+            922.3901719581336
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 1915.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon essentiel",
+        "nivhierarc": 1.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 1900
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.630474,
+            45.515217
+          ],
+          [
+            -73.631083,
+            45.51456
+          ],
+          [
+            -73.631356,
+            45.51427
+          ],
+          [
+            -73.63175,
+            45.513829
+          ],
+          [
+            -73.631906,
+            45.513652
+          ],
+          [
+            -73.631943,
+            45.513612
+          ],
+          [
+            -73.631963,
+            45.513588
+          ],
+          [
+            -73.632057,
+            45.513482
+          ],
+          [
+            -73.632137,
+            45.51339
+          ],
+          [
+            -73.632144,
+            45.513382
+          ],
+          [
+            -73.632152,
+            45.513375
+          ],
+          [
+            -73.63217,
+            45.513355
+          ],
+          [
+            -73.632177,
+            45.513347
+          ],
+          [
+            -73.632184,
+            45.513338
+          ],
+          [
+            -73.632296,
+            45.513215
+          ],
+          [
+            -73.632387,
+            45.513116
+          ],
+          [
+            -73.632467,
+            45.513027
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294606.17172536947,
+            5041708.012860286
+          ],
+          [
+            294558.47187569324,
+            5041635.077458695
+          ],
+          [
+            294537.08964652807,
+            5041602.884402785
+          ],
+          [
+            294506.22583069827,
+            5041553.926186969
+          ],
+          [
+            294494.0050705512,
+            5041534.276060258
+          ],
+          [
+            294491.10690736875,
+            5041529.83558111
+          ],
+          [
+            294489.5398966747,
+            5041527.171011834
+          ],
+          [
+            294482.176171221,
+            5041515.403230322
+          ],
+          [
+            294475.90882235963,
+            5041505.189487507
+          ],
+          [
+            294475.3604375099,
+            5041504.301341849
+          ],
+          [
+            294474.7341036262,
+            5041503.524455496
+          ],
+          [
+            294473.3240745492,
+            5041501.304155995
+          ],
+          [
+            294472.775688996,
+            5041500.416010569
+          ],
+          [
+            294472.2271203792,
+            5041499.4167345
+          ],
+          [
+            294463.4538431477,
+            5041485.762068544
+          ],
+          [
+            294456.325699099,
+            5041474.771846675
+          ],
+          [
+            294450.0588177139,
+            5041464.891522261
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            4.131721350422595,
+            1303.13040745724
+          ],
+          [
+            -43.56812832580181,
+            1376.0658090487123
+          ],
+          [
+            -64.95035749097588,
+            1408.2588649578393
+          ],
+          [
+            -95.81417332077399,
+            1457.217080774717
+          ],
+          [
+            -108.03493346786126,
+            1476.8672074852511
+          ],
+          [
+            -110.93309665028937,
+            1481.3076866334304
+          ],
+          [
+            -112.50010734435637,
+            1483.972255908884
+          ],
+          [
+            -119.86383279802976,
+            1495.740037421696
+          ],
+          [
+            -126.13118165940978,
+            1505.953780236654
+          ],
+          [
+            -126.67956650914857,
+            1506.8419258939102
+          ],
+          [
+            -127.30590039282106,
+            1507.6188122471794
+          ],
+          [
+            -128.71592946985038,
+            1509.8391117481515
+          ],
+          [
+            -129.26431502302876,
+            1510.7272571744397
+          ],
+          [
+            -129.81288363982458,
+            1511.7265332434326
+          ],
+          [
+            -138.58616087131668,
+            1525.3811991997063
+          ],
+          [
+            -145.7143049200531,
+            1536.3714210679755
+          ],
+          [
+            -151.98118630511453,
+            1546.2517454819754
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 3295.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Épi",
+        "classvoic": 3,
+        "typeutilis": "Marchandises",
+        "typeutilic": 1,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "Aucun",
+        "siguti1vo": "Aucun",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon essentiel",
+        "nivhierarc": 1.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 3240
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.625162,
+            45.518649
+          ],
+          [
+            -73.625056,
+            45.51871
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295021.78841478814,
+            5042088.753095785
+          ],
+          [
+            295030.08016226755,
+            5042095.519172789
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            419.748410769098,
+            922.3901719581336
+          ],
+          [
+            428.0401582485065,
+            915.6240949546918
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 3584.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon essentiel",
+        "nivhierarc": 1.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 3525
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.629952,
+            45.515746
+          ],
+          [
+            -73.629798,
+            45.515882
+          ],
+          [
+            -73.629648,
+            45.516007
+          ],
+          [
+            -73.629335,
+            45.516261
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294647.0502907373,
+            5041766.73489182
+          ],
+          [
+            294659.10650083114,
+            5041781.829214546
+          ],
+          [
+            294670.8481672115,
+            5041795.701627045
+          ],
+          [
+            294695.34772111144,
+            5041823.88940583
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            45.0102867182577,
+            1244.4083759235218
+          ],
+          [
+            57.066496812098194,
+            1229.3140531973913
+          ],
+          [
+            68.80816319247242,
+            1215.441640698351
+          ],
+          [
+            93.30771709239343,
+            1187.2538619134575
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 5547.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon important",
+        "nivhierarc": 2.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "Pont",
+        "version": "20260608",
+        "objectid": 5402
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.621307,
+            45.531101
+          ],
+          [
+            -73.621313,
+            45.531103
+          ],
+          [
+            -73.621458,
+            45.531126
+          ],
+          [
+            -73.621569,
+            45.531146
+          ],
+          [
+            -73.6217,
+            45.531168
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295325.04870866943,
+            5043472.093096862
+          ],
+          [
+            295324.58040125674,
+            5043472.316067032
+          ],
+          [
+            295313.25872323837,
+            5043474.889203822
+          ],
+          [
+            295304.5921924459,
+            5043477.1249463
+          ],
+          [
+            295294.36386234977,
+            5043479.585330555
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            723.0087046503904,
+            -460.9498291183263
+          ],
+          [
+            722.5403972376953,
+            -461.1727992882952
+          ],
+          [
+            711.2187192193232,
+            -463.74593607895076
+          ],
+          [
+            702.5521884268383,
+            -465.9816785566509
+          ],
+          [
+            692.3238583307248,
+            -468.442062811926
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 5548.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon important",
+        "nivhierarc": 2.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 5407
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.61695,
+            45.528887
+          ],
+          [
+            -73.61695,
+            45.528888
+          ],
+          [
+            -73.616961,
+            45.528925
+          ],
+          [
+            -73.617017,
+            45.529099
+          ],
+          [
+            -73.617078,
+            45.529237
+          ],
+          [
+            -73.617173,
+            45.529403
+          ],
+          [
+            -73.617271,
+            45.529544
+          ],
+          [
+            -73.617381,
+            45.529686
+          ],
+          [
+            -73.617517,
+            45.529828
+          ],
+          [
+            -73.617649,
+            45.529955
+          ],
+          [
+            -73.617804,
+            45.530081
+          ],
+          [
+            -73.618039,
+            45.530243
+          ],
+          [
+            -73.61817,
+            45.530323
+          ],
+          [
+            -73.618298,
+            45.530392
+          ],
+          [
+            -73.618513,
+            45.530491
+          ],
+          [
+            -73.61874,
+            45.53058
+          ],
+          [
+            -73.618945,
+            45.530648
+          ],
+          [
+            -73.619251,
+            45.530735
+          ],
+          [
+            -73.619592,
+            45.530809
+          ],
+          [
+            -73.621307,
+            45.531101
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295665.00342286716,
+            5043225.544078611
+          ],
+          [
+            295665.0035847387,
+            5043225.655209608
+          ],
+          [
+            295664.15036156913,
+            5043229.768308016
+          ],
+          [
+            295659.8043711041,
+            5043249.111475066
+          ],
+          [
+            295655.0620252144,
+            5043264.454499158
+          ],
+          [
+            295647.66851747123,
+            5043282.913070509
+          ],
+          [
+            295640.0366675306,
+            5043298.593718226
+          ],
+          [
+            295631.46770835377,
+            5043314.386876935
+          ],
+          [
+            295620.8679592553,
+            5043330.183019945
+          ],
+          [
+            295610.5782561381,
+            5043344.311758273
+          ],
+          [
+            295598.4919381946,
+            5043358.332018504
+          ],
+          [
+            295580.16288050916,
+            5043376.362202738
+          ],
+          [
+            295569.94376582466,
+            5043385.267736055
+          ],
+          [
+            295559.9572035362,
+            5043392.950499658
+          ],
+          [
+            295543.1801827373,
+            5043403.97723702
+          ],
+          [
+            295525.46428236936,
+            5043413.894095372
+          ],
+          [
+            295509.46335228777,
+            5043421.474706423
+          ],
+          [
+            295485.57671516517,
+            5043431.178560337
+          ],
+          [
+            295458.9542340353,
+            5043439.441873515
+          ],
+          [
+            295325.04870866943,
+            5043472.093096862
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1062.963418848114,
+            -214.400810867548
+          ],
+          [
+            1062.963580719661,
+            -214.51194186508656
+          ],
+          [
+            1062.1103575500892,
+            -218.62504027225077
+          ],
+          [
+            1057.7643670850666,
+            -237.96820732299238
+          ],
+          [
+            1053.0220211953856,
+            -253.31123141478747
+          ],
+          [
+            1045.6285134521895,
+            -271.76980276592076
+          ],
+          [
+            1037.996663511556,
+            -287.45045048277825
+          ],
+          [
+            1029.4277043347247,
+            -303.2436091918498
+          ],
+          [
+            1018.827955236251,
+            -319.0397522021085
+          ],
+          [
+            1008.5382521190331,
+            -333.1684905299917
+          ],
+          [
+            996.4519341755658,
+            -347.1887507606298
+          ],
+          [
+            978.122876490117,
+            -365.21893499512225
+          ],
+          [
+            967.9037618056173,
+            -374.12446831166744
+          ],
+          [
+            957.9171995171346,
+            -381.80723191425204
+          ],
+          [
+            941.1401787182549,
+            -392.8339692763984
+          ],
+          [
+            923.4242783503141,
+            -402.75082762911916
+          ],
+          [
+            907.4233482687268,
+            -410.3314386792481
+          ],
+          [
+            883.5367111461237,
+            -420.0352925937623
+          ],
+          [
+            856.9142300162348,
+            -428.2986057717353
+          ],
+          [
+            723.0087046503904,
+            -460.9498291183263
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 5549.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon important",
+        "nivhierarc": 2.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "Pont",
+        "version": "20260608",
+        "objectid": 5408
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.616893,
+            45.52859
+          ],
+          [
+            -73.616904,
+            45.528675
+          ],
+          [
+            -73.616915,
+            45.528756
+          ],
+          [
+            -73.616921,
+            45.528784
+          ],
+          [
+            -73.61695,
+            45.528887
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295669.40765610227,
+            5043192.531690375
+          ],
+          [
+            295668.56219219207,
+            5043201.979075502
+          ],
+          [
+            295667.71608360036,
+            5043210.981936919
+          ],
+          [
+            295667.2519521481,
+            5043214.094287176
+          ],
+          [
+            295665.00342286716,
+            5043225.544078611
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1067.3676520832232,
+            -181.3884226316586
+          ],
+          [
+            1066.522188173025,
+            -190.83580775838345
+          ],
+          [
+            1065.676079581317,
+            -199.83866917528212
+          ],
+          [
+            1065.2119481290574,
+            -202.9510194323957
+          ],
+          [
+            1062.963418848114,
+            -214.400810867548
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 5544.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon important",
+        "nivhierarc": 2.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 5425
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.634751,
+            45.533316
+          ],
+          [
+            -73.638033,
+            45.533856
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294275.3885558547,
+            5043719.92287073
+          ],
+          [
+            294019.1539420471,
+            5043780.369138414
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -326.65144816436805,
+            -708.7796029867604
+          ],
+          [
+            -582.886061971949,
+            -769.2258706707507
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 5545.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon important",
+        "nivhierarc": 2.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "Pont",
+        "version": "20260608",
+        "objectid": 5426
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.634419,
+            45.533261
+          ],
+          [
+            -73.63451,
+            45.533276
+          ],
+          [
+            -73.634641,
+            45.533298
+          ],
+          [
+            -73.634751,
+            45.533316
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294301.30889713153,
+            5043713.7671926
+          ],
+          [
+            294294.20420622325,
+            5043715.446062748
+          ],
+          [
+            294283.9766566739,
+            5043717.908097115
+          ],
+          [
+            294275.3885558547,
+            5043719.92287073
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -300.7311068875133,
+            -702.6239248570055
+          ],
+          [
+            -307.83579779579304,
+            -704.3027950050309
+          ],
+          [
+            -318.06334734515985,
+            -706.7648293720558
+          ],
+          [
+            -326.65144816436805,
+            -708.7796029867604
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 5546.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon important",
+        "nivhierarc": 2.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 5427
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.6217,
+            45.531168
+          ],
+          [
+            -73.621995,
+            45.531217
+          ],
+          [
+            -73.623553,
+            45.531473
+          ],
+          [
+            -73.624854,
+            45.531687
+          ],
+          [
+            -73.627987,
+            45.532203
+          ],
+          [
+            -73.631,
+            45.532699
+          ],
+          [
+            -73.634418,
+            45.533261
+          ],
+          [
+            -73.634419,
+            45.533261
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295294.36386234977,
+            5043479.585330555
+          ],
+          [
+            295271.3305376222,
+            5043485.065720358
+          ],
+          [
+            295149.6835388402,
+            5043513.701354513
+          ],
+          [
+            295048.1037150319,
+            5043537.64059906
+          ],
+          [
+            294803.48778838286,
+            5043595.3695420595
+          ],
+          [
+            294568.2453080211,
+            5043650.870117709
+          ],
+          [
+            294301.3870013481,
+            5043713.767061832
+          ],
+          [
+            294301.30889713153,
+            5043713.7671926
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            692.3238583307248,
+            -468.442062811926
+          ],
+          [
+            669.290533603169,
+            -473.9224526146427
+          ],
+          [
+            547.6435348211671,
+            -502.55808676965535
+          ],
+          [
+            446.06371101283,
+            -526.4973313165829
+          ],
+          [
+            201.44778436381603,
+            -584.2262743161991
+          ],
+          [
+            -33.794695997959934,
+            -639.7268499657512
+          ],
+          [
+            -300.6530026709661,
+            -702.6237940890715
+          ],
+          [
+            -300.7311068875133,
+            -702.6239248570055
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 5550.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon important",
+        "nivhierarc": 2.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 5429
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.629335,
+            45.516261
+          ],
+          [
+            -73.62914,
+            45.51642
+          ],
+          [
+            -73.629004,
+            45.516522
+          ],
+          [
+            -73.628796,
+            45.516661
+          ],
+          [
+            -73.625729,
+            45.518374
+          ],
+          [
+            -73.625166,
+            45.51869
+          ],
+          [
+            -73.624863,
+            45.518875
+          ],
+          [
+            -73.624478,
+            45.519135
+          ],
+          [
+            -73.624317,
+            45.51926
+          ],
+          [
+            -73.624096,
+            45.519454
+          ],
+          [
+            -73.624078,
+            45.519472
+          ],
+          [
+            -73.624017,
+            45.519528
+          ],
+          [
+            -73.623837,
+            45.519699
+          ],
+          [
+            -73.623639,
+            45.519893
+          ],
+          [
+            -73.623606,
+            45.519924
+          ],
+          [
+            -73.623393,
+            45.520161
+          ],
+          [
+            -73.623212,
+            45.520385
+          ],
+          [
+            -73.622851,
+            45.520901
+          ],
+          [
+            -73.622764,
+            45.521026
+          ],
+          [
+            -73.622699,
+            45.521111
+          ],
+          [
+            -73.622572,
+            45.521266
+          ],
+          [
+            -73.618407,
+            45.525914
+          ],
+          [
+            -73.617463,
+            45.526977
+          ],
+          [
+            -73.617295,
+            45.527214
+          ],
+          [
+            -73.617178,
+            45.527391
+          ],
+          [
+            -73.617112,
+            45.52751
+          ],
+          [
+            -73.617038,
+            45.527679
+          ],
+          [
+            -73.616977,
+            45.527855
+          ],
+          [
+            -73.616927,
+            45.528064
+          ],
+          [
+            -73.616904,
+            45.528186
+          ],
+          [
+            -73.616898,
+            45.5283
+          ],
+          [
+            -73.616891,
+            45.52846
+          ],
+          [
+            -73.616893,
+            45.528559
+          ],
+          [
+            -73.616893,
+            45.52859
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294695.34772111144,
+            5041823.88940583
+          ],
+          [
+            294710.6110456402,
+            5041841.534677825
+          ],
+          [
+            294721.25459790434,
+            5041852.852937278
+          ],
+          [
+            294737.529867845,
+            5041868.274028797
+          ],
+          [
+            294977.4440089068,
+            5042058.261324505
+          ],
+          [
+            295021.4830187474,
+            5042093.309945443
+          ],
+          [
+            295045.1866741414,
+            5042113.8322919635
+          ],
+          [
+            295075.3092516986,
+            5042142.679605393
+          ],
+          [
+            295087.9086834101,
+            5042156.551471833
+          ],
+          [
+            295105.2073145067,
+            5042178.084144313
+          ],
+          [
+            295106.61662517104,
+            5042180.08232598
+          ],
+          [
+            295111.3917576323,
+            5042186.29828996
+          ],
+          [
+            295125.4832434973,
+            5042205.279957859
+          ],
+          [
+            295140.9847891622,
+            5042226.815501447
+          ],
+          [
+            295143.5681417045,
+            5042230.256588066
+          ],
+          [
+            295160.24874279014,
+            5042256.569001682
+          ],
+          [
+            295174.4270829703,
+            5042281.440595005
+          ],
+          [
+            295202.71686676354,
+            5042338.740896723
+          ],
+          [
+            295209.5346589675,
+            5042352.6218575565
+          ],
+          [
+            295214.62696733995,
+            5042362.060218183
+          ],
+          [
+            295224.57463141374,
+            5042379.27034723
+          ],
+          [
+            295550.70952886867,
+            5042895.318518186
+          ],
+          [
+            295624.6223273857,
+            5043013.342407738
+          ],
+          [
+            295637.78377281723,
+            5043039.6612610975
+          ],
+          [
+            295646.9516519507,
+            5043059.31809756
+          ],
+          [
+            295652.12635550904,
+            5043072.535161021
+          ],
+          [
+            295657.93403297145,
+            5043091.30786664
+          ],
+          [
+            295662.72735699866,
+            5043110.859974296
+          ],
+          [
+            295666.6667659985,
+            5043134.080659686
+          ],
+          [
+            295668.4830687646,
+            5043147.636023241
+          ],
+          [
+            295668.9701811666,
+            5043160.304272893
+          ],
+          [
+            295669.5428449167,
+            5043178.084434491
+          ],
+          [
+            295669.40264055715,
+            5043189.086629714
+          ],
+          [
+            295669.40765610227,
+            5043192.531690375
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            93.30771709239343,
+            1187.2538619134575
+          ],
+          [
+            108.57104162115138,
+            1169.6085899183527
+          ],
+          [
+            119.21459388529183,
+            1158.2903304649517
+          ],
+          [
+            135.48986382596195,
+            1142.8692389465868
+          ],
+          [
+            375.40400488773594,
+            952.8819432379678
+          ],
+          [
+            419.44301472837105,
+            917.8333223005757
+          ],
+          [
+            443.14667012233986,
+            897.3109757797793
+          ],
+          [
+            473.2692476795637,
+            868.4636623505503
+          ],
+          [
+            485.8686793910456,
+            854.5917959101498
+          ],
+          [
+            503.1673104876536,
+            833.0591234304011
+          ],
+          [
+            504.5766211519949,
+            831.0609417632222
+          ],
+          [
+            509.3517536132713,
+            824.8449777830392
+          ],
+          [
+            523.443239478278,
+            805.8633098844439
+          ],
+          [
+            538.9447851431323,
+            784.3277662964538
+          ],
+          [
+            541.52813768544,
+            780.8866796772927
+          ],
+          [
+            558.2087387710926,
+            754.5742660611868
+          ],
+          [
+            572.3870789512293,
+            729.7026727385819
+          ],
+          [
+            600.6768627444981,
+            672.4023710200563
+          ],
+          [
+            607.4946549484739,
+            658.521410186775
+          ],
+          [
+            612.5869633209077,
+            649.0830495599657
+          ],
+          [
+            622.5346273946925,
+            631.8729205131531
+          ],
+          [
+            948.6695248496253,
+            115.8247495573014
+          ],
+          [
+            1022.5823233666597,
+            -2.199139994569123
+          ],
+          [
+            1035.7437687981874,
+            -28.51799335423857
+          ],
+          [
+            1044.9116479316726,
+            -48.17482981644571
+          ],
+          [
+            1050.0863514899975,
+            -61.39189327787608
+          ],
+          [
+            1055.8940289524035,
+            -80.1645988970995
+          ],
+          [
+            1060.687352979614,
+            -99.71670655254275
+          ],
+          [
+            1064.6267619794817,
+            -122.93739194236696
+          ],
+          [
+            1066.4430647455738,
+            -136.49275549780577
+          ],
+          [
+            1066.9301771475584,
+            -149.16100514959544
+          ],
+          [
+            1067.5028408976505,
+            -166.94116674736142
+          ],
+          [
+            1067.362636538106,
+            -177.94336197059602
+          ],
+          [
+            1067.3676520832232,
+            -181.3884226316586
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 6547.0,
+        "nomvoie": "Outremont",
+        "classvoie": "Épi",
+        "classvoic": 3,
+        "typeutilis": "Marchandises",
+        "typeutilic": 1,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "Aucun",
+        "siguti1vo": "Aucun",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 6410
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.611439,
+            45.526141
+          ],
+          [
+            -73.612978,
+            45.525312
+          ],
+          [
+            -73.6133,
+            45.52519
+          ],
+          [
+            -73.613759,
+            45.525052
+          ],
+          [
+            -73.614164,
+            45.524965
+          ],
+          [
+            -73.614589,
+            45.524909
+          ],
+          [
+            -73.615009,
+            45.524882
+          ],
+          [
+            -73.615386,
+            45.524885
+          ],
+          [
+            -73.615851,
+            45.524907
+          ],
+          [
+            -73.616597,
+            45.524952
+          ],
+          [
+            -73.617126,
+            45.52498
+          ],
+          [
+            -73.617451,
+            45.524978
+          ],
+          [
+            -73.617782,
+            45.524951
+          ],
+          [
+            -73.61824,
+            45.524873
+          ],
+          [
+            -73.618561,
+            45.524792
+          ],
+          [
+            -73.618877,
+            45.524678
+          ],
+          [
+            -73.619179,
+            45.52455
+          ],
+          [
+            -73.619466,
+            45.524386
+          ],
+          [
+            -73.619704,
+            45.524216
+          ],
+          [
+            -73.619985,
+            45.523981
+          ],
+          [
+            -73.620245,
+            45.523696
+          ],
+          [
+            -73.620475,
+            45.523431
+          ],
+          [
+            -73.620948,
+            45.522904
+          ],
+          [
+            -73.621246,
+            45.522576
+          ],
+          [
+            -73.621584,
+            45.522178
+          ],
+          [
+            -73.621906,
+            45.521834
+          ],
+          [
+            -73.622347,
+            45.521343
+          ],
+          [
+            -73.622896,
+            45.520605
+          ],
+          [
+            -73.623521,
+            45.519759
+          ],
+          [
+            -73.62368,
+            45.519596
+          ],
+          [
+            -73.623884,
+            45.519404
+          ],
+          [
+            -73.624291,
+            45.519103
+          ],
+          [
+            -73.624556,
+            45.51894
+          ],
+          [
+            -73.624937,
+            45.518728
+          ],
+          [
+            -73.625778,
+            45.518259
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            296095.04559191776,
+            5042919.76620271
+          ],
+          [
+            295974.69840619515,
+            5042827.806658314
+          ],
+          [
+            295949.5261743573,
+            5042814.284127062
+          ],
+          [
+            295913.64948321856,
+            5042798.998754906
+          ],
+          [
+            295881.9989267035,
+            5042789.3752660435
+          ],
+          [
+            295848.7908726336,
+            5042783.1992246965
+          ],
+          [
+            295815.9779480224,
+            5042780.2455962775
+          ],
+          [
+            295786.52876458515,
+            5042780.621239217
+          ],
+          [
+            295750.2084396823,
+            5042783.118422147
+          ],
+          [
+            295691.9413287422,
+            5042788.203662247
+          ],
+          [
+            295650.6226524367,
+            5042791.375469067
+          ],
+          [
+            295625.2347313339,
+            5042791.190290927
+          ],
+          [
+            295599.37403902155,
+            5042788.227630068
+          ],
+          [
+            295563.5842748506,
+            5042779.61199992
+          ],
+          [
+            295538.49580277904,
+            5042770.647370282
+          ],
+          [
+            295513.79240963596,
+            5042758.01494263
+          ],
+          [
+            295490.18023517745,
+            5042743.825156339
+          ],
+          [
+            295467.7337482704,
+            5042725.6330029955
+          ],
+          [
+            295449.1138568582,
+            5042706.7684374945
+          ],
+          [
+            295427.1240299287,
+            5042680.685437553
+          ],
+          [
+            295406.7661646539,
+            5042649.043514017
+          ],
+          [
+            295388.7549647448,
+            5042619.620759057
+          ],
+          [
+            295351.71702034096,
+            5042561.110329849
+          ],
+          [
+            295328.38265320583,
+            5042524.694509978
+          ],
+          [
+            295301.9114587808,
+            5042480.504348636
+          ],
+          [
+            295276.69892457884,
+            5042442.313470139
+          ],
+          [
+            295242.1648534656,
+            5042387.800617153
+          ],
+          [
+            295199.1510641919,
+            5042305.851548489
+          ],
+          [
+            295150.180364184,
+            5042211.909785356
+          ],
+          [
+            295137.7309232653,
+            5042193.814581446
+          ],
+          [
+            295121.7608878677,
+            5042172.50203161
+          ],
+          [
+            295089.9128923665,
+            5042139.10079128
+          ],
+          [
+            295069.18198563525,
+            5042121.01854759
+          ],
+          [
+            295039.3800728726,
+            5042097.505056378
+          ],
+          [
+            294973.5958758911,
+            5042045.487278504
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1493.0055878987187,
+            91.37706503365189
+          ],
+          [
+            1372.6584021761082,
+            183.3366094296798
+          ],
+          [
+            1347.486170338234,
+            196.85914068110287
+          ],
+          [
+            1311.6094791995129,
+            212.1445128377527
+          ],
+          [
+            1279.9589226844837,
+            221.76800169982016
+          ],
+          [
+            1246.7508686145302,
+            227.94404304679483
+          ],
+          [
+            1213.9379440033808,
+            230.89767146576196
+          ],
+          [
+            1184.488760566106,
+            230.52202852629125
+          ],
+          [
+            1148.168435663276,
+            228.02484559640288
+          ],
+          [
+            1089.9013247231487,
+            222.93960549589247
+          ],
+          [
+            1048.5826484176796,
+            219.7677986761555
+          ],
+          [
+            1023.1947273148689,
+            219.95297681633383
+          ],
+          [
+            997.3340350025101,
+            222.91563767567277
+          ],
+          [
+            961.5442708315677,
+            231.53126782365143
+          ],
+          [
+            936.4557987599983,
+            240.4958974616602
+          ],
+          [
+            911.7524056169204,
+            253.12832511309534
+          ],
+          [
+            888.1402311584097,
+            267.31811140384525
+          ],
+          [
+            865.6937442513299,
+            285.5102647477761
+          ],
+          [
+            847.0738528391812,
+            304.37483024876565
+          ],
+          [
+            825.0840259096585,
+            330.45783019065857
+          ],
+          [
+            804.7261606348329,
+            362.0997537262738
+          ],
+          [
+            786.7149607257452,
+            391.5225086864084
+          ],
+          [
+            749.6770163219189,
+            450.0329378945753
+          ],
+          [
+            726.3426491867867,
+            486.44875776488334
+          ],
+          [
+            699.871454761771,
+            530.638919107616
+          ],
+          [
+            674.6589205597993,
+            568.8297976041213
+          ],
+          [
+            640.1248494465835,
+            623.3426505904645
+          ],
+          [
+            597.1110601728433,
+            705.2917192541063
+          ],
+          [
+            548.1403601649799,
+            799.2334823869169
+          ],
+          [
+            535.6909192462335,
+            817.3286862969398
+          ],
+          [
+            519.7208838486695,
+            838.6412361329421
+          ],
+          [
+            487.87288834748324,
+            872.0424764631316
+          ],
+          [
+            467.1419816162088,
+            890.1247201533988
+          ],
+          [
+            437.34006885357667,
+            913.6382113648579
+          ],
+          [
+            371.55587187205674,
+            965.6559892389923
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 6641.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon important",
+        "nivhierarc": 2.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 6493
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.638033,
+            45.533856
+          ],
+          [
+            -73.638297,
+            45.533899
+          ],
+          [
+            -73.641128,
+            45.534365
+          ],
+          [
+            -73.645412,
+            45.535073
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294019.1539420471,
+            5043780.369138414
+          ],
+          [
+            293998.5428778824,
+            5043785.183260276
+          ],
+          [
+            293777.5233750482,
+            5043837.35513521
+          ],
+          [
+            293443.0739682149,
+            5043916.6330585955
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -582.886061971949,
+            -769.2258706707507
+          ],
+          [
+            -603.4971261366154,
+            -774.0399925326928
+          ],
+          [
+            -824.5166289708577,
+            -826.211867466569
+          ],
+          [
+            -1158.9660358041292,
+            -905.4897908521816
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 6672.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 6525
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.634765,
+            45.533275
+          ],
+          [
+            -73.645427,
+            45.535027
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294274.28744958487,
+            5043715.368331826
+          ],
+          [
+            293441.89318240155,
+            5043911.523149434
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -327.752554434177,
+            -704.2250640830025
+          ],
+          [
+            -1160.146821617498,
+            -900.3798816902563
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 6673.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "Pont",
+        "version": "20260608",
+        "objectid": 6526
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.634432,
+            45.53322
+          ],
+          [
+            -73.634534,
+            45.533236
+          ],
+          [
+            -73.634665,
+            45.533258
+          ],
+          [
+            -73.634765,
+            45.533275
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294300.2859129181,
+            5043709.212518436
+          ],
+          [
+            294292.3222565534,
+            5043711.003960429
+          ],
+          [
+            294282.09470047895,
+            5043713.465997837
+          ],
+          [
+            294274.28744958487,
+            5043715.368331826
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -301.7540911009419,
+            -698.0692506926134
+          ],
+          [
+            -309.71774746564915,
+            -699.86069268547
+          ],
+          [
+            -319.94530354009476,
+            -702.3227300932631
+          ],
+          [
+            -327.752554434177,
+            -704.2250640830025
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 6674.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 6527
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.621744,
+            45.531133
+          ],
+          [
+            -73.622008,
+            45.531176
+          ],
+          [
+            -73.623567,
+            45.531432
+          ],
+          [
+            -73.624082,
+            45.531516
+          ],
+          [
+            -73.624868,
+            45.531647
+          ],
+          [
+            -73.627999,
+            45.532162
+          ],
+          [
+            -73.631014,
+            45.532658
+          ],
+          [
+            -73.634432,
+            45.53322
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295290.92125131347,
+            5043475.700954511
+          ],
+          [
+            295270.3082219652,
+            5043480.510890669
+          ],
+          [
+            295148.5830325919,
+            5043509.146664539
+          ],
+          [
+            295108.3724836732,
+            5043518.543710146
+          ],
+          [
+            295047.0033119092,
+            5043533.197057688
+          ],
+          [
+            294802.5432560348,
+            5043590.814662856
+          ],
+          [
+            294567.1444027526,
+            5043646.315528202
+          ],
+          [
+            294300.2859129181,
+            5043709.212518436
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            688.8812472944264,
+            -464.5576867675409
+          ],
+          [
+            668.2682179461699,
+            -469.3676229258999
+          ],
+          [
+            546.5430285728653,
+            -498.0033967960626
+          ],
+          [
+            506.33247965417104,
+            -507.40044240280986
+          ],
+          [
+            444.9633078901679,
+            -522.053789944388
+          ],
+          [
+            200.50325201574014,
+            -579.6713951127604
+          ],
+          [
+            -34.8956012664712,
+            -635.1722604585811
+          ],
+          [
+            -301.7540911009419,
+            -698.0692506926134
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 6675.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "Pont",
+        "version": "20260608",
+        "objectid": 6528
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.621328,
+            45.531064
+          ],
+          [
+            -73.621493,
+            45.531091
+          ],
+          [
+            -73.621599,
+            45.531109
+          ],
+          [
+            -73.621744,
+            45.531133
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295323.4022436156,
+            5043467.983726947
+          ],
+          [
+            295310.5190863669,
+            5043471.003753665
+          ],
+          [
+            295302.2427505076,
+            5043473.016646337
+          ],
+          [
+            295290.92125131347,
+            5043475.700954511
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            721.3622395965504,
+            -456.84045920334756
+          ],
+          [
+            708.4790823478834,
+            -459.8604859216139
+          ],
+          [
+            700.2027464885614,
+            -461.8733785934746
+          ],
+          [
+            688.8812472944264,
+            -464.5576867675409
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 6676.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 6529
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.617019,
+            45.528917
+          ],
+          [
+            -73.617064,
+            45.529068
+          ],
+          [
+            -73.617132,
+            45.529223
+          ],
+          [
+            -73.617222,
+            45.529379
+          ],
+          [
+            -73.617308,
+            45.529508
+          ],
+          [
+            -73.617404,
+            45.529632
+          ],
+          [
+            -73.617479,
+            45.529718
+          ],
+          [
+            -73.617623,
+            45.529862
+          ],
+          [
+            -73.617768,
+            45.529992
+          ],
+          [
+            -73.617928,
+            45.530111
+          ],
+          [
+            -73.618102,
+            45.53023
+          ],
+          [
+            -73.618282,
+            45.530334
+          ],
+          [
+            -73.61846,
+            45.53042
+          ],
+          [
+            -73.61868,
+            45.530515
+          ],
+          [
+            -73.619028,
+            45.530631
+          ],
+          [
+            -73.619282,
+            45.530701
+          ],
+          [
+            -73.619499,
+            45.530749
+          ],
+          [
+            -73.621328,
+            45.531064
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295659.6186730813,
+            5043228.885861205
+          ],
+          [
+            295656.12817916414,
+            5043245.671765621
+          ],
+          [
+            295650.84182692145,
+            5043262.904817076
+          ],
+          [
+            295643.8372551308,
+            5043280.251513118
+          ],
+          [
+            295637.1407758186,
+            5043294.597223815
+          ],
+          [
+            295629.6624224109,
+            5043308.38842909
+          ],
+          [
+            295623.8182134278,
+            5043317.954264908
+          ],
+          [
+            295612.5939438358,
+            5043333.973598399
+          ],
+          [
+            295601.28934088384,
+            5043348.4372328
+          ],
+          [
+            295588.81136620225,
+            5043361.680167544
+          ],
+          [
+            295575.2399264834,
+            5043374.924735899
+          ],
+          [
+            295561.1974388421,
+            5043386.503059031
+          ],
+          [
+            295547.3082679185,
+            5043396.080824951
+          ],
+          [
+            295530.14008051105,
+            5043406.663649416
+          ],
+          [
+            295502.977601195,
+            5043419.595086608
+          ],
+          [
+            295483.1497624631,
+            5043427.403702147
+          ],
+          [
+            295466.2083176491,
+            5043432.763195793
+          ],
+          [
+            295323.4022436156,
+            5043467.983726947
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1057.5786690622335,
+            -217.74259346164763
+          ],
+          [
+            1054.0881751450943,
+            -234.52849787753075
+          ],
+          [
+            1048.801822902402,
+            -251.76154933311045
+          ],
+          [
+            1041.7972511117696,
+            -269.10824537463486
+          ],
+          [
+            1035.1007717995672,
+            -283.4539560712874
+          ],
+          [
+            1027.6224183918675,
+            -297.2451613470912
+          ],
+          [
+            1021.7782094087452,
+            -306.8109971648082
+          ],
+          [
+            1010.5539398167748,
+            -322.8303306559101
+          ],
+          [
+            999.2493368647993,
+            -337.2939650565386
+          ],
+          [
+            986.7713621832081,
+            -350.53689980041236
+          ],
+          [
+            973.1999224643805,
+            -363.78146815579385
+          ],
+          [
+            959.1574348230497,
+            -375.35979128815234
+          ],
+          [
+            945.2682638994302,
+            -384.93755720742047
+          ],
+          [
+            928.1000764920027,
+            -395.52038167230785
+          ],
+          [
+            900.9375971759437,
+            -408.4518188647926
+          ],
+          [
+            881.1097584440722,
+            -416.26043440401554
+          ],
+          [
+            864.1683136300417,
+            -421.61992804985493
+          ],
+          [
+            721.3622395965504,
+            -456.84045920334756
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 6677.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "Pont",
+        "version": "20260608",
+        "objectid": 6530
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.616952,
+            45.528609
+          ],
+          [
+            -73.616953,
+            45.52861
+          ],
+          [
+            -73.616963,
+            45.528702
+          ],
+          [
+            -73.616969,
+            45.528747
+          ],
+          [
+            -73.616989,
+            45.528813
+          ],
+          [
+            -73.617009,
+            45.528886
+          ],
+          [
+            -73.617019,
+            45.528917
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295664.802201371,
+            5043194.64989027
+          ],
+          [
+            295664.7242525884,
+            5043194.761135036
+          ],
+          [
+            295663.958039808,
+            5043204.986323993
+          ],
+          [
+            295663.49666201964,
+            5043209.987901369
+          ],
+          [
+            295661.9451397599,
+            5043217.324822957
+          ],
+          [
+            295660.3947548399,
+            5043225.4396619825
+          ],
+          [
+            295659.6186730813,
+            5043228.885861205
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1062.7621973519563,
+            -183.50662252679467
+          ],
+          [
+            1062.6842485693633,
+            -183.6178672928363
+          ],
+          [
+            1061.9180357889854,
+            -193.84305624943227
+          ],
+          [
+            1061.4566580005921,
+            -198.84463362582028
+          ],
+          [
+            1059.9051357408753,
+            -206.18155521340668
+          ],
+          [
+            1058.354750820843,
+            -214.2963942391798
+          ],
+          [
+            1057.5786690622335,
+            -217.74259346164763
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 6678.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 6531
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.630361,
+            45.515397
+          ],
+          [
+            -73.630208,
+            45.515559
+          ],
+          [
+            -73.629927,
+            45.515848
+          ],
+          [
+            -73.629724,
+            45.516028
+          ],
+          [
+            -73.629491,
+            45.516224
+          ],
+          [
+            -73.629301,
+            45.51637
+          ],
+          [
+            -73.629071,
+            45.516532
+          ],
+          [
+            -73.628812,
+            45.516694
+          ],
+          [
+            -73.625821,
+            45.518362
+          ],
+          [
+            -73.62521,
+            45.518714
+          ],
+          [
+            -73.624943,
+            45.518885
+          ],
+          [
+            -73.624669,
+            45.519061
+          ],
+          [
+            -73.624407,
+            45.519248
+          ],
+          [
+            -73.624184,
+            45.519436
+          ],
+          [
+            -73.624155,
+            45.519462
+          ],
+          [
+            -73.624075,
+            45.519538
+          ],
+          [
+            -73.623971,
+            45.519632
+          ],
+          [
+            -73.623755,
+            45.519841
+          ],
+          [
+            -73.623444,
+            45.520181
+          ],
+          [
+            -73.62337,
+            45.520273
+          ],
+          [
+            -73.623282,
+            45.520381
+          ],
+          [
+            -73.62297,
+            45.520824
+          ],
+          [
+            -73.622949,
+            45.520852
+          ],
+          [
+            -73.622812,
+            45.521045
+          ],
+          [
+            -73.62255,
+            45.521368
+          ],
+          [
+            -73.618638,
+            45.525734
+          ],
+          [
+            -73.618128,
+            45.526304
+          ],
+          [
+            -73.617534,
+            45.526972
+          ],
+          [
+            -73.617375,
+            45.527191
+          ],
+          [
+            -73.617296,
+            45.527307
+          ],
+          [
+            -73.617228,
+            45.52741
+          ],
+          [
+            -73.617171,
+            45.527516
+          ],
+          [
+            -73.617087,
+            45.527707
+          ],
+          [
+            -73.617053,
+            45.527806
+          ],
+          [
+            -73.617026,
+            45.527902
+          ],
+          [
+            -73.616962,
+            45.528176
+          ],
+          [
+            -73.616947,
+            45.528431
+          ],
+          [
+            -73.616951,
+            45.528558
+          ],
+          [
+            -73.616952,
+            45.528609
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294615.0327943498,
+            5041728.002054406
+          ],
+          [
+            294627.01571157697,
+            5041745.985840669
+          ],
+          [
+            294649.02184102614,
+            5041778.067066857
+          ],
+          [
+            294664.91420157906,
+            5041798.044961202
+          ],
+          [
+            294683.15316272667,
+            5041819.797208522
+          ],
+          [
+            294698.0235675961,
+            5041835.998379998
+          ],
+          [
+            294716.02184923715,
+            5041853.9726556055
+          ],
+          [
+            294736.28571509203,
+            5041871.943348653
+          ],
+          [
+            294970.2544358739,
+            5042056.939012178
+          ],
+          [
+            295018.04970439506,
+            5042095.982443261
+          ],
+          [
+            295038.93847290054,
+            5042114.953320904
+          ],
+          [
+            295060.374844909,
+            5042134.47907348
+          ],
+          [
+            295080.875493814,
+            5042155.228790852
+          ],
+          [
+            295098.3293682863,
+            5042176.09441745
+          ],
+          [
+            295100.59941271896,
+            5042178.98031537
+          ],
+          [
+            295106.8623276379,
+            5042187.41659741
+          ],
+          [
+            295115.00326840393,
+            5042197.850345635
+          ],
+          [
+            295131.9136479446,
+            5042221.050658155
+          ],
+          [
+            295156.26791967405,
+            5042258.79774162
+          ],
+          [
+            295162.064678793,
+            5042269.012893397
+          ],
+          [
+            295168.95785779576,
+            5042281.00446474
+          ],
+          [
+            295193.40732521616,
+            5042330.198051423
+          ],
+          [
+            295195.0526395087,
+            5042333.307202832
+          ],
+          [
+            295205.7880729542,
+            5042354.739077343
+          ],
+          [
+            295226.31058868556,
+            5042390.603070482
+          ],
+          [
+            295532.6355495557,
+            5042875.341585102
+          ],
+          [
+            295572.5672056396,
+            5042938.62748446
+          ],
+          [
+            295619.07549697434,
+            5043012.794868806
+          ],
+          [
+            295631.53102930915,
+            5043037.114380867
+          ],
+          [
+            295637.7207583967,
+            5043049.9965547975
+          ],
+          [
+            295643.0491175897,
+            5043061.435286932
+          ],
+          [
+            295647.5187100288,
+            5043073.208670501
+          ],
+          [
+            295654.1110853127,
+            5043094.425114149
+          ],
+          [
+            295656.7829291887,
+            5043105.423208188
+          ],
+          [
+            295658.907496432,
+            5043116.088707531
+          ],
+          [
+            295663.9509978265,
+            5043146.53131137
+          ],
+          [
+            295665.1639424434,
+            5043174.868005544
+          ],
+          [
+            295664.8720565514,
+            5043188.982096044
+          ],
+          [
+            295664.802201371,
+            5043194.64989027
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.992790330783464,
+            1283.1412133369595
+          ],
+          [
+            24.97570755792549,
+            1265.1574270743877
+          ],
+          [
+            46.981837007100694,
+            1233.0762008866295
+          ],
+          [
+            62.87419756001327,
+            1213.098306541331
+          ],
+          [
+            81.11315870762337,
+            1191.346059220843
+          ],
+          [
+            95.9835635770578,
+            1175.1448877453804
+          ],
+          [
+            113.98184521810617,
+            1157.1706121377647
+          ],
+          [
+            134.24571107298834,
+            1139.1999190906063
+          ],
+          [
+            368.21443185483804,
+            954.2042555650696
+          ],
+          [
+            416.00970037601655,
+            915.1608244823292
+          ],
+          [
+            436.8984688814962,
+            896.1899468395859
+          ],
+          [
+            458.3348408899619,
+            876.6641942635179
+          ],
+          [
+            478.8354897949612,
+            855.9144768910483
+          ],
+          [
+            496.28936426725704,
+            835.0488502932712
+          ],
+          [
+            498.559408699919,
+            832.1629523737356
+          ],
+          [
+            504.8223236188642,
+            823.7266703331843
+          ],
+          [
+            512.963264384889,
+            813.2929221084341
+          ],
+          [
+            529.8736439255299,
+            790.0926095880568
+          ],
+          [
+            554.2279156550067,
+            752.3455261234194
+          ],
+          [
+            560.024674773973,
+            742.1303743459284
+          ],
+          [
+            566.9178537767148,
+            730.1388030033559
+          ],
+          [
+            591.3673211971181,
+            680.9452163204551
+          ],
+          [
+            593.0126354896347,
+            677.8360649114475
+          ],
+          [
+            603.7480689351796,
+            656.4041904006153
+          ],
+          [
+            624.2705846665194,
+            620.5401972616091
+          ],
+          [
+            930.5955455366638,
+            135.8016826417297
+          ],
+          [
+            970.5272016205708,
+            72.51578328292817
+          ],
+          [
+            1017.0354929552996,
+            -1.6516010630875826
+          ],
+          [
+            1029.4910252901027,
+            -25.97111312393099
+          ],
+          [
+            1035.6807543776813,
+            -38.8532870542258
+          ],
+          [
+            1041.0091135706753,
+            -50.29201918840408
+          ],
+          [
+            1045.4787060097442,
+            -62.06540275737643
+          ],
+          [
+            1052.0710812936304,
+            -83.28184640593827
+          ],
+          [
+            1054.7429251696449,
+            -94.27994044497609
+          ],
+          [
+            1056.8674924129737,
+            -104.94543978758156
+          ],
+          [
+            1061.9109938074835,
+            -135.3880436271429
+          ],
+          [
+            1063.1239384243381,
+            -163.72473780065775
+          ],
+          [
+            1062.8320525323506,
+            -177.83882830105722
+          ],
+          [
+            1062.7621973519563,
+            -183.50662252679467
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 7324.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Épi",
+        "classvoic": 3,
+        "typeutilis": "Marchandises",
+        "typeutilic": 1,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "Aucun",
+        "siguti1vo": "Aucun",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 7149
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.640446,
+            45.534539
+          ],
+          [
+            -73.639747,
+            45.53433
+          ],
+          [
+            -73.639261,
+            45.534185
+          ],
+          [
+            -73.638794,
+            45.534042
+          ],
+          [
+            -73.638282,
+            45.533912
+          ],
+          [
+            -73.638033,
+            45.533856
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            293830.8232363142,
+            5043856.598537905
+          ],
+          [
+            293885.3764176206,
+            5043833.276869748
+          ],
+          [
+            293923.30639618804,
+            5043817.096902855
+          ],
+          [
+            293959.75299454597,
+            5043801.141993623
+          ],
+          [
+            293999.7169162734,
+            5043786.625946459
+          ],
+          [
+            294019.1539420471,
+            5043780.369138414
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -771.216767704871,
+            -845.4552701618522
+          ],
+          [
+            -716.6635863984702,
+            -822.1336020044982
+          ],
+          [
+            -678.7336078310036,
+            -805.9536351114511
+          ],
+          [
+            -642.2870094730752,
+            -789.9987258799374
+          ],
+          [
+            -602.3230877456372,
+            -775.482678716071
+          ],
+          [
+            -582.886061971949,
+            -769.2258706707507
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 7779.0,
+        "nomvoie": "Outremont",
+        "classvoie": "Épi",
+        "classvoic": 3,
+        "typeutilis": "Marchandises",
+        "typeutilic": 1,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "Aucun",
+        "siguti1vo": "Aucun",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 7590
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.612892,
+            45.525403
+          ],
+          [
+            -73.613155,
+            45.525289
+          ],
+          [
+            -73.613489,
+            45.525166
+          ],
+          [
+            -73.61403,
+            45.525023
+          ],
+          [
+            -73.614624,
+            45.524942
+          ],
+          [
+            -73.615007,
+            45.524917
+          ],
+          [
+            -73.615408,
+            45.524922
+          ],
+          [
+            -73.615748,
+            45.524943
+          ],
+          [
+            -73.616236,
+            45.524977
+          ],
+          [
+            -73.616837,
+            45.525006
+          ],
+          [
+            -73.617265,
+            45.525026
+          ],
+          [
+            -73.617646,
+            45.524999
+          ],
+          [
+            -73.618106,
+            45.524942
+          ],
+          [
+            -73.618452,
+            45.524866
+          ],
+          [
+            -73.618768,
+            45.524764
+          ],
+          [
+            -73.619076,
+            45.524645
+          ],
+          [
+            -73.619513,
+            45.52441
+          ],
+          [
+            -73.619896,
+            45.524132
+          ],
+          [
+            -73.620197,
+            45.523827
+          ],
+          [
+            -73.620998,
+            45.522925
+          ],
+          [
+            -73.621537,
+            45.522323
+          ],
+          [
+            -73.622007,
+            45.521803
+          ],
+          [
+            -73.622349,
+            45.521415
+          ],
+          [
+            -73.622749,
+            45.520906
+          ],
+          [
+            -73.623081,
+            45.520419
+          ],
+          [
+            -73.623407,
+            45.519971
+          ],
+          [
+            -73.623691,
+            45.519657
+          ],
+          [
+            -73.624027,
+            45.519352
+          ],
+          [
+            -73.624328,
+            45.519137
+          ],
+          [
+            -73.624562,
+            45.518987
+          ],
+          [
+            -73.624749,
+            45.518883
+          ],
+          [
+            -73.625056,
+            45.51871
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295981.4305334938,
+            5042837.9101239415
+          ],
+          [
+            295960.86841012374,
+            5042825.270116376
+          ],
+          [
+            295934.7585960324,
+            5042811.637834523
+          ],
+          [
+            295892.47558414313,
+            5042795.805985519
+          ],
+          [
+            295846.06205555,
+            5042786.870447297
+          ],
+          [
+            295816.13975064654,
+            5042784.134954617
+          ],
+          [
+            295784.81612660165,
+            5042784.735552959
+          ],
+          [
+            295758.2601322221,
+            5042787.107531711
+          ],
+          [
+            295720.1451250301,
+            5042790.941050026
+          ],
+          [
+            295673.2022882664,
+            5042794.231983312
+          ],
+          [
+            295639.77203856315,
+            5042796.503339187
+          ],
+          [
+            295610.00559250196,
+            5042793.546339765
+          ],
+          [
+            295574.0630745698,
+            5042787.264628015
+          ],
+          [
+            295547.02257173497,
+            5042778.858491588
+          ],
+          [
+            295522.32120064215,
+            5042767.559601232
+          ],
+          [
+            295498.2418676876,
+            5042754.370655948
+          ],
+          [
+            295464.06624242576,
+            5042728.305608285
+          ],
+          [
+            295434.1015047158,
+            5042697.455818686
+          ],
+          [
+            295410.53759456653,
+            5042663.596047318
+          ],
+          [
+            295347.81460929086,
+            5042563.449962704
+          ],
+          [
+            295305.6074671593,
+            5042496.612765876
+          ],
+          [
+            295268.80356680707,
+            5042438.8803967405
+          ],
+          [
+            295242.02080324973,
+            5042395.802276269
+          ],
+          [
+            295210.68609127967,
+            5042339.284365403
+          ],
+          [
+            295184.6668613876,
+            5042285.203349002
+          ],
+          [
+            295159.12258119386,
+            5042235.45582612
+          ],
+          [
+            295136.88201046496,
+            5042200.594884692
+          ],
+          [
+            295110.58031694614,
+            5042166.740473923
+          ],
+          [
+            295087.0281611316,
+            5042142.883713188
+          ],
+          [
+            295068.7213431599,
+            5042126.242422291
+          ],
+          [
+            295054.09420589486,
+            5042114.707496761
+          ],
+          [
+            295030.08016226755,
+            5042095.519172789
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1379.3905294747674,
+            173.2331438018009
+          ],
+          [
+            1358.8284061047016,
+            185.87315136753023
+          ],
+          [
+            1332.7185920133488,
+            199.5054332204163
+          ],
+          [
+            1290.435580124089,
+            215.3372822245583
+          ],
+          [
+            1244.0220515309484,
+            224.27282044664025
+          ],
+          [
+            1214.0997466275003,
+            227.00831312593073
+          ],
+          [
+            1182.7761225826107,
+            226.40771478414536
+          ],
+          [
+            1156.2201282030437,
+            224.0357360318303
+          ],
+          [
+            1118.1051210110309,
+            220.202217717655
+          ],
+          [
+            1071.1622842473444,
+            216.91128443088382
+          ],
+          [
+            1037.7320345441112,
+            214.63992855604738
+          ],
+          [
+            1007.9655884829117,
+            217.5969279780984
+          ],
+          [
+            972.0230705507565,
+            223.8786397278309
+          ],
+          [
+            944.9825677159242,
+            232.28477615490556
+          ],
+          [
+            920.2811966231093,
+            243.58366651088
+          ],
+          [
+            896.201863668568,
+            256.7726117949933
+          ],
+          [
+            862.0262384067173,
+            282.8376594586298
+          ],
+          [
+            832.0615006967564,
+            313.6874490575865
+          ],
+          [
+            808.4975905474857,
+            347.5472204256803
+          ],
+          [
+            745.7746052718139,
+            447.69330503884703
+          ],
+          [
+            703.5674631402362,
+            514.5305018676445
+          ],
+          [
+            666.7635627880227,
+            572.2628710027784
+          ],
+          [
+            639.9807992306887,
+            615.340991474688
+          ],
+          [
+            608.6460872606258,
+            671.8589023407549
+          ],
+          [
+            582.6268573685666,
+            725.9399187415838
+          ],
+          [
+            557.0825771748205,
+            775.6874416228384
+          ],
+          [
+            534.8420064459206,
+            810.5483830515295
+          ],
+          [
+            508.5403129270999,
+            844.4027938200161
+          ],
+          [
+            484.98815711255884,
+            868.2595545556396
+          ],
+          [
+            466.681339140865,
+            884.9008454522118
+          ],
+          [
+            452.0542018758133,
+            896.4357709819451
+          ],
+          [
+            428.0401582485065,
+            915.6240949546918
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 8156.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon essentiel",
+        "nivhierarc": 1.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 7950
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.630474,
+            45.515217
+          ],
+          [
+            -73.630316,
+            45.515385
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294606.17172536947,
+            5041708.012860286
+          ],
+          [
+            294618.5464327552,
+            5041726.662779636
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            4.131721350422595,
+            1303.13040745724
+          ],
+          [
+            16.506428736145608,
+            1284.4804881075397
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 8886.0,
+        "nomvoie": "Outremont",
+        "classvoie": "Épi",
+        "classvoic": 3,
+        "typeutilis": "Marchandises",
+        "typeutilic": 1,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "Aucun",
+        "siguti1vo": "Aucun",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 8659
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.630316,
+            45.515385
+          ],
+          [
+            -73.62975,
+            45.515869
+          ],
+          [
+            -73.629401,
+            45.516135
+          ],
+          [
+            -73.629092,
+            45.516368
+          ],
+          [
+            -73.628809,
+            45.516558
+          ],
+          [
+            -73.628466,
+            45.516756
+          ],
+          [
+            -73.627305,
+            45.517416
+          ],
+          [
+            -73.625788,
+            45.518252
+          ],
+          [
+            -73.625778,
+            45.518259
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294618.5464327552,
+            5041726.662779636
+          ],
+          [
+            294662.8543236789,
+            5041780.378454884
+          ],
+          [
+            294690.16872760124,
+            5041809.895238264
+          ],
+          [
+            294714.3518776586,
+            5041835.749849498
+          ],
+          [
+            294736.4958548155,
+            5041856.829190054
+          ],
+          [
+            294763.3287297757,
+            5041878.790154848
+          ],
+          [
+            294854.1505183197,
+            5041951.992014902
+          ],
+          [
+            294972.8134075746,
+            5042044.710586675
+          ],
+          [
+            294973.5958758911,
+            5042045.487278504
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            16.506428736145608,
+            1284.4804881075397
+          ],
+          [
+            60.814319659839384,
+            1230.7648128597066
+          ],
+          [
+            88.12872358219465,
+            1201.2480294788256
+          ],
+          [
+            112.31187363958452,
+            1175.3934182450175
+          ],
+          [
+            134.455850796483,
+            1154.3140776893124
+          ],
+          [
+            161.28872575663263,
+            1132.3531128950417
+          ],
+          [
+            252.11051430064254,
+            1059.151252841577
+          ],
+          [
+            370.77340355556225,
+            966.4326810678467
+          ],
+          [
+            371.55587187205674,
+            965.6559892389923
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 9324.0,
+        "nomvoie": "Outremont",
+        "classvoie": "Liaison",
+        "classvoic": 6,
+        "typeutilis": "Marchandises",
+        "typeutilic": 1,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "Aucun",
+        "siguti1vo": "Aucun",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 9083
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.625162,
+            45.518649
+          ],
+          [
+            -73.625778,
+            45.518259
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            295021.78841478814,
+            5042088.753095785
+          ],
+          [
+            294973.5958758911,
+            5042045.487278504
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            419.748410769098,
+            922.3901719581336
+          ],
+          [
+            371.55587187205674,
+            965.6559892389923
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 10217.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Liaison",
+        "classvoic": 6,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 9939
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.630361,
+            45.515397
+          ],
+          [
+            -73.629952,
+            45.515746
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294615.0327943498,
+            5041728.002054406
+          ],
+          [
+            294647.0502907373,
+            5041766.73489182
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.992790330783464,
+            1283.1412133369595
+          ],
+          [
+            45.0102867182577,
+            1244.4083759235218
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 10292.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Épi",
+        "classvoic": 3,
+        "typeutilis": "Marchandises",
+        "typeutilic": 1,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 4.7,
+        "finsubexpl": 23.7,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "Aucun",
+        "siguti1vo": "Aucun",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Parc",
+        "debsubdiv1": 4.7,
+        "finsubdiv1": 33.4,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Non-classifié",
+        "nivhierarc": 0.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 10011
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.639149,
+            45.534242
+          ],
+          [
+            -73.639595,
+            45.534359
+          ],
+          [
+            -73.639848,
+            45.534421
+          ],
+          [
+            -73.640003,
+            45.534457
+          ],
+          [
+            -73.640204,
+            45.534496
+          ],
+          [
+            -73.640446,
+            45.534539
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            293932.0649043057,
+            5043823.416207879
+          ],
+          [
+            293897.2536374327,
+            5043836.479018231
+          ],
+          [
+            293877.50565725286,
+            5043843.403535987
+          ],
+          [
+            293865.4067292483,
+            5043847.4253550805
+          ],
+          [
+            293849.7156833966,
+            5043851.786864079
+          ],
+          [
+            293830.8232363142,
+            5043856.598537905
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -669.975099713367,
+            -812.2729401355609
+          ],
+          [
+            -704.7863665863406,
+            -825.335750487633
+          ],
+          [
+            -724.5343467661878,
+            -832.260268243961
+          ],
+          [
+            -736.6332747707493,
+            -836.2820873372257
+          ],
+          [
+            -752.3243206224288,
+            -840.6435963353142
+          ],
+          [
+            -771.216767704871,
+            -845.4552701618522
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 10754.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Principale",
+        "classvoic": 1,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon essentiel",
+        "nivhierarc": 1.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 10462
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.630316,
+            45.515385
+          ],
+          [
+            -73.630128,
+            45.515572
+          ],
+          [
+            -73.629952,
+            45.515746
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294618.5464327552,
+            5041726.662779636
+          ],
+          [
+            294633.26834985655,
+            5041747.420409478
+          ],
+          [
+            294647.0502907373,
+            5041766.73489182
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            16.506428736145608,
+            1284.4804881075397
+          ],
+          [
+            31.228345837502275,
+            1263.7228582650423
+          ],
+          [
+            45.0102867182577,
+            1244.4083759235218
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "idsegchfer": 11795.0,
+        "nomvoie": "Aucun",
+        "classvoie": "Liaison",
+        "classvoic": 6,
+        "typeutilis": "Marchandises et voyageurs",
+        "typeutilic": 4,
+        "etat": "Opérationnel",
+        "etatc": 3,
+        "nmfrexploi": "Chemin de fer Canadien Pacifique Kansas City",
+        "siglexploi": "CPKC",
+        "debsubexpl": 20.0,
+        "finsubexpl": 49.1,
+        "nmfrpropr": "Chemin de fer Canadien Pacifique Kansas City",
+        "nmfruti1vo": "EXO",
+        "siguti1vo": "EXO",
+        "nmfruti2vo": "Aucun",
+        "siguti2vo": "Aucun",
+        "nomsubdiv1": "Adirondack",
+        "debsubdiv1": 0.0,
+        "finsubdiv1": 49.1,
+        "nomsubdiv2": "Aucun",
+        "debsubdiv2": -1.0,
+        "finsubdiv2": -1.0,
+        "nivhierar": "Tronçon essentiel",
+        "nivhierarc": 1.0,
+        "datdebappl": 20160101,
+        "datmodif": 20251209,
+        "typstruc": "",
+        "version": "20260608",
+        "objectid": 11456
+      },
+      "geometry_wgs84": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -73.630844,
+            45.514891
+          ],
+          [
+            -73.630474,
+            45.515217
+          ]
+        ]
+      },
+      "geometry_mtm8": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            294577.20489968074,
+            5041671.8312756615
+          ],
+          [
+            294606.17172536947,
+            5041708.012860286
+          ]
+        ]
+      },
+      "geometry_local_m": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -24.83510433830088,
+            1339.3119920818135
+          ],
+          [
+            4.131721350422595,
+            1303.13040745724
+          ]
+        ]
+      }
+    }
+  ]
+}
