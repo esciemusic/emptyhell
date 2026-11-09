@@ -27,6 +27,7 @@ jobs:
           from pathlib import Path
           from pyproj import Transformer
           from shapely.geometry import shape, Point, mapping
+          from shapely.ops import transform
 
           data=json.loads(Path("parks.json").read_text())
           target=Point(-73.630554,45.526943)
@@ -37,7 +38,7 @@ jobs:
               name=" ".join(str(p.get("Nom") or "").split()).lower()
               g=shape(f["geometry"])
               if "centenaire" in name or g.distance(target) < 0.002:
-                  gm=__import__("shapely").ops.transform(to_mtm8.transform,g)
+                  gm=transform(to_mtm8.transform,g)
                   matches.append({"properties":p,"geometry_wgs84":f["geometry"],"geometry_mtm8":mapping(gm)})
 
           Path("parc_du_centenaire_geometry.json").write_text(
