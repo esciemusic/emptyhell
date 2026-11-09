@@ -609,6 +609,7 @@ function completeTransmission() {
   transmissionComplete = true;
   encounterSite.visible = true;
   encounterSite.userData.encounterState = encounterComplete ? 'complete' : 'active';
+  encounterBeacon.visible = true;
   try {
     localStorage.setItem(transmissionStorageKey, 'complete');
   } catch {}
@@ -624,6 +625,28 @@ const encounterSite = interactable(
 );
 encounterSite.visible = transmissionComplete;
 encounterSite.userData.encounterState = savedEncounter ? 'complete' : (transmissionComplete ? 'active' : 'locked');
+
+const encounterBeaconMat = new THREE.MeshStandardMaterial({
+  color: 0x33404a,
+  roughness: .28,
+  metalness: .35,
+  emissive: 0x21113d,
+  emissiveIntensity: .35
+});
+const encounterBeacon = new THREE.Group();
+const beaconCore = new THREE.Mesh(new THREE.CylinderGeometry(.11,.16,.72,10), encounterBeaconMat);
+beaconCore.position.y = .52;
+encounterBeacon.add(beaconCore);
+const beaconRing = new THREE.Mesh(new THREE.TorusGeometry(.55,.025,6,24), encounterBeaconMat);
+beaconRing.rotation.x = Math.PI / 2;
+beaconRing.position.y = .12;
+encounterBeacon.add(beaconRing);
+const beaconLight = new THREE.PointLight(0x7b5cff, .65, 7, 2);
+beaconLight.position.y = .8;
+encounterBeacon.add(beaconLight);
+encounterBeacon.position.copy(encounterSite.position);
+encounterBeacon.visible = transmissionComplete;
+scene.add(encounterBeacon);
 
 function completeEncounter() {
   if (encounterSite.userData.encounterState !== 'active') return;
@@ -1030,6 +1053,14 @@ function animate() {
   for (const source of streetLights) {
     const flicker = Math.sin(clock.elapsedTime * 5.7 + source.seed) * .025 + Math.sin(clock.elapsedTime * 13.1 + source.seed * 1.7) * .012;
     source.light.intensity = source.base * (1 + flicker);
+  }
+
+  if (encounterBeacon.visible) {
+    const pulse = .5 + .5 * Math.sin(clock.elapsedTime * 2.4);
+    beaconRing.scale.setScalar(.92 + pulse * .12);
+    beaconRing.rotation.z += dt * (.22 + pulse * .08);
+    beaconLight.intensity = .42 + pulse * .42;
+    encounterBeaconMat.emissiveIntensity = .25 + pulse * .35;
   }
 
   updateInteraction();
