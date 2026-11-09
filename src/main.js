@@ -256,20 +256,37 @@ for (const z of [12,30,48]) {
 // Ruelle Wiseman occupies the Saint-Roch / Wiseman / d'Outremont / Ogilvy block.
 box(5,.06,48,asphaltMat,-3,0,-25,{castShadow:false});
 
-// Rail pressure boundaries: the neighbourhood is physically enclosed by rail infrastructure
-// on its eastern and southern edges. This slice renders pressure, not an arbitrary invisible wall.
-const railX = 112;
-const railXMesh = box(5,1.4,205,darkMat,railX,.7,4);
-addCollider(railX,4,5,205,railXMesh);
-for (let z=-95; z<=103; z+=4) {
-  box(1.8,.22,.24,snowMat,railX,.82,z);
+// Railway infrastructure: model the boundary as track, sleepers and ballast rather than a
+// generic wall. The collision volume is deliberately low and physical; the camera can still
+// read the railway as infrastructure.
+function railwayAlongX(x, z, length) {
+  box(length,.22,5,darkMat,x,.10,z,{castShadow:false});
+  for (const offset of [-1.45,1.45]) {
+    box(length,.12,.09,concreteMat,x,.28,z+offset,{castShadow:false});
+  }
+  for (let px=x-length/2+2; px<=x+length/2-2; px+=4) {
+    box(.22,.14,4.1,concreteMat,px,.20,z,{castShadow:false});
+  }
+  addCollider(x,z,length,5,null);
 }
-const railZ = 91;
-const railZMesh = box(225,1.4,5,darkMat,3,.7,railZ);
-addCollider(3,railZ,225,5,railZMesh);
-for (let x=-108; x<=114; x+=4) {
-  box(.24,.22,1.8,snowMat,x,.82,railZ);
+function railwayAlongZ(x, z, length) {
+  box(5,.22,length,darkMat,x,.10,z,{castShadow:false});
+  for (const offset of [-1.45,1.45]) {
+    box(.09,.12,length,concreteMat,x+offset,.28,z,{castShadow:false});
+  }
+  for (let pz=z-length/2+2; pz<=z+length/2-2; pz+=4) {
+    box(4.1,.14,.22,concreteMat,x,.20,pz,{castShadow:false});
+  }
+  addCollider(x,z,5,length,null);
 }
+
+railwayAlongZ(112,4,205);
+railwayAlongX(3,91,225);
+
+// Keep the camera from crossing the railway while preserving the physical appearance.
+const railCameraEast = box(5,.9,205,darkMat,112,.45,4,{castShadow:false,receiveShadow:false});
+const railCameraSouth = box(225,.9,5,darkMat,3,.45,91,{castShadow:false,receiveShadow:false});
+collisionMeshes.push(railCameraEast,railCameraSouth);
 
 // Western municipal boundary pressure: fence condition at the edge.
 const fenceX = -112;
@@ -495,9 +512,6 @@ function move(dt) {
   delta.addScaledVector(forward, velocity.z * dt);
   delta.addScaledVector(right, velocity.x * dt);
   tryMove(delta.x, delta.z);
-
-  player.position.x = THREE.MathUtils.clamp(player.position.x, -106, 106);
-  player.position.z = THREE.MathUtils.clamp(player.position.z, -82, 82);
 
   const target = new THREE.Vector3(player.position.x, player.position.y + 1.25, player.position.z);
   const cameraDistance = 5.2;
