@@ -46,20 +46,19 @@
         </div>
         <button id="map-close" aria-label="Close map">×</button>
       </div>
-      <div class="map">
+      <div class="map" id="world-map">
         <div class="map-city">MONTRÉAL</div>
+        <div class="map-darkness" aria-hidden="true"></div>
+        <div class="map-lit-zone" aria-hidden="true"></div>
+        <svg id="world-map-svg" class="world-map-svg" viewBox="-180 -330 560 510" preserveAspectRatio="none" aria-label="Montréal world map">
+          <g id="map-roads"></g>
+          <polygon id="map-park" points="" />
+          <g id="map-rail"></g>
+        </svg>
         <div class="map-zone-label">PARC-EXTENSION</div>
-        <div class="map-road verified-road stuart">STUART</div>
-        <div class="map-road verified-road wiseman">WISEMAN</div>
-        <div class="map-road verified-road saint-roch">SAINT-ROCH</div>
-        <div class="map-road verified-road champagneur">CHAMPAGNEUR</div>
-        <div class="map-road verified-road bloomfield">BLOOMFIELD</div>
-        <div class="map-road verified-road de-lepee">DE L'ÉPÉE</div>
-        <div class="map-road verified-road ogilvy">OGILVY</div>
-        <div class="map-park">PARC DU CENTENAIRE</div>
         <div id="map-player" class="map-player" aria-label="Player position"></div>
       </div>
-      <div class="map-foot">BLUE = CURRENT POSITION · LIT AREA = DISCOVERED · DARK AREA = UNDISCOVERED</div>
+      <div class="map-foot">BLUE = CURRENT POSITION · LIT = PARC-EXTENSION · DARK = OUTSIDE THE ACTIVE WORLD SLICE</div>
     </div>
   </div>
 
