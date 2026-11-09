@@ -399,3 +399,19 @@ Current gate:
 - Movement input: GREEN
 - Runtime initialization: GREEN
 - Human visual traversal: still required before calling the slice production-ready
+
+
+## Verified frontage / building geometry — PASS 3
+
+The first visual frontage pass now replaces the remaining invented rectangular frontage cubes with building footprints traced from the Ville de Montréal 1:1000 compilation sheet 31H12-010-0530 (2017-2022). The first ring around the Parc du Centenaire sector uses the sheet's magenta building outlines as the source geometry.
+
+- Source geometry: GREEN — official Montréal compilation sheet 31H12-010-0530, 1:1000.
+- Street alignment: GREEN — existing verified Géobase centerlines remain authoritative.
+- Park geometry: GREEN — current verified parks footprint remains authoritative and is not replaced by the older sheet outline.
+- Frontage massing: GREEN — temporary cubes removed from the first frontage ring and replaced by footprint-derived extrusions.
+- Building heights: AMBER — visual massing only; no municipal height/storey attribute has been asserted.
+- Railway: DEFERRED — no guessed railway geometry introduced.
+- Automated build: GREEN — run 42658881459 succeeded on commit cf584188c74a3e7bb26ec63877ecfade141c5cd4.
+- Automated browser QA: GREEN — run 42658881374 succeeded on the same commit.
+
+Current gate: the first-sector environment is technically healthy and now materially closer to the verified Montréal street fabric. The next fidelity pass should reconcile the remaining sheet footprints across the loaded slice rather than inventing new buildings, and should then revisit collision envelopes around irregular footprints.
