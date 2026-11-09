@@ -1,0 +1,28 @@
+{
+  "status": "PROMOTION_READY_PENDING_BUILD_QA",
+  "primary_source": "Ville de Montréal Voies ferrées 3D 2020 / CARTO-FER-VOIE",
+  "promoted_feature_count": 21,
+  "held_feature_count": 1,
+  "held_features": [
+    {
+      "source": "montreal_3d",
+      "ID": 541,
+      "reason": "ETAT=En construction; 40.66 m from independent Québec network"
+    }
+  ],
+  "reference_only_quebec_exceptions": [
+    {
+      "idsegchfer": 6672.0,
+      "reason": "Reference geometry within 2.05 m of primary; no override"
+    },
+    {
+      "idsegchfer": 6673.0,
+      "reason": "Reference geometry within 2.06 m of primary; no override"
+    },
+    {
+      "idsegchfer": 10292.0,
+      "reason": "20.20 m Québec-only spur; not present in primary first-sector municipal layer"
+    }
+  ],
+  "transform": "x=east_mtm8_delta, z=-north_mtm8_delta"
+}
