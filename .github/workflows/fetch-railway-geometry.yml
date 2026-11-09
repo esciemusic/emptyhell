@@ -16,16 +16,16 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Download Montréal railway network
+      - name: Download Montréal official 3D railway network
         run: |
           set -euo pipefail
           curl -fL --retry 3 --retry-all-errors \
             -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
-            "https://donnees.montreal.ca/fr/dataset/30028e66-e3b1-4478-8349-149b7c046932/resource/d2d8d721-208d-4a4d-b016-24567862e638/download/reseauferroviaire.geojson" \
-            -o montreal_railway.geojson
-          test -s montreal_railway.geojson
+            "https://donnees.montreal.ca/fr/dataset/e135b6df-5bfc-43bc-a743-5f306c8900fb/resource/1b32d325-411f-43c2-bd48-ef8db0684e62/download/voies-ferrees-2020.gpkg" \
+            -o montreal_railway_3d.gpkg
+          test -s montreal_railway_3d.gpkg
 
-      - name: Download Québec railway network
+      - name: Download Québec railway network for independent reconciliation
         run: |
           set -euo pipefail
           curl -fL --retry 3 --retry-all-errors \
@@ -37,57 +37,131 @@ jobs:
       - name: Filter, transform, and reconcile first-sector rail geometry
         run: |
           set -euo pipefail
-          python -m pip install --quiet pyproj shapely
+          python -m pip install --quiet pyogrio geopandas pyproj shapely
           python - <<'PY'
           import json
           from pathlib import Path
+          import geopandas as gpd
+          import pyogrio
           from pyproj import Transformer
-          from shapely.geometry import shape, box, mapping
+          from shapely.geometry import box, mapping, shape
           from shapely.ops import transform, unary_union
 
           ANCHOR_MTM8 = (294602.04000401904, 5043011.143267743)
           TARGET = box(-73.640, 45.515, -73.615, 45.545)
           to_mtm8 = Transformer.from_crs("EPSG:4326","EPSG:32188",always_xy=True)
 
-          def load(path):
-              return json.loads(Path(path).read_text())
+          layers = pyogrio.list_layers("montreal_railway_3d.gpkg")
+          print("Montréal railway layers:", layers.tolist())
+          layer_names = {row[0] for row in layers}
+          if "CARTO-FER-VOIE" not in layer_names:
+              raise SystemExit("CARTO-FER-VOIE layer not found in official Montréal railway GPKG")
 
-          def filter_features(data):
-              out=[]
-              for f in data.get("features", []):
-                  g=shape(f["geometry"])
-                  if not g.is_empty and g.intersects(TARGET):
-                      gm=transform(to_mtm8.transform, g)
-                      local=transform(lambda x,y,z=None: (x-ANCHOR_MTM8[0], -(y-ANCHOR_MTM8[1])), gm)
-                      out.append({
-                          "type":"Feature",
-                          "properties":f.get("properties",{}),
-                          "geometry_wgs84":f["geometry"],
-                          "geometry_mtm8":mapping(gm),
-                          "geometry_local_m":mapping(local)
-                      })
-              return out
+          m = gpd.read_file("montreal_railway_3d.gpkg", layer="CARTO-FER-VOIE")
+          if m.crs is None:
+              raise SystemExit("Official Montréal railway layer has no CRS metadata")
+          m = m.to_crs("EPSG:4326")
+          m = m[m.geometry.intersects(TARGET)].copy()
+          m_mtm8 = m.to_crs("EPSG:32188")
 
-          montreal=filter_features(load("montreal_railway.geojson"))
-          quebec=filter_features(load("quebec_railway.geojson"))
+          def local_geom(g):
+              return transform(lambda x,y,z=None: (x-ANCHOR_MTM8[0], -(y-ANCHOR_MTM8[1])), g)
+
+          montreal_features=[]
+          for _, row in m_mtm8.iterrows():
+              props={k:v for k,v in row.drop(labels="geometry").to_dict().items()}
+              gm=row.geometry
+              montreal_features.append({
+                  "type":"Feature",
+                  "properties":props,
+                  "geometry_mtm8":mapping(gm),
+                  "geometry_local_m":mapping(local_geom(gm))
+              })
+
+          q = json.loads(Path("quebec_railway.geojson").read_text())
+          q_features=[]
+          for f in q.get("features", []):
+              if not f.get("geometry"):
+                  continue
+              g=shape(f["geometry"])
+              if g.is_empty or not g.intersects(TARGET):
+                  continue
+              gm=transform(to_mtm8.transform, g)
+              q_features.append({
+                  "type":"Feature",
+                  "properties":f.get("properties",{}),
+                  "geometry_mtm8":mapping(gm),
+                  "geometry_local_m":mapping(local_geom(gm))
+              })
 
           def union_geoms(features):
               return unary_union([shape(f["geometry_mtm8"]) for f in features]) if features else None
 
-          mg=union_geoms(montreal)
-          qg=union_geoms(quebec)
-          if mg is None or qg is None:
-              raise SystemExit(f"No railway geometry in target: Montréal={len(montreal)} Québec={len(quebec)}")
-
-          hausdorff=float(mg.hausdorff_distance(qg))
-          intersection=float(mg.intersection(qg).length)
-          union_len=float(mg.union(qg).length)
+          mg=union_geoms(montreal_features)
+          qg=union_geoms(q_features)
+          if mg is None:
+              raise SystemExit("No Montréal official railway geometry intersects the target.")
+          if qg is None:
+              raise SystemExit("No Québec railway geometry intersects the target.")
 
           report={
               "status":"RECONCILIATION_REVIEW",
-              "target_bbox_wgs84":[-73.640, 45.515, -73.615, 45.545],
+              "target_bbox_wgs84":[-73.640,45.515,-73.615,45.545],
               "authoritative_anchor_mtm8":list(ANCHOR_MTM8),
               "local_transform":"x=east_mtm8_delta, z=-north_mtm8_delta",
+              "sources":{
+                  "montreal_3d":{
+                      "dataset_id":"e135b6df-5bfc-43bc-a743-5f306c8900fb",
+                      "resource_id":"1b32d325-411f-43c2-bd48-ef8db0684e62",
+                      "layer":"CARTO-FER-VOIE",
+                      "feature_count":len(montreal_features)
+                  },
+                  "quebec_network":{
+                      "dataset_id":"c2c4f386-a736-4a4d-b6b6-28c3a8f75466",
+                      "feature_count":len(q_features)
+                  }
+              },
+              "geometry_comparison_m":{
+                  "hausdorff_distance":float(mg.hausdorff_distance(qg)),
+                  "intersection_length":float(mg.intersection(qg).length),
+                  "union_length":float(mg.union(qg).length)
+              },
+              "runtime_promotion":"BLOCKED_PENDING_RECONCILIATION_REVIEW"
+          }
+
+          Path("first_sector_railway_reconciliation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          Path("first_sector_railway_montreal.json").write_text(json.dumps({"type":"FeatureCollection","features":montreal_features},ensure_ascii=False,indent=2))
+          Path("first_sector_railway_quebec.json").write_text(json.dumps({"type":"FeatureCollection","features":q_features},ensure_ascii=False,indent=2))
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Persist railway reconciliation
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          cp first_sector_railway_reconciliation.json data/first_sector_railway_reconciliation.json
+          cp first_sector_railway_montreal.json data/first_sector_railway_montreal.json
+          cp first_sector_railway_quebec.json data/first_sector_railway_quebec.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/first_sector_railway_reconciliation.json data/first_sector_railway_montreal.json data/first_sector_railway_quebec.json
+          if git diff --cached --quiet; then
+            echo "No railway geometry changes to commit."
+          else
+            git commit -m "Record first-sector railway reconciliation"
+            git push
+          fi
+
+      - name: Upload railway reconciliation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-sector-railway-reconciliation
+          if-no-files-found: error
+          path: |
+            first_sector_railway_reconciliation.json
+            first_sector_railway_montreal.json
+            first_sector_railway_quebec.json
+=-north_mtm8_delta",
               "sources":{
                   "montreal":{
                       "dataset_id":"30028e66-e3b1-4478-8349-149b7c046932",
