@@ -222,3 +222,17 @@ The 2024 cartography resources remain confirmed at 1:1000 and include Villeray�
 **Decision:** do not infer a sheet number from street names, visual maps, or approximate coordinates. The exact sheet identifier remains pending access to the working SQRC index/viewer.
 
 **Gate:** AUTHORITATIVE SOURCE VERIFIED / SQRC LINK PATH BLOCKED / GEOMETRY UNTOUCHED.
+
+### SQRC 1:1000 resource endpoint — independently verified (2026-11-09)
+
+The Données Québec resource page independently confirms the exact 1:1000 GeoJSON resource and its download endpoint:
+- Resource ID: `ad1924d4-2579-40aa-8aa7-b83d88166ee5`
+- Format: GeoJSON
+- Spatial reference: WGS84
+- Direct source: `https://donnees.montreal.ca/fr/dataset/e160983c-f5d2-49ec-9b81-d0f6fb66518a/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson`
+
+The resource page confirms that the file may not render inline because of its size/structure but is intended to be downloaded. The available retrieval path currently cannot return the file contents, so the exact sheet polygons/identifiers cannot yet be parsed.
+
+This is now a **file-access blocker**, not a source-identification blocker.
+
+**No game coordinates changed. No railway geometry changed.**
