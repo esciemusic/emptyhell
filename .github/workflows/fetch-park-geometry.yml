@@ -1,0 +1,56 @@
+name: Fetch Parc du Centenaire geometry
+
+on:
+  push:
+    paths:
+      - ".github/workflows/fetch-park-geometry.yml"
+  workflow_dispatch:
+
+jobs:
+  park:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Montréal park polygons
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --retry-all-errors \
+            -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
+            "https://donnees.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d79baa27d/resource/35796624-15df-4503-a569-797665f8768e/download/espace_vert.json" \
+            -o parks.json
+
+      - name: Extract Parc du Centenaire
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pyproj shapely
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from pyproj import Transformer
+          from shapely.geometry import shape, Point, mapping
+
+          data=json.loads(Path("parks.json").read_text())
+          target=Point(-73.630554,45.526943)
+          to_mtm8=Transformer.from_crs("EPSG:4326","EPSG:32188",always_xy=True)
+          matches=[]
+          for f in data.get("features",[]):
+              p=f.get("properties",{})
+              name=" ".join(str(p.get("Nom") or "").split()).lower()
+              g=shape(f["geometry"])
+              if "centenaire" in name or g.distance(target) < 0.002:
+                  gm=__import__("shapely").ops.transform(to_mtm8.transform,g)
+                  matches.append({"properties":p,"geometry_wgs84":f["geometry"],"geometry_mtm8":mapping(gm)})
+
+          Path("parc_du_centenaire_geometry.json").write_text(
+              json.dumps({"source":"Ville de Montréal — parcs et espaces publics","feature_count":len(matches),"features":matches},ensure_ascii=False,indent=2)
+          )
+          print("matches:",len(matches))
+          for f in matches:
+              print(f["properties"])
+          PY
+
+      - name: Upload park geometry
+        uses: actions/upload-artifact@v4
+        with:
+          name: parc-du-centenaire-geometry
+          if-no-files-found: error
+          path: parc_du_centenaire_geometry.json
