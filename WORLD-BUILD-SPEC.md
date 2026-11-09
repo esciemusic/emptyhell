@@ -323,3 +323,18 @@ The existing prototype positions are substantially different and the real street
 
 Current status: **Physical-scale QA = FAIL / REBUILD REQUIRED.**
 
+
+## Parc du Centenaire footprint — VERIFIED
+
+The current Montréal parks dataset identifies the first-sector anchor as **Parc du Centenaire-de-Parc-Extension** (NUM_INDEX 1282-000). Its extracted MTM8 footprint is approximately **39.5 m × 42.3 m**, with an area of approximately **1,003 m²**.
+
+Relative to the existing park anchor point, the verified footprint bounds are approximately:
+
+- west: **-25.4 m**
+- east: **+14.1 m**
+- north: **-26.8 m**
+- south: **+15.6 m**
+
+The current prototype rectangle (27 m × 30 m at local x=63, z=18) is therefore a temporary approximation and will be replaced during the first-sector rebuild.
+
+No partial park/building repositioning is being made until the verified street centerlines and park footprint are reconciled together.
