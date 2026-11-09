@@ -96,7 +96,7 @@ jobs:
         run: |
           set -euo pipefail
           curl -fL --retry 3 --retry-all-errors \
-            "https://services1.arcgis.com/wyvhRSHkhCSY7ojh/ArcGIS/rest/services/R%C3%A9seau_ferroviaire_AQReseau/FeatureServer/14/query?where=1%3D1&outFields=OBJECTID%2Cnomvoie%2Cclassvoie%2Ctypeutilis%2Cetat%2Cnmfrexploi%2Cnmfrpropr%2Cnomsubdiv1&returnGeometry=true&outSR=4326&geometry=-73.645%2C45.515%2C-73.610%2C45.540&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&f=geojson" \
+            "https://services1.arcgis.com/wyvhRSHkhCSY7ojh/ArcGIS/rest/services/R%C3%A9seau_ferroviaire_AQReseau/FeatureServer/14/query?where=1%3D1&outFields=OBJECTID%2Cnomvoie%2Cclassvoie%2Ctypeutilis%2Cetat%2Cnmfrexploi%2Cnmfrpropr%2Cnomsubdiv1&returnGeometry=true&outSR=4326&geometry=-8198123.899%2C5702965.373%2C-8194227.717%2C5706937.852&geometryType=esriGeometryEnvelope&inSR=3857&spatialRel=esriSpatialRelIntersects&f=geojson" \
             -o railway_parc_extension.geojson
           test -s railway_parc_extension.geojson
           wc -c railway_parc_extension.geojson
