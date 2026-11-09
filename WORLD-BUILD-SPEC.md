@@ -165,3 +165,20 @@ Next exact operation when the sheet data is accessible:
 - keep expansion locked until the gate passes.
 
 No guessed railway coordinates are permitted.
+
+
+### 1:1000 sheet-level extraction route — verified (2026-11-09)
+
+The authoritative ARTM catalogue confirms that the Montréal base-cartography interactive tool is designed around individual 1:1000 SQRC sheets and supports sheet preview plus targeted DGN/DWG/PDF download. The 2024 compilation explicitly covers Villeray–Saint-Michel–Parc-Extension.
+
+Operational rule:
+1. Use the interactive sheet index to identify only the SQRC sheet(s) covering the first playable sector.
+2. Preview the selected sheet(s) before extraction.
+3. Extract railway centerline/edges, street centerlines and the relevant Ogilvy/De Castelnau crossing geometry from the selected sheet(s).
+4. Translate the authoritative coordinates into EMPTYHELL's local 1 unit ≈ 1 metre frame.
+5. Reconcile every railway/street intersection before changing the provisional railway meshes or camera boundary.
+6. Record the source sheet identifier and transformation in this spec.
+
+This is now the preferred extraction route because it avoids treating the 323.4 MB citywide PDF archive as the only path to the needed first-sector geometry.
+
+No coordinates are being changed yet. No railway crossing is being guessed.
