@@ -71,3 +71,11 @@ test('EMPTYHELL restores the physical path unlock', async ({ page }) => {
   await page.reload({ waitUntil: 'networkidle' });
   await expect(page.locator('#world-status')).toContainText('PATH OPEN');
 });
+
+
+test('EMPTYHELL restores the first post-path fragment state', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => localStorage.setItem('emptyhell.fragment.v1', 'found'));
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page.locator('#world-status')).toContainText('FRAGMENT FOUND');
+});
