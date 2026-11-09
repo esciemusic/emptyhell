@@ -513,6 +513,7 @@ function reachRouteDestination() {
   routeDestination.userData.routeState = 'reached';
   routeDestination.userData.interaction.title = 'OBJECTIVE / COMPLETE';
   routeDestination.userData.interaction.text = 'The signal reaches the edge of the active slice. Something beyond it is answering back.';
+  nextTransmission.visible = true;
   try {
     localStorage.setItem(routeStorageKey, 'reached');
   } catch {}
@@ -562,6 +563,14 @@ routeDestination.visible = discoveryState.found.size === discoveryState.total;
 if (routeDestination.userData.routeState === 'reached') {
   routeDestination.userData.interaction.text = 'The signal reaches the edge of the active slice. Something beyond it is answering back.';
 }
+
+const nextTransmission = interactable(
+  box(.38,1.2,.38,darkMat,235,.6,-145),
+  'TRANSMISSION / RETURN',
+  'A second receiver is waiting beyond the first route marker. The signal is weaker here.'
+);
+nextTransmission.visible = savedRoute;
+nextTransmission.userData.routeState = savedRoute ? 'active' : 'locked';
 
 updateWorldStatus();
 
