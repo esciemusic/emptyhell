@@ -481,6 +481,7 @@ const savedTransmission = (() => {
   }
 })();
 const encounterStorageKey = 'emptyhell.encounter.v1';
+const doorStorageKey = 'emptyhell.door.v1';
 const savedEncounter = (() => {
   try {
     return localStorage.getItem(encounterStorageKey) === 'complete';
@@ -490,6 +491,14 @@ const savedEncounter = (() => {
 })();
 let transmissionComplete = savedTransmission;
 let encounterComplete = savedEncounter;
+const savedDoor = (() => {
+  try {
+    return localStorage.getItem(doorStorageKey) === 'open';
+  } catch {
+    return false;
+  }
+})();
+let doorOpen = savedDoor;
 const savedDiscovery = (() => {
   try {
     const raw = localStorage.getItem(discoveryStorageKey);
@@ -509,9 +518,11 @@ const worldStatus = document.querySelector('#world-status');
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = encounterComplete
-      ? 'ENCOUNTER COMPLETE'
-      : transmissionComplete
+    const stage = doorOpen
+      ? 'PATH OPEN'
+      : encounterComplete
+        ? 'ENCOUNTER COMPLETE'
+        : transmissionComplete
         ? 'TRANSMISSION COMPLETE · ENCOUNTER ACTIVE'
         : count === discoveryState.total
           ? 'ROUTE OPEN'
@@ -654,8 +665,37 @@ function completeEncounter() {
   encounterSite.userData.interaction.title = 'ENCOUNTER / COMPLETE';
   encounterSite.userData.interaction.text = 'The receiver is silent now. Whatever was listening has moved beyond this slice.';
   encounterComplete = true;
+  encounterDoor.visible = true;
+  encounterDoor.userData.doorState = doorOpen ? 'open' : 'active';
   try {
     localStorage.setItem(encounterStorageKey, 'complete');
+  } catch {}
+  updateWorldStatus();
+}
+
+const encounterDoor = interactable(
+  box(2.8,2.6,.22,darkMat,292,1.3,-164),
+  savedDoor ? 'PATH / OPEN' : 'PATH / UNLOCKED',
+  savedDoor
+    ? 'The barrier has moved. The route continues beyond the receiver.'
+    : 'The receiver released the lock. The barrier is physical; the route is not.'
+);
+encounterDoor.visible = encounterComplete;
+encounterDoor.userData.doorState = savedDoor ? 'open' : (encounterComplete ? 'active' : 'locked');
+const encounterDoorCollider = { minX:290.6, maxX:293.4, minZ:-164.2, maxZ:-163.8 };
+if (!doorOpen) colliders.push(encounterDoorCollider);
+
+function openEncounterDoor() {
+  if (encounterDoor.userData.doorState !== 'active') return;
+  encounterDoor.userData.doorState = 'open';
+  encounterDoor.userData.interaction.title = 'PATH / OPEN';
+  encounterDoor.userData.interaction.text = 'The barrier has moved. The route continues beyond the receiver.';
+  doorOpen = true;
+  encounterDoor.position.x += 3.2;
+  const index = colliders.indexOf(encounterDoorCollider);
+  if (index >= 0) colliders.splice(index, 1);
+  try {
+    localStorage.setItem(doorStorageKey, 'open');
   } catch {}
   updateWorldStatus();
 }
@@ -960,6 +1000,7 @@ function openInteraction(target) {
   if (target.userData === routeDestination?.userData && target.userData.routeState === 'open') reachRouteDestination();
   if (target.userData === nextTransmission?.userData && target.userData.routeState === 'active') completeTransmission();
   if (target.userData === encounterSite?.userData && target.userData.encounterState === 'active') completeEncounter();
+  if (target.userData === encounterDoor?.userData && target.userData.doorState === 'active') openEncounterDoor();
   const data = target.userData.interaction;
   interactionTitle.textContent = data.title;
   interactionText.textContent = data.text;
