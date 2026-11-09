@@ -126,3 +126,15 @@ test('EMPTYHELL preserves powered access after reload', async ({ page }) => {
   await page.reload({ waitUntil: 'networkidle' });
   await expect(page.locator('#world-status')).toContainText('ACCESS OPEN');
 });
+
+
+test('EMPTYHELL restores the deeper chamber signal state', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => {
+    localStorage.setItem('emptyhell.power.v1', 'restored');
+    localStorage.setItem('emptyhell.access.v1', 'open');
+    localStorage.setItem('emptyhell.chamber.v1', 'heard');
+  });
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page.locator('#world-status')).toContainText('SIGNAL MOVED DEEPER');
+});
