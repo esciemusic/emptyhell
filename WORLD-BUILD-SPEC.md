@@ -115,3 +115,22 @@ Until that conversion is completed:
 **Vertical slice:** NOT READY
 
 Next build task: finish physical-scale QA on the first sector (block widths, park entrances, frontage setbacks, traversal/camera behavior), then reconcile the railway/street intersections against the verified 1:1000 source before any sector expansion.
+
+
+## Railway reconciliation — source lock (2026-11-09)
+
+The railway geometry is now source-locked for reconstruction rather than guessed from the prototype.
+
+Verified from current authoritative references:
+- The City of Montréal's 2025 Parc-Extension electoral map explicitly depicts the railway corridor and the local street network, including Saint-Roch, Durocher, De Castelnau Ouest, Ogilvy, Bloomfield, Champagneur, De L'Épée, Stuart and Wiseman. citeturn847989search11
+- Montréal documentation confirms that the Ogilvy / De Castelnau Ouest passage is an actual level crossing through the railway corridor. citeturn847989search8turn847989search9
+- The ARTM/Montréal base-cartography dataset confirms that the 2024 1:1000 compilation covers Villeray–Saint-Michel–Parc-Extension and is available in CAD/PDF formats for geometry extraction. citeturn847989search0
+
+Implementation consequence:
+1. Keep the existing railway mesh visibly present as a temporary boundary.
+2. Do not move, rotate, or open the railway in game coordinates from visual estimation alone.
+3. The next geometry pass must extract the relevant 1:1000 sheet(s), identify the rail centerlines and street crossings, then normalize those coordinates into the game's local metre system.
+4. The Ogilvy / De Castelnau crossing is a verified feature to reproduce; its exact game coordinates remain **UNTRANSLATED** until the 1:1000 geometry is extracted.
+5. No sector expansion or additional crossing is permitted before that translation.
+
+**Gate result:** SOURCE CONFIRMED / GEOMETRY TRANSLATION PENDING.
