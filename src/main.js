@@ -172,10 +172,15 @@ parkMesh.position.y = .14;
 parkMesh.receiveShadow = false;
 scene.add(parkMesh);
 
-// Verified park perimeter, kept as low concrete edging rather than an invented fence.
+// Verified park perimeter, kept as low concrete edging.
+// Do not use the road helper here: it would incorrectly create sidewalks around the park.
 for (let i=0;i<PARK_POLYGON.length-1;i++) {
   const a=PARK_POLYGON[i], b=PARK_POLYGON[i+1];
-  verifiedRoadSegment(a,b,.35);
+  const dx=b[0]-a[0], dz=b[1]-a[1], len=Math.hypot(dx,dz);
+  if (len < .5) continue;
+  const angle=Math.atan2(dx,dz);
+  const edge=box(.22,.08,len,concreteMat,(a[0]+b[0])/2,.20,(a[1]+b[1])/2,{castShadow:false});
+  edge.rotation.y=angle;
 }
 
 // Park paths remain subordinate to the verified footprint.
@@ -201,11 +206,11 @@ interactable(
 // Temporary frontage: intentionally sparse until parcel/building footprints are imported.
 // Buildings are kept away from the verified park polygon and road corridors.
 const frontage = [
-  [-45,35,16,10,brickMat], [18,53,18,11,concreteMat],
-  [82,-6,18,12,brickDarkMat], [120,-55,20,11,brickMat],
-  [160,-125,18,12,concreteMat], [235,55,20,11,brickDarkMat],
+  [-45,70,16,10,brickMat], [18,53,18,11,concreteMat],
+  [82,15,18,12,brickDarkMat], [120,-55,20,11,brickMat],
+  [160,-90,18,12,concreteMat], [235,75,20,11,brickDarkMat],
   [285,-105,18,12,brickMat], [-70,-55,18,11,concreteMat],
-  [-105,82,16,10,brickMat], [70,-260,20,12,brickDarkMat]
+  [-105,82,16,10,brickMat], [70,-320,20,12,brickDarkMat]
 ];
 for (const [x,z,w,h,mat] of frontage) building(w,13,h,x,z,mat);
 
@@ -302,7 +307,7 @@ scene.add(player);
 
 // Spawn near the Saint-Roch / Stuart / park area.
 // Spawn at the Saint-Roch-facing edge of the park, not inside the park geometry.
-player.position.set(-2,0,24);
+player.position.set(15,0,20);
 
 const playerRadius = 0.48;
 const testPosition = new THREE.Vector3();
