@@ -4,17 +4,19 @@
 
 Railway geometry is verified from two independent government datasets before any runtime promotion:
 
-1. Ville de Montréal — Railway network
-   - Dataset: 30028e66-e3b1-4478-8349-149b7c046932
-   - Resource: d2d8d721-208d-4a4d-b016-24567862e638
-   - Format: GeoJSON
-   - CRS: EPSG:4326
+1. Ville de Montréal — Voies ferrées 3D (2020)
+   - Dataset: e135b6df-5bfc-43bc-a743-5f306c8900fb
+   - Resource: 1b32d325-411f-43c2-bd48-ef8db0684e62
+   - Layer: CARTO-FER-VOIE
+   - Format: GeoPackage
+   - Municipal first geometry source; includes railway track features and planning attributes.
 2. Ministère des Transports et de la Mobilité durable du Québec — Réseau ferroviaire
    - Dataset: c2c4f386-a736-4eaa-b5b6-28c3a8f75466
    - WFS / GeoJSON
    - CRS: EPSG:4326
+   - Independent provincial reconciliation source; geometry is derived from the federal railway geobase.
 
-The Québec dataset describes the provincial railway network and states that its geometry derives from the federal railway geobase. The Montréal dataset is used as the municipal first-sector reference.
+The Montréal 3D dataset is the primary source for EMPTYHELL railway geometry. The Québec network is the independent reconciliation layer. The earlier generic Montréal railway-network extract is not the promotion source.
 
 ## EMPTYHELL transform
 
