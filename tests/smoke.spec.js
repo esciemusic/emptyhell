@@ -79,3 +79,11 @@ test('EMPTYHELL restores the first post-path fragment state', async ({ page }) =
   await page.reload({ waitUntil: 'networkidle' });
   await expect(page.locator('#world-status')).toContainText('FRAGMENT FOUND');
 });
+
+
+test('EMPTYHELL restores the signal trail progression', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => localStorage.setItem('emptyhell.trail.v1', 'reached'));
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page.locator('#world-status')).toContainText('SIGNAL TRAIL COMPLETE');
+});
