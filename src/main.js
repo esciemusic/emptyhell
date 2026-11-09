@@ -479,6 +479,10 @@ function updateWorldStatus() {
 function discoverSignal(id) {
   discoveryState.found.add(id);
   updateWorldStatus();
+  if (discoveryState.found.size === discoveryState.total) {
+    routeMarker.visible = true;
+    routeMarker.userData.interaction.text = 'Three receivers are answering each other. The route is no longer dormant.';
+  }
 }
 
 const signalNorth = interactable(
@@ -501,6 +505,14 @@ const signalRail = interactable(
   'A receiver near the railway corridor. The casing is marked, but the marking is not a name.'
 );
 signalRail.userData.signalId = 'rail';
+
+const routeMarker = interactable(
+  box(.42,1.35,.42,glassMat,0,.68,0),
+  'ROUTE / OPEN',
+  'The three signals converge here. The route is dormant until all three are found.'
+);
+routeMarker.visible = false;
+routeMarker.userData.route = true;
 
 updateWorldStatus();
 
