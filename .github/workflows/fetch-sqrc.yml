@@ -141,10 +141,17 @@ jobs:
               source_files.append({
                   "path": str(shp_path),
                   "fields": fields,
+                  "shape_type": reader.shapeType,
                   "records": len(reader),
                   "source_bounds": reader.bbox,
                   "prj_exists": shp_path.with_suffix(".prj").exists(),
               })
+              # The railway archive contains multiple CARTO-FER layers.
+              # Use only the railway-track line layer, not station/bridge/accessory polygons.
+              if "voie" not in shp_path.stem.lower():
+                  continue
+              if reader.shapeType not in (3, 13, 23):
+                  continue
               for sr in reader.iterShapeRecords():
                   geom_source = shape(sr.shape.__geo_interface__)
                   if not geom_source.intersects(target_source):
@@ -243,6 +250,7 @@ jobs:
           path: |
             railway_parc_extension.geojson
             railway_parc_extension_report.json
+            railway_source_inventory.json
             sqrc_1000.geojson
             sqrc_1000_parc_extension_report.json
 
