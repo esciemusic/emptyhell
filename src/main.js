@@ -160,21 +160,44 @@ function footprintBuilding(points, h, mat=brickMat) {
   mesh.receiveShadow = true;
   scene.add(mesh);
 
-  const roofShape = new THREE.Shape();
-  points.forEach(([x,z], i) => {
-    const sy = -z;
-    if (i === 0) roofShape.moveTo(x, sy);
-    else roofShape.lineTo(x, sy);
-  });
-  const roof = new THREE.Mesh(new THREE.ShapeGeometry(roofShape), darkMat);
+  const roof = new THREE.Mesh(new THREE.ShapeGeometry(shape), darkMat);
   roof.rotation.x = -Math.PI / 2;
   roof.position.y = h + .04;
   roof.receiveShadow = true;
   scene.add(roof);
 
   const xs = points.map(p => p[0]), zs = points.map(p => p[1]);
-  addCollider((Math.min(...xs)+Math.max(...xs))/2, (Math.min(...zs)+Math.max(...zs))/2,
-    Math.max(...xs)-Math.min(...xs), Math.max(...zs)-Math.min(...zs), mesh);
+  const minX=Math.min(...xs), maxX=Math.max(...xs), minZ=Math.min(...zs), maxZ=Math.max(...zs);
+  const w=maxX-minX, d=maxZ-minZ;
+  addCollider((minX+maxX)/2, (minZ+maxZ)/2, w, d, mesh);
+
+  // Restrained Montréal residential facade language: windows, entries, and roof hardware.
+  const rows=Math.max(2,Math.floor(h/3.2));
+  const cols=Math.max(2,Math.min(6,Math.floor(w/4.5)));
+  for(let row=0;row<rows;row++){
+    const y=2.0+row*3.0;
+    if(y>h-1.2) continue;
+    for(let col=0;col<cols;col++){
+      const x=minX+(col+1)*w/(cols+1);
+      const win=box(1.15,.9,.06,glassMat,x,y,minZ-.035,{castShadow:false});
+      win.receiveShadow=false;
+      const back=box(1.15,.9,.06,glassMat,x,y,maxZ+.035,{castShadow:false});
+      back.receiveShadow=false;
+    }
+  }
+  const sideRows=Math.max(1,Math.floor(d/7));
+  for(let row=0;row<sideRows;row++){
+    const y=2.2+row*3.0;
+    if(y>h-1.0) continue;
+    const z=minZ+(row+1)*d/(sideRows+1);
+    const left=box(.06,.9,1.15,glassMat,minX-.035,y,z,{castShadow:false});
+    left.receiveShadow=false;
+    const right=box(.06,.9,1.15,glassMat,maxX+.035,y,z,{castShadow:false});
+    right.receiveShadow=false;
+  }
+  const door=box(1.15,2.2,.08,darkMat,(minX+maxX)/2,1.1,minZ-.06,{castShadow:false});
+  door.receiveShadow=false;
+  const chimney=box(.7,.9,.7,darkMat,maxX-w*.18,h+.45,minZ+d*.18,{castShadow:true});
   return mesh;
 }
 
@@ -258,7 +281,7 @@ const VERIFIED_FRONTAGE = [
 ];
 const frontageMats = [brickMat, concreteMat, brickDarkMat, brickMat, concreteMat, brickDarkMat];
 for (let i=0;i<VERIFIED_FRONTAGE.length;i++) {
-  const h = i % 5 === 0 ? 10.5 : (i % 3 === 0 ? 9.5 : 8.5);
+  const h = i % 5 === 0 ? 9.0 : (i % 3 === 0 ? 8.5 : 7.5);
   footprintBuilding(VERIFIED_FRONTAGE[i], h, frontageMats[i % frontageMats.length]);
 }
 
