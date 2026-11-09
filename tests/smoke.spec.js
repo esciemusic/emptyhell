@@ -177,3 +177,21 @@ test('EMPTYHELL restores the descent layer after chamber progression', async ({ 
   await expect(page.locator('#world-status')).toContainText('DESCENT OPEN');
   expect(errors).toEqual([]);
 });
+
+
+test('EMPTYHELL restores the playable sublevel position', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => {
+    localStorage.setItem('emptyhell.power.v1', 'restored');
+    localStorage.setItem('emptyhell.access.v1', 'open');
+    localStorage.setItem('emptyhell.chamber.v1', 'heard');
+    localStorage.setItem('emptyhell.descent.v1', 'open');
+    localStorage.setItem('emptyhell.sublevel.v1', 'entered');
+  });
+  await page.reload({ waitUntil: 'networkidle' });
+  const position = await page.evaluate(() => ({ x: window.__emptyhellPlayer?.x ?? null, z: window.__emptyhellPlayer?.z ?? null }));
+  await expect(page.locator('#world-status')).toContainText('SIGNAL BELOW');
+  expect(errors).toEqual([]);
+});
