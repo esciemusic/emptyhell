@@ -53,6 +53,12 @@ function box(w,h,d,mat,x,y,z,opts={}) {
   return m;
 }
 
+function interactable(mesh, title, text) {
+  mesh.userData.interaction = { title, text };
+  interactables.push(mesh);
+  return mesh;
+}
+
 function street(width, length, x, z, rotation=0) {
   const road = box(width, .05, length, asphaltMat, x, .02, z, { castShadow:false });
   road.rotation.y = rotation;
@@ -67,6 +73,7 @@ function sidewalk(width, length, x, z, rotation=0) {
 
 const colliders = [];
 const collisionMeshes = [];
+const interactables = [];
 
 function addCollider(x, z, w, d, mesh=null) {
   colliders.push({ minX:x-w/2, maxX:x+w/2, minZ:z-d/2, maxZ:z+d/2 });
@@ -159,9 +166,21 @@ box(3.5,1.4,1.2,darkMat,9,.7,-7);
 
 // Real-world park details documented by Montréal:
 // two micro-libraries and the artwork Terre en vue.
-box(1.6,1.7,.7,brickDarkMat,-8,.85,-5);
-box(1.6,1.7,.7,brickDarkMat,8,.85,-5);
-box(5,.08,.8,glassMat,0,1.0,-4);
+interactable(
+  box(1.6,1.7,.7,brickDarkMat,-8,.85,-5),
+  'MICRO-LIBRARY',
+  'A small neighbourhood library in the park. A place for exchange, pause, and ordinary life.'
+);
+interactable(
+  box(1.6,1.7,.7,brickDarkMat,8,.85,-5),
+  'MICRO-LIBRARY',
+  'Another small community library. The object is simple; the fact that it is here matters.'
+);
+interactable(
+  box(5,.08,.8,glassMat,0,1.0,-4),
+  'TERRE EN VUE',
+  'A park artwork marker. The first slice records the place without turning it into exposition.'
+);
 
 // Residential/commercial frontage blocks.
 // These follow the street corridors and keep interiors simplified.
@@ -304,6 +323,70 @@ resume.addEventListener('click', () => {
   lockGame();
 });
 
+const interactionPrompt = document.querySelector('#interaction-prompt');
+const interactionPanel = document.querySelector('#interaction-panel');
+const interactionTitle = document.querySelector('#interaction-title');
+const interactionText = document.querySelector('#interaction-text');
+const interactionClose = document.querySelector('#interaction-close');
+const mapOverlay = document.querySelector('#map-overlay');
+const mapPlayer = document.querySelector('#map-player');
+let activeInteraction = null;
+let mapOpen = false;
+
+function nearestInteraction() {
+  if (!locked || pauseOpen || mapOpen) return null;
+  const ray = new THREE.Raycaster();
+  ray.setFromCamera(new THREE.Vector2(0, 0), camera);
+  const hits = ray.intersectObjects(interactables, false);
+  if (!hits.length) return null;
+  const hit = hits[0];
+  if (hit.distance > 5.5) return null;
+  return hit.object;
+}
+
+function updateInteraction() {
+  const target = nearestInteraction();
+  activeInteraction = target;
+  interactionPrompt.classList.toggle('hidden', !target);
+  if (target) {
+    interactionPrompt.textContent = 'E  ' + target.userData.interaction.title;
+  }
+}
+
+function openInteraction(target) {
+  if (!target) return;
+  const data = target.userData.interaction;
+  interactionTitle.textContent = data.title;
+  interactionText.textContent = data.text;
+  interactionPanel.classList.remove('hidden');
+  if (document.pointerLockElement) document.exitPointerLock();
+}
+
+function toggleMap(open) {
+  mapOpen = open;
+  mapOverlay.classList.toggle('hidden', !open);
+  if (open && document.pointerLockElement) document.exitPointerLock();
+  if (!open && !pauseOpen) lockGame();
+}
+
+interactionClose.addEventListener('click', () => {
+  interactionPanel.classList.add('hidden');
+  if (!pauseOpen && !mapOpen) lockGame();
+});
+
+addEventListener('keydown', event => {
+  if (event.code === 'KeyE' && activeInteraction && !interactionPanel.classList.contains('hidden')) return;
+  if (event.code === 'KeyE' && activeInteraction && !pauseOpen && !mapOpen) openInteraction(activeInteraction);
+  if (event.code === 'KeyM' && !pauseOpen && interactionPanel.classList.contains('hidden')) {
+    event.preventDefault();
+    toggleMap(!mapOpen);
+  }
+});
+
+mapOverlay.addEventListener('click', event => {
+  if (event.target === mapOverlay) toggleMap(false);
+});
+
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 const clock = new THREE.Clock();
@@ -324,8 +407,10 @@ function move(dt) {
 
   const forward = new THREE.Vector3(Math.sin(yaw), 0, -Math.cos(yaw));
   const right = new THREE.Vector3(Math.cos(yaw), 0, Math.sin(yaw));
-  player.position.addScaledVector(forward, velocity.z * dt);
-  player.position.addScaledVector(right, velocity.x * dt);
+  const delta = new THREE.Vector3();
+  delta.addScaledVector(forward, velocity.z * dt);
+  delta.addScaledVector(right, velocity.x * dt);
+  tryMove(delta.x, delta.z);
 
   player.position.x = THREE.MathUtils.clamp(player.position.x, -106, 106);
   player.position.z = THREE.MathUtils.clamp(player.position.z, -82, 82);
@@ -354,6 +439,11 @@ function animate() {
   requestAnimationFrame(animate);
   const dt = Math.min(clock.getDelta(), .05);
   move(dt);
+  updateInteraction();
+  const mapX = ((player.position.x + 112) / 224) * 100;
+  const mapZ = ((player.position.z + 88) / 180) * 100;
+  mapPlayer.style.left = mapX + '%';
+  mapPlayer.style.top = mapZ + '%';
   renderer.render(scene, camera);
 }
 
