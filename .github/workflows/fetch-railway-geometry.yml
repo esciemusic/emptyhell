@@ -54,10 +54,10 @@ jobs:
           layers = pyogrio.list_layers("montreal_railway_3d.gpkg")
           print("Montréal railway layers:", layers.tolist())
           layer_names = {row[0] for row in layers}
-          if "CARTO-FER-VOIE" not in layer_names:
-              raise SystemExit("CARTO-FER-VOIE layer not found in official Montréal railway GPKG")
+          if "carto_fer_voie" not in layer_names:
+              raise SystemExit("carto_fer_voie layer not found in official Montréal railway GPKG")
 
-          m = gpd.read_file("montreal_railway_3d.gpkg", layer="CARTO-FER-VOIE")
+          m = gpd.read_file("montreal_railway_3d.gpkg", layer="carto_fer_voie")
           if m.crs is None:
               raise SystemExit("Official Montréal railway layer has no CRS metadata")
           m = m.to_crs("EPSG:4326")
@@ -140,7 +140,7 @@ jobs:
                   "montreal_3d":{
                       "dataset_id":"e135b6df-5bfc-43bc-a743-5f306c8900fb",
                       "resource_id":"1b32d325-411f-43c2-bd48-ef8db0684e62",
-                      "layer":"CARTO-FER-VOIE",
+                      "layer":"carto_fer_voie",
                       "feature_count":len(montreal_features)
                   },
                   "quebec_network":{
