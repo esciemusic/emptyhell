@@ -491,6 +491,7 @@ const trailStorageKey = 'emptyhell.trail.v1';
 const powerStorageKey = 'emptyhell.power.v1';
 const accessStorageKey = 'emptyhell.access.v1';
 const chamberStorageKey = 'emptyhell.chamber.v1';
+const descentStorageKey = 'emptyhell.descent.v1';
 const savedEncounter = (() => {
   try {
     return localStorage.getItem(encounterStorageKey) === 'complete';
@@ -544,6 +545,8 @@ const savedChamber = (() => {
   try { return localStorage.getItem(chamberStorageKey) === 'heard'; } catch { return false; }
 })();
 let chamberHeard = savedChamber;
+const savedDescent = (() => { try { return localStorage.getItem(descentStorageKey) === 'open'; } catch { return false; } })();
+let descentOpen = savedDescent;
 warm.intensity = powerRestored ? 24 : 18;
 const savedDiscovery = (() => {
   try {
@@ -587,6 +590,18 @@ const chamberReceiver = interactable(
 );
 chamberReceiver.visible = accessOpen;
 chamberReceiver.userData.chamberState = chamberHeard ? 'heard' : 'active';
+const descentHatch = interactable(
+  box(1.8,.12,1.8,utilityRoofMat,382,.08,-210.2),
+  descentOpen ? 'DESCENT / OPEN' : 'DESCENT / SEALED',
+  descentOpen
+    ? 'The hatch is open. The signal continues below the active slice.'
+    : 'A second vibration is coming from beneath the chamber.'
+);
+descentHatch.visible = chamberHeard;
+descentHatch.userData.descentState = descentOpen ? 'open' : 'active';
+const descentCollider = { minX:381.1, maxX:382.9, minZ:-211.1, maxZ:-209.3 };
+if (!descentOpen && chamberHeard) colliders.push(descentCollider);
+
 const powerAccess = interactable(
   box(1.4,2.3,.16,darkMat,382,1.15,-204),
   accessOpen ? 'ACCESS / OPEN' : (powerRestored ? 'ACCESS / POWERED' : 'ACCESS / LOCKED'),
@@ -629,14 +644,30 @@ function completeChamber() {
   chamberReceiver.userData.interaction.title = 'RECEIVER / QUIET';
   chamberReceiver.userData.interaction.text = 'The chamber has gone quiet. The signal has moved deeper into Montréal.';
   chamberLight.intensity = .55;
+  descentHatch.visible = true;
   try { localStorage.setItem(chamberStorageKey, 'heard'); } catch {}
+  updateWorldStatus();
+}
+
+function openDescent() {
+  if (!chamberHeard || descentHatch.userData.descentState !== 'active') return;
+  descentHatch.userData.descentState = 'open';
+  descentHatch.userData.interaction.title = 'DESCENT / OPEN';
+  descentHatch.userData.interaction.text = 'The hatch is open. The signal continues below the active slice.';
+  descentOpen = true;
+  const index = colliders.indexOf(descentCollider);
+  if (index >= 0) colliders.splice(index, 1);
+  descentHatch.position.y -= .22;
+  try { localStorage.setItem(descentStorageKey, 'open'); } catch {}
   updateWorldStatus();
 }
 
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = chamberReceiver?.userData.chamberState === 'heard'
+    const stage = descentHatch?.userData.descentState === 'open'
+      ? 'DESCENT OPEN'
+      : chamberReceiver?.userData.chamberState === 'heard'
       ? 'SIGNAL MOVED DEEPER'
       : powerAccess?.userData.accessState === 'open'
       ? 'ACCESS OPEN'
@@ -1204,6 +1235,7 @@ function updateInteraction() {
 function openInteraction(target) {
   if (target === powerAccess) activatePowerAccess();
   if (target === chamberReceiver && target.userData.chamberState === 'active') completeChamber();
+  if (target === descentHatch && target.userData.descentState === 'active') openDescent();
 
   if (!target) return;
   if (target.userData.signalId) discoverSignal(target.userData.signalId);
