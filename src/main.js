@@ -1,5 +1,4 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
-import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/PointerLockControls.js';
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0b1016);
@@ -102,44 +101,49 @@ player.add(body);
 scene.add(player);
 player.position.set(0,0,14);
 
-const controls = new PointerLockControls(camera, renderer.domElement);
-controls.pointerSpeed = 0.65;
-
-const keys = new Set();
-addEventListener('keydown', e => {
-  keys.add(e.code);
-  if (e.code === 'Escape') {
-    if (document.pointerLockElement) controls.unlock();
-    togglePause(true);
-  }
-});
-addEventListener('keyup', e => keys.delete(e.code));
-
-renderer.domElement.addEventListener('click', () => {
-  if (!pauseOpen) controls.lock();
-});
-
+let yaw = 0;
+let pitch = 0.16;
+let locked = false;
 const pause = document.querySelector('#pause');
 const resume = document.querySelector('#resume');
 let pauseOpen = false;
+
 function togglePause(open) {
   pauseOpen = open;
   pause.classList.toggle('hidden', !open);
-  if (!open) controls.lock();
+  if (open && document.pointerLockElement) document.exitPointerLock();
 }
-resume.addEventListener('click', () => togglePause(false));
 
-controls.addEventListener('lock', () => togglePause(false));
-controls.addEventListener('unlock', () => {
-  if (!pauseOpen) togglePause(true);
+function lockGame() {
+  if (!pauseOpen) renderer.domElement.requestPointerLock();
+}
+
+renderer.domElement.addEventListener('click', lockGame);
+document.addEventListener('pointerlockchange', () => {
+  locked = document.pointerLockElement === renderer.domElement;
+  if (!locked && !pauseOpen) togglePause(true);
+});
+document.addEventListener('mousemove', e => {
+  if (!locked || pauseOpen) return;
+  yaw -= e.movementX * 0.0025;
+  pitch -= e.movementY * 0.0018;
+  pitch = THREE.MathUtils.clamp(pitch, -0.05, 0.65);
+});
+
+resume.addEventListener('click', () => {
+  pauseOpen = false;
+  pause.classList.add('hidden');
+  lockGame();
 });
 
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 const clock = new THREE.Clock();
 
+const clock = new THREE.Clock();
+
 function move(dt) {
-  if (!controls.isLocked || pauseOpen) return;
+  if (!locked || pauseOpen) return;
   direction.set(0,0,0);
   if (keys.has('KeyW')) direction.z -= 1;
   if (keys.has('KeyS')) direction.z += 1;
@@ -151,20 +155,24 @@ function move(dt) {
   velocity.x = THREE.MathUtils.damp(velocity.x, direction.x * speed, 8, dt);
   velocity.z = THREE.MathUtils.damp(velocity.z, direction.z * speed, 8, dt);
 
-  const forward = new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
-  forward.y = 0; forward.normalize();
-  const right = new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion);
-  right.y = 0; right.normalize();
-
-  player.position.addScaledVector(forward, -velocity.z * dt);
+  const forward = new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw));
+  const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
+  player.position.addScaledVector(forward, velocity.z * dt);
   player.position.addScaledVector(right, velocity.x * dt);
 
-  // Temporary prototype bounds. Final boundaries will be physical collision geometry.
   player.position.x = THREE.MathUtils.clamp(player.position.x, -24.5, 24.5);
   player.position.z = THREE.MathUtils.clamp(player.position.z, -42, 42);
 
-  camera.position.lerp(new THREE.Vector3(player.position.x, player.position.y + 2.8, player.position.z + 6), 1 - Math.pow(.0001, dt));
-  camera.lookAt(player.position.x, player.position.y + 1.1, player.position.z);
+  const target = new THREE.Vector3(player.position.x, player.position.y + 1.25, player.position.z);
+  const cameraDistance = 5.2;
+  const horizontal = Math.cos(pitch) * cameraDistance;
+  const desired = new THREE.Vector3(
+    target.x - Math.sin(yaw) * horizontal,
+    target.y + Math.sin(pitch) * cameraDistance,
+    target.z - Math.cos(yaw) * horizontal
+  );
+  camera.position.lerp(desired, 1 - Math.pow(.0001, dt));
+  camera.lookAt(target);
 }
 
 function animate() {
