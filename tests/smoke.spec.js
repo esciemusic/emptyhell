@@ -161,3 +161,19 @@ test('EMPTYHELL boots cleanly at the deepest persisted progression state', async
   await expect(page.locator('#world-status')).toContainText('SIGNAL MOVED DEEPER');
   expect(errors).toEqual([]);
 });
+
+
+test('EMPTYHELL restores the descent layer after chamber progression', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => {
+    localStorage.setItem('emptyhell.power.v1', 'restored');
+    localStorage.setItem('emptyhell.access.v1', 'open');
+    localStorage.setItem('emptyhell.chamber.v1', 'heard');
+    localStorage.setItem('emptyhell.descent.v1', 'open');
+  });
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page.locator('#world-status')).toContainText('DESCENT OPEN');
+  expect(errors).toEqual([]);
+});
