@@ -45,15 +45,22 @@ jobs:
           target=box(-73.640,45.515,-73.615,45.545)
           to_mtm8=Transformer.from_crs("EPSG:4326","EPSG:32188",always_xy=True)
           selected=[]
+          all_named=[]
           for f in data.get("features",[]):
               p=f.get("properties",{})
               od=" ".join(str(p.get("ODONYME") or p.get("odonyme") or "").upper().split())
-              if od not in {n.upper() for n in names}:
+              if od not in {" ".join(n.upper().split()) for n in names}:
                   continue
               g=shape(f["geometry"])
+              gm=transform(to_mtm8.transform,g)
+              all_named.append({
+                  "type":"Feature",
+                  "properties":p,
+                  "geometry_wgs84":f["geometry"],
+                  "geometry_mtm8":mapping(gm)
+              })
               if not g.intersects(target):
                   continue
-              gm=transform(to_mtm8.transform,g)
               selected.append({
                   "type":"Feature",
                   "properties":p,
@@ -68,6 +75,8 @@ jobs:
               "target_bbox_wgs84":[-73.640,45.515,-73.615,45.545],
               "requested_streets":sorted(names),
               "feature_count":len(selected),
+              "all_named_feature_count":len(all_named),
+              "all_named_features":all_named,
               "features":selected
           }
           Path("first_sector_street_geometry.json").write_text(json.dumps(report,ensure_ascii=False,indent=2))
