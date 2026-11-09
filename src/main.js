@@ -176,7 +176,7 @@ function lamp(x,z) {
   bulb.position.set(x,4.93,z);
   bulb.castShadow = false;
   scene.add(bulb);
-  streetLights.push({ light, base:10, seed:x * 7.13 + z * 3.71 });
+  streetLights.push({ light, bulb, base:10, seed:x * 7.13 + z * 3.71, restored:powerRestored });
   return pole;
 }
 
