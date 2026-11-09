@@ -21,11 +21,23 @@ jobs:
           mkdir -p carto_2024
           url="https://donnees.montreal.ca/fr/dataset/c9336648-098a-4984-b0cb-be65b951cadd/resource/bc1a8fd8-5208-4903-99ae-a06056c7d5b5/download/compilation_carto_2024_pdf.zip"
           echo "Downloading official 2024 1:1000 base-cartography archive"
-          if curl -fL --retry 2 --retry-all-errors \
-            -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
-            "$url" -o carto_2024/compilation_carto_2024_pdf.zip; then
-            unzip -l carto_2024/compilation_carto_2024_pdf.zip | grep -E '31H12-010-(0431|0530|0531|0630|0631)\.pdf
-        id: sqrc
+          if curl -fL --retry 2 --retry-all-errors -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" "$url" -o carto_2024/compilation_carto_2024_pdf.zip; then
+            unzip -l carto_2024/compilation_carto_2024_pdf.zip | grep -E "31H12-010-(0431|0530|0531|0630|0631).*\.pdf" | tee carto_2024/target_index.txt || true
+            mkdir -p carto_2024/selected
+            while read -r line; do
+              file=$(echo "$line" | sed -E 's/^[[:space:]]*[0-9]+[[:space:]]+[0-9:-]+[[:space:]]+//')
+              [ -n "$file" ] || continue
+              unzip -p carto_2024/compilation_carto_2024_pdf.zip "$file" > "carto_2024/selected/$(basename "$file")"
+            done < <(grep -E "31H12-010-(0431|0530|0531|0630|0631).*\.pdf" carto_2024/target_index.txt || true)
+            echo "CARTO_2024_DOWNLOAD=success" >> "$GITHUB_OUTPUT"
+            find carto_2024/selected -maxdepth 1 -type f -print
+          else
+            echo "CARTO_2024_DOWNLOAD=blocked" >> "$GITHUB_OUTPUT"
+            echo "Official 2024 PDF archive could not be downloaded from this runner."
+          fi
+
+      - name: Download SQRC 1:1000 GeoJSON
+
         continue-on-error: true
         run: |
           set -u
