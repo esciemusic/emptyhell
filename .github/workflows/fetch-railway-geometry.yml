@@ -246,6 +246,7 @@ jobs:
             echo "No railway geometry changes to commit."
           else
             git commit -m "Record first-sector railway reconciliation"
+            git pull --rebase origin main
             git push
           fi
 
