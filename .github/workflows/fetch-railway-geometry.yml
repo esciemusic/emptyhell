@@ -117,7 +117,7 @@ jobs:
                       "feature_count":len(montreal_features)
                   },
                   "quebec_network":{
-                      "dataset_id":"c2c4f386-a736-4a4d-b6b6-28c3a8f75466",
+                      "dataset_id":"c2c4f386-a736-4eaa-b5b6-28c3a8f75466",
                       "feature_count":len(q_features)
                   }
               },
@@ -217,3 +217,5 @@ jobs:
             first_sector_railway_quebec.json
 
 # Railway source gate: government geometry only; runtime promotion remains blocked until reconciliation review.
+
+# Source correction: Montréal 3D railway dataset is the primary geometry source.
