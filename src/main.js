@@ -1136,7 +1136,7 @@ scene.add(player);
 
 // Spawn near the Saint-Roch / Stuart / park area.
 // Spawn at the Saint-Roch-facing edge of the park, not inside the park geometry.
-player.position.set(15,0,20);
+player.position.set(sublevelEntered ? 382 : 15, 0, sublevelEntered ? -218 : 20);
 
 const testPosition = new THREE.Vector3();
 
