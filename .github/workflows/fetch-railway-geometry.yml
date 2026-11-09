@@ -186,6 +186,42 @@ jobs:
               "runtime_promotion":"BLOCKED_PENDING_RECONCILIATION_REVIEW"
           }
 
+          # Promotion decision:
+          # - Montréal ID 541 (feature_index 3) is excluded from runtime because the
+          #   municipal source marks it "En construction" and it is 40.66 m from the
+          #   independent Québec network. It remains in reconciliation evidence.
+          # - Montréal ID 998 (feature_index 7) remains promoted. Its 2.036 m
+          #   cross-source distance is only slightly above the conservative 2 m screen;
+          #   Montréal is authoritative for runtime and Québec is reconciliation only.
+          # - Québec-only segments 6672, 6673 and 10292 remain reference-only.
+          promoted=[]
+          held=[]
+          for f in montreal_features:
+              feature_id=f["properties"].get("ID")
+              if feature_id == 541:
+                  held.append({"source":"montreal_3d","ID":feature_id,"reason":"ETAT=En construction; 40.66 m from independent Québec network"})
+              else:
+                  promoted.append(f)
+
+          promotion={
+              "status":"PROMOTION_READY_PENDING_BUILD_QA",
+              "primary_source":"Ville de Montréal Voies ferrées 3D 2020 / CARTO-FER-VOIE",
+              "promoted_feature_count":len(promoted),
+              "held_feature_count":len(held),
+              "held_features":held,
+              "reference_only_quebec_exceptions":[
+                  {"idsegchfer":6672.0,"reason":"Reference geometry within 2.05 m of primary; no override"},
+                  {"idsegchfer":6673.0,"reason":"Reference geometry within 2.06 m of primary; no override"},
+                  {"idsegchfer":10292.0,"reason":"20.20 m Québec-only spur; not present in primary first-sector municipal layer"}
+              ],
+              "transform":"x=east_mtm8_delta, z=-north_mtm8_delta"
+          }
+
+          Path("first_sector_railway_runtime.json").write_text(json.dumps({
+              "type":"FeatureCollection","metadata":promotion,"features":promoted
+          },ensure_ascii=False,indent=2))
+          Path("first_sector_railway_promotion.json").write_text(json.dumps(promotion,ensure_ascii=False,indent=2))
+
           Path("first_sector_railway_reconciliation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2))
           Path("first_sector_railway_montreal.json").write_text(json.dumps({"type":"FeatureCollection","features":montreal_features},ensure_ascii=False,indent=2))
           Path("first_sector_railway_quebec.json").write_text(json.dumps({"type":"FeatureCollection","features":q_features},ensure_ascii=False,indent=2))
@@ -199,9 +235,11 @@ jobs:
           cp first_sector_railway_reconciliation.json data/first_sector_railway_reconciliation.json
           cp first_sector_railway_montreal.json data/first_sector_railway_montreal.json
           cp first_sector_railway_quebec.json data/first_sector_railway_quebec.json
+          cp first_sector_railway_runtime.json data/first_sector_railway_runtime.json
+          cp first_sector_railway_promotion.json data/first_sector_railway_promotion.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/first_sector_railway_reconciliation.json data/first_sector_railway_montreal.json data/first_sector_railway_quebec.json
+          git add data/first_sector_railway_reconciliation.json data/first_sector_railway_montreal.json data/first_sector_railway_quebec.json data/first_sector_railway_runtime.json data/first_sector_railway_promotion.json
           if git diff --cached --quiet; then
             echo "No railway geometry changes to commit."
           else
@@ -218,3 +256,5 @@ jobs:
             first_sector_railway_reconciliation.json
             first_sector_railway_montreal.json
             first_sector_railway_quebec.json
+            first_sector_railway_runtime.json
+            first_sector_railway_promotion.json
