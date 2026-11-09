@@ -1,0 +1,84 @@
+{
+  "source": "Ville de Montréal — Géobase - réseau routier",
+  "dataset_id": "984f7a68-ab34-4092-9204-4bdfcca767c5",
+  "source_resource": "9d3d60d8-4e7f-493e-8d6a-dcd040319d8d",
+  "park_anchor": {
+    "lat": 45.526943,
+    "lon": -73.630554,
+    "mtm8": [
+      294602.04000401904,
+      5043011.143267743
+    ]
+  },
+  "coordinate_system": "local metres: x=east, z=-north relative to park anchor",
+  "nearest_verified_centerline_points": {
+    "Avenue Durocher": [
+      1089.6,
+      31
+    ],
+    "Avenue De L'Épée": [
+      117.3,
+      -279.9
+    ],
+    "Avenue Bloomfield": [
+      91.3,
+      -219.1
+    ],
+    "Avenue Champagneur": [
+      66.3,
+      -159.2
+    ],
+    "Avenue Stuart": [
+      -8.3,
+      19.9
+    ],
+    "Avenue Wiseman": [
+      15.3,
+      -37.2
+    ],
+    "Rue Saint-Roch": [
+      -27.6,
+      -11.5
+    ],
+    "Avenue Ogilvy": [
+      269.1,
+      111.9
+    ]
+  },
+  "current_prototype_positions": {
+    "Avenue Durocher": [
+      -72,
+      7
+    ],
+    "Avenue De L'Épée": [
+      -42,
+      7
+    ],
+    "Avenue Bloomfield": [
+      -12,
+      7
+    ],
+    "Avenue Champagneur": [
+      18,
+      7
+    ],
+    "Avenue Stuart": [
+      48,
+      7
+    ],
+    "Avenue Wiseman": [
+      78,
+      7
+    ],
+    "Rue Saint-Roch": [
+      3,
+      5
+    ],
+    "Avenue Ogilvy": [
+      3,
+      -48
+    ]
+  },
+  "finding": "Current prototype street layout is a visual blockout, not a physical-scale match. Several centerlines differ by hundreds of metres and the real street grid is diagonal rather than axis-aligned.",
+  "consequence": "Rebuild first-sector street geometry from verified centerlines before final traversal QA. Do not preserve the current axis-aligned street positions merely for continuity."
+}
