@@ -134,3 +134,34 @@ Implementation consequence:
 5. No sector expansion or additional crossing is permitted before that translation.
 
 **Gate result:** SOURCE CONFIRMED / GEOMETRY TRANSLATION PENDING.
+
+
+### 1:1000 extraction record
+
+The authoritative 2024 compilation is confirmed as a 1:1000 vector/cartographic source for Villeray–Saint-Michel–Parc-Extension. The ARTM catalogue exposes the 2024 PDF, DGN and DWG resources and the sheet-index workflow. citeturn653023search0
+
+The 2024 PDF resource is:
+https://donnees.montreal.ca/fr/dataset/c9336648-098a-4984-b0cb-be65b951cadd/resource/bc1a8fd8-5208-4903-99ae-a06056c7d5b5/download/compilation_carto_2024_pdf.zip
+
+The 2024 DGN resource is:
+https://donnees.montreal.ca/fr/dataset/c9336648-098a-4984-b0cb-be65b951c1d?resource=2d94de12-aefd-4911-ba61-75a2b59f97ad
+
+The 2024 DWG resource is:
+https://donnees.montreal.ca/fr/dataset/c9336648-098a-4984-b0cb-be65b951cadd/resource/7975cc58-5a06-46a5-98b9-d288f53a5857/download/compilation_carto_2024_dwg.zip
+
+The public catalogue confirms the 2024 compilation covers Villeray–Saint-Michel–Parc-Extension and is provided at 1:1000. citeturn653023search0
+
+Extraction status: **BLOCKED BY RESOURCE DELIVERY, NOT BY GEOGRAPHY.**
+The 2024 PDF download endpoint currently returns HTTP 403 to the available retrieval path. The interactive sheet viewer remains available, so no game coordinates will be fabricated from the inaccessible archive. citeturn716623view0turn749502search0
+
+Next exact operation when the sheet data is accessible:
+- identify the SQRC sheet(s) containing Saint-Roch / Stuart / Durocher / Bloomfield and the railway corridor;
+- extract railway centerline/track edges;
+- extract street centerlines and the Ogilvy / De Castelnau crossing;
+- establish one local metre anchor at the park/street network;
+- transform the verified geometry into EMPTYHELL coordinates;
+- replace only the provisional railway geometry;
+- re-run first-sector traversal QA;
+- keep expansion locked until the gate passes.
+
+No guessed railway coordinates are permitted.
