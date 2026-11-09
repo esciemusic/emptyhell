@@ -182,3 +182,33 @@ Operational rule:
 This is now the preferred extraction route because it avoids treating the 323.4 MB citywide PDF archive as the only path to the needed first-sector geometry.
 
 No coordinates are being changed yet. No railway crossing is being guessed.
+
+### SQRC sheet-index source — identified (2026-11-09)
+
+The sheet-index dependency is now identified independently of the 2024 citywide archive.
+
+Authoritative Montréal open-data index:
+- Dataset: **Quadrillage SQRC**
+- 1:1000 grid coverage for Montréal
+- Projection for the published 1:1000 grid: NAD83 MTM8
+- The dataset includes a 1:1000 GeoJSON resource and a 1:1000 SHP resource.
+- Resource identifiers:
+  - GeoJSON: `ad1924d4-2579-40aa-8aa7-b83d88166ee5`
+  - SHP: `dade7416-6c0a-4765-9262-5e3d9e2a55de`
+  - DXF index: `34805c01-1b32-4202-b604-3c1cba7d1d4c`
+
+The ARTM base-cartography catalogue separately confirms that its interactive viewer is intended to locate and preview individual 1:1000 SQRC sheets and download the corresponding DGN/DWG/PDF sheet data.
+
+Operational sequence is therefore locked:
+1. Resolve the first-sector location against the SQRC 1:1000 index.
+2. Record the exact sheet identifier(s).
+3. Use those sheet identifiers in the ARTM/Montréal base-cartography viewer.
+4. Preview the selected 2024 sheet(s).
+5. Extract railway edges/centerline, street centerlines, and the Ogilvy / De Castelnau crossing.
+6. Transform the authoritative geometry into EMPTYHELL's local metre frame.
+7. Replace only the provisional railway geometry and matching camera boundary.
+8. Re-run first-sector traversal and collision QA.
+
+Important: the SQRC grid identifies sheet coverage; it does **not** by itself supply the railway geometry. No game coordinates are to be derived from the grid alone.
+
+**Gate:** SHEET-INDEX IDENTIFIED / EXACT SHEET + GEOMETRY EXTRACTION PENDING.
