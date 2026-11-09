@@ -10,6 +10,9 @@ jobs:
   fetch-sqrc:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Download SQRC 1:1000 GeoJSON
         run: |
           set -euo pipefail
@@ -26,43 +29,48 @@ jobs:
           import json
           from pathlib import Path
           from pyproj import Transformer
-          from shapely.geometry import shape, Point
+          from shapely.geometry import shape, Point, mapping
 
           data = json.loads(Path("sqrc_1000.geojson").read_text())
           features = data.get("features", [])
-          print("feature_count=", len(features))
-          print("top_level_keys=", sorted(data.keys()))
-          if features:
-              print("property_keys=", sorted(features[0].get("properties", {}).keys()))
-              print("sample_properties=", features[0].get("properties"))
-
-          # Official Parc du Centenaire-de-Parc-Extension point:
-          # 45.526943, -73.630554
           transformer = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
           x, y = transformer.transform(-73.630554, 45.526943)
-          print("park_mtm8=", x, y)
-
           p = Point(x, y)
+
           matches = []
-          for f in features:
-              geom = shape(f["geometry"])
-              if geom.contains(p) or geom.touches(p) or geom.distance(p) < 1:
-                  matches.append(f)
-
-          print("containing_or_touching_sheets=", len(matches))
-          for f in matches:
-              print(json.dumps(f.get("properties", {}), ensure_ascii=False, sort_keys=True))
-
-          # Also report nearby sheets within 500 m, useful if the park sits on a sheet edge.
           nearby = []
           for f in features:
               geom = shape(f["geometry"])
               d = geom.distance(p)
+              if geom.contains(p) or geom.touches(p) or d < 1:
+                  matches.append(f)
               if d <= 500:
-                  nearby.append((d, f.get("properties", {})))
-          print("nearby_sheets_500m=", len(nearby))
-          for d, props in sorted(nearby, key=lambda z: z[0])[:20]:
-              print("distance_m=", round(d, 2), "properties=", json.dumps(props, ensure_ascii=False, sort_keys=True))
+                  nearby.append((d, f))
+
+          report = {
+              "source": "Ville de Montréal SQRC 1:1000 GeoJSON",
+              "resource": "ad1924d4-2579-40aa-8aa7-b83d88166ee5",
+              "park_wgs84": {"lat": 45.526943, "lon": -73.630554},
+              "park_mtm8": {"x": x, "y": y},
+              "feature_count": len(features),
+              "containing_or_touching_sheets": [
+                  {"properties": f.get("properties", {}), "geometry": f.get("geometry")}
+                  for f in matches
+              ],
+              "nearby_sheets_500m": [
+                  {"distance_m": round(d, 2), "properties": f.get("properties", {})}
+                  for d, f in sorted(nearby, key=lambda z: z[0])
+              ],
+          }
+          Path("sqrc_1000_parc_extension_report.json").write_text(
+              json.dumps(report, ensure_ascii=False, indent=2)
+          )
+          print(json.dumps({
+              "feature_count": len(features),
+              "containing_or_touching": len(matches),
+              "nearby_500m": len(nearby),
+              "containing_properties": [f.get("properties", {}) for f in matches],
+          }, ensure_ascii=False, indent=2))
           PY
 
       - name: Upload source and inspection report
@@ -71,3 +79,19 @@ jobs:
           name: sqrc-1000-source
           path: |
             sqrc_1000.geojson
+            sqrc_1000_parc_extension_report.json
+
+      - name: Persist the verified sheet report
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          cp sqrc_1000_parc_extension_report.json data/sqrc_1000_parc_extension_report.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/sqrc_1000_parc_extension_report.json
+          if git diff --cached --quiet; then
+            echo "No report changes to commit."
+          else
+            git commit -m "Record verified Parc-Extension SQRC sheet extraction"
+            git push
+          fi
