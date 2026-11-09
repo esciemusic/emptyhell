@@ -30,7 +30,7 @@ moon.shadow.camera.top = 180;
 moon.shadow.camera.bottom = -180;
 scene.add(moon);
 
-const warm = new THREE.PointLight(0xffc78a, powerRestored ? 24 : 18, 18, 2);
+const warm = new THREE.PointLight(0xffc78a, 18, 18, 2);
 warm.position.set(12, 4, -8);
 scene.add(warm);
 
@@ -530,6 +530,7 @@ const savedPower = (() => {
   }
 })();
 let powerRestored = savedPower;
+warm.intensity = powerRestored ? 24 : 18;
 const savedDiscovery = (() => {
   try {
     const raw = localStorage.getItem(discoveryStorageKey);
@@ -831,6 +832,7 @@ function reachSignalTrail() {
     localStorage.setItem(powerStorageKey, 'restored');
   } catch {}
   for (const source of streetLights) source.restored = true;
+  warm.intensity = 24;
   for (const window of livingWindows) window.material = windowWarmMat;
   powerAccess.visible = true;
   powerAccess.userData.accessState = 'active';
