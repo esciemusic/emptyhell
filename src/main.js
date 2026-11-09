@@ -85,6 +85,21 @@ function building(w,d,h,x,z,mat=brickMat) {
   const roof = box(w+.12,.12,d+.12,darkMat,x,h+.06,z);
   roof.castShadow = true;
   addCollider(x,z,w,d,b);
+  // Repeated narrow windows give the blockout a distinctly Montréal residential rhythm.
+  const frontZ = z - d/2 - .025;
+  const rows = Math.max(2, Math.floor(h / 3.2));
+  const columns = Math.max(2, Math.floor(w / 4.2));
+  const windowMat = new THREE.MeshStandardMaterial({ color:0x24343d, roughness:.28, metalness:.12, emissive:0x0a1116, emissiveIntensity:.25 });
+  for (let row=0; row<rows; row++) {
+    for (let col=0; col<columns; col++) {
+      const wx = x - w/2 + 2.0 + col * ((w-4) / Math.max(1, columns-1));
+      const wy = 2.0 + row * 3.0;
+      if (wy < h-.8) box(1.15,1.45,.08,windowMat,wx,wy,frontZ,{castShadow:false});
+    }
+  }
+  // A few entrances break the repetition and make the frontage readable at street level.
+  const doorMat = new THREE.MeshStandardMaterial({ color:0x17191c, roughness:.72 });
+  box(1.15,2.3,.1,doorMat,x + (w > 18 ? -w*.18 : 0),1.15,frontZ-.03,{castShadow:false});
   return b;
 }
 
@@ -230,6 +245,22 @@ for (let z=-92; z<=94; z+=4) {
 }
 const fenceMesh = box(.08,2.2,186,darkMat,fenceX,1.1,1);
 addCollider(fenceX,1,.08,186,fenceMesh);
+
+// Winter surface details: compressed snow banks, tire grooves and curb accumulation.
+function snowBank(x,z,w,d,h=.32) {
+  const bank = box(w,h,d,snowMat,x,h/2,z,{castShadow:false});
+  bank.rotation.y = (Math.random() - .5) * .08;
+}
+for (const x of [WORLD.durocher, WORLD.deLepee, WORLD.bloomfield, WORLD.champagneur]) {
+  snowBank(x-5.95, 7, 1.0, 220, .28);
+  snowBank(x+5.95, 7, 1.0, 220, .28);
+}
+for (const z of [WORLD.saintRoch, WORLD.ball, WORLD.ogilvy]) {
+  snowBank(3, z-5.95, 220, 1.0, .28);
+  snowBank(3, z+5.95, 220, 1.0, .28);
+}
+const tireMat = new THREE.MeshStandardMaterial({ color:0x303336, roughness:1 });
+for (const x of [-1.5,1.5]) box(.28,.012,210,tireMat,x,.105,4,{castShadow:false});
 
 // Streetlights around the first playable area.
 for (const p of [
