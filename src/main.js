@@ -464,6 +464,14 @@ interactable(
 );
 
 const discoveryStorageKey = 'emptyhell.discovery.v1';
+const routeStorageKey = 'emptyhell.route.v1';
+const savedRoute = (() => {
+  try {
+    return localStorage.getItem(routeStorageKey) === 'reached';
+  } catch {
+    return false;
+  }
+})();
 const savedDiscovery = (() => {
   try {
     const raw = localStorage.getItem(discoveryStorageKey);
@@ -496,7 +504,18 @@ function discoverSignal(id) {
   if (discoveryState.found.size === discoveryState.total) {
     routeMarker.visible = true;
     routeMarker.userData.interaction.text = 'Three receivers are answering each other. The route is no longer dormant.';
+    routeDestination.visible = true;
   }
+}
+
+function reachRouteDestination() {
+  if (routeDestination.userData.routeState === 'reached') return;
+  routeDestination.userData.routeState = 'reached';
+  routeDestination.userData.interaction.title = 'OBJECTIVE / COMPLETE';
+  routeDestination.userData.interaction.text = 'The signal reaches the edge of the active slice. Something beyond it is answering back.';
+  try {
+    localStorage.setItem(routeStorageKey, 'reached');
+  } catch {}
 }
 
 const signalNorth = interactable(
@@ -529,6 +548,19 @@ routeMarker.visible = discoveryState.found.size === discoveryState.total;
 routeMarker.userData.route = true;
 if (routeMarker.visible) {
   routeMarker.userData.interaction.text = 'Three receivers are answering each other. The route is no longer dormant.';
+}
+
+const routeDestination = interactable(
+  box(.5,1.5,.5,glassMat,205,.75,-126),
+  savedRoute ? 'OBJECTIVE / COMPLETE' : 'OBJECTIVE / FOLLOW THE SIGNAL',
+  savedRoute
+    ? 'The signal reaches the edge of the active slice. Something beyond it is answering back.'
+    : 'The route has opened. Follow the railway corridor toward the next transmission.'
+);
+routeDestination.userData.routeState = savedRoute ? 'reached' : 'open';
+routeDestination.visible = discoveryState.found.size === discoveryState.total;
+if (routeDestination.userData.routeState === 'reached') {
+  routeDestination.userData.interaction.text = 'The signal reaches the edge of the active slice. Something beyond it is answering back.';
 }
 
 updateWorldStatus();
@@ -829,6 +861,7 @@ function openInteraction(target) {
   if (!target) return;
   const data = target.userData.interaction;
   if (target.userData.signalId) discoverSignal(target.userData.signalId);
+  if (target.userData === routeDestination?.userData && target.userData.routeState === 'open') reachRouteDestination();
   interactionTitle.textContent = data.title;
   interactionText.textContent = data.text;
   interactionPanel.classList.remove('hidden');
