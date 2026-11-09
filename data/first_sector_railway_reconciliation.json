@@ -1,0 +1,99 @@
+{
+  "status": "verified",
+  "first_sector_sheet": "31H12-010-0530",
+  "park_anchor": {
+    "lat": 45.526943,
+    "lon": -73.630554
+  },
+  "official_rail_dataset": "Ville de Montréal — Voies ferrées 3D (2020)",
+  "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
+  "source_crs": "NAD83 / MTM zone 8 (EPSG:32188)",
+  "source_accuracy_planimetric_m": "±0.30 to ±0.40",
+  "park_adjacent_sheets": [
+    {
+      "sheet": "31H12-010-0430",
+      "distance_to_park_m": 215.93
+    },
+    {
+      "sheet": "31H12-010-0531",
+      "distance_to_park_m": 433.84
+    },
+    {
+      "sheet": "31H12-010-0630",
+      "distance_to_park_m": 478.64
+    },
+    {
+      "sheet": "31H12-010-0431",
+      "distance_to_park_m": 484.61
+    }
+  ],
+  "railway_intersects_first_sector_sheet": false,
+  "nearest_rail_tracks": [
+    {
+      "id": 1619,
+      "distance_to_park_m": 611.2,
+      "sheets": [
+        "31H12-010-0630",
+        "31H12-010-0531",
+        "31H12-010-0631",
+        "31H12-010-0629",
+        "31H12-010-0628",
+        "31H12-010-0728"
+      ]
+    },
+    {
+      "id": 774,
+      "distance_to_park_m": 615.1,
+      "sheets": [
+        "31H12-010-0630",
+        "31H12-010-0531",
+        "31H12-010-0631",
+        "31H12-010-0629",
+        "31H12-010-0628",
+        "31H12-010-0728"
+      ]
+    },
+    {
+      "id": 1450,
+      "distance_to_park_m": 857,
+      "sheets": [
+        "31H12-010-0431",
+        "31H12-010-0531"
+      ]
+    },
+    {
+      "id": 2399,
+      "distance_to_park_m": 861.2,
+      "sheets": [
+        "31H12-010-0431",
+        "31H12-010-0531"
+      ]
+    },
+    {
+      "id": 1490,
+      "distance_to_park_m": 869.7,
+      "sheets": [
+        "31H12-010-0431",
+        "31H12-010-0531",
+        "31H12-010-0532"
+      ]
+    },
+    {
+      "id": 435,
+      "distance_to_park_m": 874.1,
+      "sheets": [
+        "31H12-010-0431",
+        "31H12-010-0531",
+        "31H12-010-0532"
+      ]
+    },
+    {
+      "id": 1618,
+      "distance_to_park_m": 880.2,
+      "sheets": [
+        "31H12-010-0531"
+      ]
+    }
+  ],
+  "consequence": "Do not place railway track, crossing, camera barrier, or invisible rail clamp inside the 31H12-010-0530 first-sector slice. Reconcile adjacent 1:1000 sheets before railway expansion."
+}
