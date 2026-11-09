@@ -162,7 +162,7 @@ function verifiedRoadSegment(a, b, width=8.2) {
   sidewalk(1.7,length,x - Math.cos(rotation)*5.0,z + Math.sin(rotation)*5.0,rotation);
 }
 
-for (const road of VERIFIED_ROADS) verifiedRoadSegment(road.a,road.b);
+for (const road of VERIFIED_ROADS) verifiedRoadSegment(road[1],road[2]);
 
 const parkShape = new THREE.Shape();
 PARK_POLYGON.forEach(([x,z],i) => i ? parkShape.lineTo(x,z) : parkShape.moveTo(x,z));
@@ -233,7 +233,7 @@ function snowBank(x,z,w,d,h=.32) {
   bank.rotation.y = (Math.random() - .5) * .08;
 }
 for (const road of VERIFIED_ROADS) {
-  const a=road.a, b=road.b;
+  const a=road[1], b=road[2];
   const dx=b[0]-a[0], dz=b[1]-a[1], len=Math.hypot(dx,dz);
   if (len < 8) continue;
   const angle=Math.atan2(dx,dz);
@@ -244,7 +244,7 @@ for (const road of VERIFIED_ROADS) {
 }
 const tireMat = new THREE.MeshStandardMaterial({ color:0x303336, roughness:1 });
 for (const road of VERIFIED_ROADS.slice(0,14)) {
-  const a=road.a,b=road.b,dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);
+  const a=road[1],b=road[2],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);
   if(len<10) continue;
   const angle=Math.atan2(dx,dz);
   const x=(a[0]+b[0])/2,z=(a[1]+b[1])/2;
