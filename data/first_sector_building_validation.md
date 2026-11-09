@@ -55,3 +55,36 @@ The supplied 1:1000 PDF was inspected directly at vector level. The purple 1.44 
 This proves the source geometry can now be reconstructed as actual polygons rather than relying on bounding boxes.
 
 **Promotion remains blocked** until the reconstructed polygons are screened against the verified road centerlines and `PARK_POLYGON`, with source drawing IDs retained.
+
+
+## Polygon-level validation screen — 2026-11-09
+
+The PDF-to-game transform was rechecked against the game's axis convention. The correct conversion is:
+
+- `x = (page_x - 1820.841) / (72/25.4)`
+- `z = (page_y - 1556.941) / (72/25.4)`
+
+Reason: PDF page Y increases southward; MTM8 north increases northward; EMPTYHELL uses `z = -north`. Therefore the two sign inversions cancel for the game Z coordinate.
+
+This corrected sign removes the false road-crossing pattern from the earlier screen.
+
+### Actual polygon screen
+
+The 141 candidate drawings were reconstructed from their vector linework and screened against the verified runtime road centerlines and `PARK_POLYGON`.
+
+- **0 / 141** candidates intersect a verified road centerline.
+- **1 / 141** overlaps the verified park polygon: drawing **15122**.
+- **6 / 141** are under **3.0 m** from a verified road centerline.
+- **6 / 141** are between **3.0 m and 5.8 m** from a verified road centerline.
+- **129 / 141** are at least **5.8 m** from a verified road centerline.
+- **128 / 141** are provisionally clear of both the park overlap and the 5.8 m setback review threshold.
+- The 12 setback-review drawings are: `14962, 14973, 14981, 14987, 14993, 15016, 15056, 15075, 15083, 15093, 15099, 15112`.
+- Park-overlap hold: `15122`.
+
+### Decision
+
+**GEOMETRY SCREEN: GREEN WITH 13 REVIEW HOLDS.**
+
+The 128 provisional passes are **not yet promoted**. Their actual polygon coordinates must be serialized into the runtime source, then the game must run build/browser/collision QA. The 12 setback cases and park-overlap case remain explicitly held until reviewed.
+
+This is a materially stronger gate than the previous bounding-box screen because it uses reconstructed vector polygons rather than candidate bounding boxes.
