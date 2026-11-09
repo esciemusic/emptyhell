@@ -287,9 +287,6 @@ addEventListener('keydown', event => {
     togglePause(!pauseOpen);
     return;
   }
-  if (event.code === 'KeyM' && !pauseOpen) {
-    togglePause(true);
-  }
 });
 
 addEventListener('keyup', event => keys.delete(event.code));
