@@ -176,7 +176,8 @@ function lamp(x,z) {
   Source: Ville de Montréal road centerlines + Parc du Centenaire polygon.
   Local origin: official Parc du Centenaire anchor.
   Coordinates: x=east, z=-north, metres.
-  Railway is intentionally absent: the verified 1:1000 sheet contains no rail corridor.
+  Railway geometry is loaded separately from the verified municipal railway layer.
+  The 1:1000 building sheet remains a building/parcel source only.
 */
 
 function footprintBuilding(points, h, mat=brickMat) {
@@ -265,6 +266,106 @@ parkMesh.position.y = .14;
 parkMesh.receiveShadow = false;
 scene.add(parkMesh);
 
+// VERIFIED RAILWAY LAYER
+// Primary source: Ville de Montréal Voies ferrées 3D 2020 / CARTO-FER-VOIE.
+// Runtime layer has already passed the two-source reconciliation gate.
+// One municipal "En construction" feature is held out; Québec-only reference
+// segments do not override the authoritative Montréal geometry.
+const railBedMat = new THREE.MeshStandardMaterial({ color:0x25282b, roughness:.96, metalness:.04 });
+const railMat = new THREE.MeshStandardMaterial({ color:0x62676b, roughness:.42, metalness:.72 });
+const sleeperMat = new THREE.MeshStandardMaterial({ color:0x3a302a, roughness:.95, metalness:.02 });
+
+function addRailPolyline(points) {
+  if (!Array.isArray(points) || points.length < 2) return;
+  const clean = points.filter(p => Array.isArray(p) && p.length >= 2 && Number.isFinite(p[0]) && Number.isFinite(p[1]));
+  if (clean.length < 2) return;
+
+  const bed = [];
+  const leftRail = [];
+  const rightRail = [];
+  const sleepers = [];
+
+  for (let i=0;i<clean.length;i++) {
+    const prev = clean[Math.max(0,i-1)];
+    const next = clean[Math.min(clean.length-1,i+1)];
+    const tx = next[0]-prev[0], tz = next[1]-prev[1];
+    const len = Math.hypot(tx,tz) || 1;
+    const nx = -tz/len, nz = tx/len;
+    bed.push([clean[i][0]-nx*1.35, clean[i][1]-nz*1.35], [clean[i][0]+nx*1.35, clean[i][1]+nz*1.35]);
+    leftRail.push([clean[i][0]-nx*.72, .19, clean[i][1]-nz*.72]);
+    rightRail.push([clean[i][0]+nx*.72, .19, clean[i][1]+nz*.72]);
+  }
+
+  const bedPositions=[];
+  for(let i=0;i<clean.length-1;i++){
+    const a=bed[i*2], b=bed[i*2+2], c=bed[i*2+3], d=bed[i*2+1];
+    bedPositions.push(a[0],.07,a[1], b[0],.07,b[1], d[0],.07,d[1], b[0],.07,b[1], c[0],.07,c[1], d[0],.07,d[1]);
+  }
+  const bedGeom=new THREE.BufferGeometry();
+  bedGeom.setAttribute('position',new THREE.Float32BufferAttribute(bedPositions,3));
+  bedGeom.computeVertexNormals();
+  const bedMesh=new THREE.Mesh(bedGeom,railBedMat);
+  bedMesh.receiveShadow=true;
+  scene.add(bedMesh);
+
+  function addRailLine(points) {
+    const geom=new THREE.BufferGeometry();
+    geom.setAttribute('position',new THREE.Float32BufferAttribute(points.flat(),3));
+    const line=new THREE.Line(geom,railMat);
+    line.frustumCulled=true;
+    scene.add(line);
+  }
+  addRailLine(leftRail);
+  addRailLine(rightRail);
+
+  let total=0;
+  for(let i=0;i<clean.length-1;i++) total += Math.hypot(clean[i+1][0]-clean[i][0],clean[i+1][1]-clean[i][1]);
+  const sleeperCount=Math.max(1,Math.floor(total/5));
+  const sleeperGeom=new THREE.BoxGeometry(2.25,.12,.18);
+  const inst=new THREE.InstancedMesh(sleeperGeom,sleeperMat,sleeperCount);
+  inst.castShadow=true;
+  inst.receiveShadow=true;
+  const matrix=new THREE.Matrix4();
+  let distance=0, nextSleeper=2.5, index=0;
+  for(let i=0;i<clean.length-1 && index<sleeperCount;i++){
+    const ax=clean[i][0], az=clean[i][1], bx=clean[i+1][0], bz=clean[i+1][1];
+    const dx=bx-ax, dz=bz-az, seg=Math.hypot(dx,dz);
+    if(!seg) continue;
+    while(nextSleeper <= distance+seg && index<sleeperCount){
+      const t=(nextSleeper-distance)/seg;
+      const x=ax+dx*t, z=az+dz*t;
+      const angle=Math.atan2(dx,dz);
+      matrix.compose(new THREE.Vector3(x,.13,z),new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),angle),new THREE.Vector3(1,1,1));
+      inst.setMatrixAt(index++,matrix);
+      nextSleeper+=5;
+    }
+    distance+=seg;
+  }
+  inst.count=index;
+  inst.instanceMatrix.needsUpdate=true;
+  scene.add(inst);
+}
+
+async function loadVerifiedRailway() {
+  try {
+    const response=await fetch('./data/first_sector_railway_runtime.json',{cache:'no-store'});
+    if(!response.ok) throw new Error('railway layer HTTP '+response.status);
+    const data=await response.json();
+    for(const feature of data.features || []) {
+      const geometry=feature.geometry_local_m;
+      if(!geometry) continue;
+      if(geometry.type==='LineString') addRailPolyline(geometry.coordinates);
+      if(geometry.type==='MultiLineString') {
+        for(const line of geometry.coordinates || []) addRailPolyline(line);
+      }
+    }
+    console.info('EMPTYHELL railway layer loaded',data.metadata || {});
+  } catch(error) {
+    console.error('EMPTYHELL railway layer failed to load',error);
+  }
+}
+loadVerifiedRailway();
+
 // Verified park perimeter, kept as low concrete edging.
 // Do not use the road helper here: it would incorrectly create sidewalks around the park.
 for (let i=0;i<PARK_POLYGON.length-1;i++) {
@@ -331,7 +432,7 @@ sliceEdge((WORLD.minX+WORLD.maxX)/2,WORLD.maxZ, WORLD.maxX-WORLD.minX,.8);
 sliceEdge(WORLD.minX,(WORLD.minZ+WORLD.maxZ)/2,.8,WORLD.maxZ-WORLD.minZ);
 sliceEdge(WORLD.maxX,(WORLD.minZ+WORLD.maxZ)/2,.8,WORLD.maxZ-WORLD.minZ);
 
-// No railway mesh, railway camera clamp, or guessed crossing is present in this slice.
+// Railway geometry is authoritative data; no guessed crossing or railway camera clamp is used.
 
 // Winter surface details: road-edge snow follows the verified street segments.
 function snowBank(x,z,w,d,h=.32) {
