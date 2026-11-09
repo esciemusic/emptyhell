@@ -376,3 +376,26 @@ Verified after the geometry rebuild:
 - railway collision/camera barriers remain absent from the rebuilt first sector.
 
 This is a static traversal/collision gate, not a substitute for hands-on browser traversal. Next gate is visual/playable traversal inspection, then verified frontage/building geometry.
+
+## Browser/playable traversal QA — PASS 2
+
+Automated Chromium inspection now passes on the rebuilt first sector:
+- WebGL canvas boots successfully;
+- loading shell clears;
+- HUD/control shell renders;
+- M opens the map overlay and the verified Parc du Centenaire label is present;
+- Escape opens the pause state;
+- WASD movement input is accepted without a page/runtime error;
+- spawn, map and pause screenshots are captured as the browser-QA artifact.
+
+A real runtime defect found during this pass was fixed: the verified road dataset is stored as [name, start, end] arrays, while the renderer was reading road.a / road.b. That mismatch stopped the initialization path before the loading overlay could clear. The renderer now reads the persisted verified segment structure correctly.
+
+Another control defect was fixed at the same time: two keydown handlers were competing for M, causing the pause state to intercept the map command. M now reaches the dedicated map handler.
+
+Current gate:
+- Browser boot: GREEN
+- Map: GREEN
+- Pause: GREEN
+- Movement input: GREEN
+- Runtime initialization: GREEN
+- Human visual traversal: still required before calling the slice production-ready
