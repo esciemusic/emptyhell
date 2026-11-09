@@ -598,6 +598,7 @@ const powerAccess = interactable(
 );
 powerAccess.visible = powerRestored;
 powerAccess.userData.accessState = accessOpen ? 'open' : (powerRestored ? 'active' : 'locked');
+if (accessOpen) powerAccess.position.y += 2.6;
 const powerAccessCollider = { minX:381.3, maxX:382.7, minZ:-204.08, maxZ:-203.92 }; 
 if (!accessOpen && powerRestored) colliders.push(powerAccessCollider);
 
@@ -609,6 +610,7 @@ function activatePowerAccess() {
   if (!powerRestored || powerAccess.userData.accessState !== 'active') return;
   powerAccess.userData.accessState = 'open';
   accessOpen = true;
+  powerAccess.position.y += 2.6;
   const index = colliders.indexOf(powerAccessCollider);
   if (index >= 0) colliders.splice(index, 1);
   powerAccess.userData.interaction.title = 'ACCESS / OPEN';
