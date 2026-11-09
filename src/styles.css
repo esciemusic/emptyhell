@@ -7,6 +7,10 @@
 .touch-actions { position:absolute; right:18px; bottom:22px; display:flex; gap:9px; pointer-events:auto; }
 .touch-action { width:48px; height:48px; border:1px solid rgba(216,212,202,.28); border-radius:50%; background:rgba(5,5,5,.5); color:var(--paper); font:600 11px Inter,system-ui,sans-serif; letter-spacing:.08em; }
 .touch-action:active { background:rgba(47,128,255,.2); border-color:rgba(47,128,255,.7); }
+@media (pointer:fine) {
+  .mobile-controls { display:none !important; }
+}
+
 @media (max-width:600px), (pointer:coarse) {
   .mobile-controls { display:block; }
   .hud-hint { display:none; }
