@@ -236,3 +236,25 @@ The resource page confirms that the file may not render inline because of its si
 This is now a **file-access blocker**, not a source-identification blocker.
 
 **No game coordinates changed. No railway geometry changed.**
+
+
+### Uploaded 1:1000 sheet audit — 31H12-010-0530 (2017–2022) — 2026-11-09
+
+A user-supplied municipal **1:1000 Compilation cartographique** sheet was inspected directly:
+- Sheet identifier: **31H12-010-0530**
+- File: `31H12-010-0530_2017-2022.pdf`
+- The map visibly contains the first-sector street fabric needed for the current blockout, including **Saint-Roch, Stuart, Wiseman, Durocher, Bloomfield, Champagneur, De l'Épée, Querbes, D'Outremont, Ball, Ogilvy** and surrounding blocks.
+- **Parc du Centenaire-de-Parc-Extension** is explicitly mapped at the **Saint-Roch / Stuart** relationship used by the current first-sector design.
+- The sheet includes detailed municipal building footprints, sidewalks/curb context, vegetation, street corridors and other 1:1000 cartographic layers.
+- The sheet legend includes railway-related symbology such as **voie ferrée**, **pont et viaduc ferroviaire**, **passage à niveau**, **barrière au passage à niveau**, and **lanterne au passage à niveau**.
+- In the inspected map extent, however, the railway centerline/corridor needed for the current provisional railway mesh is **not visibly present as a mapped rail corridor**. Therefore this sheet is sufficient as a verified street/park/frontage reference, but **not sufficient by itself to replace the provisional railway geometry**.
+- The sheet's cartographic metadata states planimetric accuracy of approximately **±30–40 cm** and altimetric accuracy of approximately **±45–60 cm**; the sheet also identifies its cartographic edition as May 2019.
+
+Implementation decision:
+1. Treat 31H12-010-0530 as a **verified first-sector street/park/frontage source**.
+2. Do not derive railway coordinates from the absence/presence of legend symbols on this sheet.
+3. Do not change the existing railway mesh or camera boundary yet.
+4. Acquire the adjacent/current 1:1000 sheet that actually contains the railway corridor and the Ogilvy / De Castelnau crossing.
+5. Once that sheet is identified, use the two source sheets together to reconcile the first-sector street network, railway alignment and crossings before replacing the provisional geometry.
+
+**Gate:** 31H12-010-0530 STREET/PARK SOURCE CONFIRMED / RAILWAY SOURCE STILL PENDING.
