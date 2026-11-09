@@ -80,6 +80,39 @@ function addCollider(x, z, w, d, mesh=null) {
   if (mesh) collisionMeshes.push(mesh);
 }
 
+function addPolygonCollider(points, mesh=null) {
+  const clean = points.filter((p,i) => i === 0 || p[0] !== points[i-1][0] || p[1] !== points[i-1][1]);
+  const xs = clean.map(p => p[0]), zs = clean.map(p => p[1]);
+  polygonColliders.push({
+    points: clean,
+    minX: Math.min(...xs) - playerRadius,
+    maxX: Math.max(...xs) + playerRadius,
+    minZ: Math.min(...zs) - playerRadius,
+    maxZ: Math.max(...zs) + playerRadius
+  });
+  if (mesh) collisionMeshes.push(mesh);
+}
+
+function pointInPolygon(x, z, points) {
+  let inside = false;
+  for (let i=0, j=points.length-1; i<points.length; j=i++) {
+    const [xi,zi]=points[i], [xj,zj]=points[j];
+    const intersects = ((zi > z) !== (zj > z)) &&
+      (x < (xj-xi) * (z-zi) / ((zj-zi) || Number.EPSILON) + xi);
+    if (intersects) inside = !inside;
+  }
+  return inside;
+}
+
+function pointSegmentDistanceSq(px,pz,ax,az,bx,bz) {
+  const vx=bx-ax, vz=bz-az;
+  const wx=px-ax, wz=pz-az;
+  const lenSq=vx*vx+vz*vz;
+  const t=lenSq ? THREE.MathUtils.clamp((wx*vx+wz*vz)/lenSq,0,1) : 0;
+  const dx=px-(ax+t*vx), dz=pz-(az+t*vz);
+  return dx*dx+dz*dz;
+}
+
 function building(w,d,h,x,z,mat=brickMat) {
   const b = box(w,h,d,mat,x,h/2,z);
   const roof = box(w+.12,.12,d+.12,darkMat,x,h+.06,z);
@@ -169,7 +202,7 @@ function footprintBuilding(points, h, mat=brickMat) {
   const xs = points.map(p => p[0]), zs = points.map(p => p[1]);
   const minX=Math.min(...xs), maxX=Math.max(...xs), minZ=Math.min(...zs), maxZ=Math.max(...zs);
   const w=maxX-minX, d=maxZ-minZ;
-  addCollider((minX+maxX)/2, (minZ+maxZ)/2, w, d, mesh);
+  addPolygonCollider(points, mesh);
 
   // Restrained Montréal residential facade language: windows, entries, and roof hardware.
   const rows=Math.max(2,Math.floor(h/3.2));
@@ -387,6 +420,14 @@ function collidesAt(x, z) {
     const dx = x - closestX;
     const dz = z - closestZ;
     if (dx * dx + dz * dz < playerRadius * playerRadius) return true;
+  }
+  for (const c of polygonColliders) {
+    if (x < c.minX || x > c.maxX || z < c.minZ || z > c.maxZ) continue;
+    if (pointInPolygon(x, z, c.points)) return true;
+    for (let i=0; i<c.points.length; i++) {
+      const a=c.points[i], b=c.points[(i+1)%c.points.length];
+      if (pointSegmentDistanceSq(x,z,a[0],a[1],b[0],b[1]) < playerRadius*playerRadius) return true;
+    }
   }
   return false;
 }
