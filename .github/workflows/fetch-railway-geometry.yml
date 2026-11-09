@@ -104,6 +104,33 @@ jobs:
           if qg is None:
               raise SystemExit("No Québec railway geometry intersects the target.")
 
+          # Compare individual features instead of using a union Hausdorff score.
+          # A union score can be dominated by a legitimate municipal siding/branch
+          # that is represented differently in the provincial network.
+          primary_feature_distances=[]
+          for f in montreal_features:
+              g=shape(f["geometry_mtm8"])
+              primary_feature_distances.append(float(g.distance(qg)))
+
+          reference_feature_distances=[]
+          for f in q_features:
+              g=shape(f["geometry_mtm8"])
+              reference_feature_distances.append(float(g.distance(mg)))
+
+          def band(v):
+              if v <= 2.0: return "MATCH_0_2M"
+              if v <= 10.0: return "NEAR_2_10M"
+              return "UNMATCHED_GT_10M"
+
+          def stats(values):
+              return {
+                  "count":len(values),
+                  "matched_le_2m":sum(v <= 2.0 for v in values),
+                  "near_2_to_10m":sum(2.0 < v <= 10.0 for v in values),
+                  "unmatched_gt_10m":sum(v > 10.0 for v in values),
+                  "max_distance_m":max(values) if values else None
+              }
+
           report={
               "status":"RECONCILIATION_REVIEW",
               "target_bbox_wgs84":[-73.640,45.515,-73.615,45.545],
@@ -122,9 +149,13 @@ jobs:
                   }
               },
               "geometry_comparison_m":{
-                  "hausdorff_distance":float(mg.hausdorff_distance(qg)),
-                  "intersection_length":float(mg.intersection(qg).length),
-                  "union_length":float(mg.union(qg).length)
+                  "feature_distance_method":"minimum planar distance in MTM8 metres",
+                  "tolerance_m":2.0,
+                  "montreal_primary_to_quebec":stats(primary_feature_distances),
+                  "quebec_to_montreal_primary":stats(reference_feature_distances),
+                  "union_intersection_length_m":float(mg.intersection(qg).length),
+                  "union_length_m":float(mg.union(qg).length),
+                  "legacy_union_hausdorff_distance_m":float(mg.hausdorff_distance(qg))
               },
               "runtime_promotion":"BLOCKED_PENDING_RECONCILIATION_REVIEW"
           }
