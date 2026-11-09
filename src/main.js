@@ -655,7 +655,7 @@ const sublevelReceiver = interactable(
       : 'The first sound below is not mechanical. Something is transmitting through the structure.')
 );
 sublevelReceiver.visible = sublevelEntered;
-sublevelReceiver.userData.sublevelState = sublevelEntered ? 'entered' : 'locked';
+sublevelReceiver.userData.sublevelState = lowerSignalHeard ? 'heard' : (sublevelEntered ? 'entered' : 'locked');
 const powerAccess = interactable(
   box(1.4,2.3,.16,darkMat,382,1.15,-204),
   accessOpen ? 'ACCESS / OPEN' : (powerRestored ? 'ACCESS / POWERED' : 'ACCESS / LOCKED'),
