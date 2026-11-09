@@ -191,7 +191,6 @@ test('EMPTYHELL restores the playable sublevel position', async ({ page }) => {
     localStorage.setItem('emptyhell.sublevel.v1', 'entered');
   });
   await page.reload({ waitUntil: 'networkidle' });
-  const position = await page.evaluate(() => ({ x: window.__emptyhellPlayer?.x ?? null, z: window.__emptyhellPlayer?.z ?? null }));
   await expect(page.locator('#world-status')).toContainText('SIGNAL BELOW');
   expect(errors).toEqual([]);
 });
