@@ -12,22 +12,37 @@
   ],
   "local_transform": "x=east_mtm8_delta, z=-north_mtm8_delta",
   "sources": {
-    "montreal": {
-      "dataset_id": "30028e66-e3b1-4478-8349-149b7c046932",
-      "resource_id": "d2d8d721-208d-4a4d-b016-24567862e638",
-      "url": "https://donnees.montreal.ca/fr/dataset/30028e66-e3b1-4478-8349-149b7c046932/resource/d2d8d721-208d-4a4d-b016-24567862e638/download/reseauferroviaire.geojson",
-      "feature_count": 21
+    "montreal_3d": {
+      "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
+      "resource_id": "1b32d325-411f-43c2-bd48-ef8db0684e62",
+      "layer": "carto_fer_voie",
+      "feature_count": 22
     },
-    "quebec": {
+    "quebec_network": {
       "dataset_id": "c2c4f386-a736-4eaa-b5b6-28c3a8f75466",
-      "url": "https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=2.0.0&request=getfeature&typename=ms:reseau_chfer_qc&outfile=ReseauFerroviaire&srsname=EPSG:4326&outputformat=geojson",
       "feature_count": 30
     }
   },
   "geometry_comparison_m": {
-    "hausdorff_distance": 4304.638163419528,
-    "intersection_length": 0.0,
-    "union_length": 51843.915316409904
+    "feature_distance_method": "minimum planar distance in MTM8 metres",
+    "tolerance_m": 2.0,
+    "montreal_primary_to_quebec": {
+      "count": 22,
+      "matched_le_2m": 20,
+      "near_2_to_10m": 1,
+      "unmatched_gt_10m": 1,
+      "max_distance_m": 40.66151489389178
+    },
+    "quebec_to_montreal_primary": {
+      "count": 30,
+      "matched_le_2m": 27,
+      "near_2_to_10m": 2,
+      "unmatched_gt_10m": 1,
+      "max_distance_m": 20.20007672840067
+    },
+    "union_intersection_length_m": 0.0,
+    "union_length_m": 35005.32419638593,
+    "legacy_union_hausdorff_distance_m": 3701.043795030694
   },
-  "note": "No railway geometry is promoted into EMPTYHELL runtime from this pass. The two authoritative datasets are reconciled first; runtime promotion remains gated."
+  "runtime_promotion": "BLOCKED_PENDING_RECONCILIATION_REVIEW"
 }
