@@ -428,3 +428,23 @@ The verified frontage buildings now use their traced polygon footprints for play
 - Browser QA: GREEN — run 42659954740.
 
 The next fidelity gate remains source-backed building coverage across the rest of the loaded first sector. No unsupported building footprints or railway geometry are being added.
+
+
+### 1:1000 building-footprint extraction — PASS 5A (source extraction only)
+
+The supplied **31H12-010-0530 (2017–2022)** 1:1000 compilation sheet has now been processed as vector source data rather than traced only by eye.
+
+Extraction result:
+- Purple 1.44 pt municipal building-outline candidates inside/overlapping the current EMPTYHELL world window: **141**.
+- Candidate records preserve the source drawing identifier, page-derived local bounding box, area and perimeter.
+- The extraction uses the sheet's 1:1000 scale and the measured centroid of the sheet's orange park outline as a provisional page calibration.
+- The extraction tool is stored at `tools/extract-1000-sheet-footprints.py`.
+- Candidate manifest is stored at `data/31H12-010-0530_building_candidates.json`.
+
+**Important gate:** these 141 candidates are **NOT yet promoted into game geometry**. The page calibration still has to be tied to an authoritative MTM8 point and each promoted polygon must pass road-overlap / park-overlap / collision QA. This prevents a visually convincing but geographically shifted building layer from entering the production slice.
+
+The current 12 source-traced frontage footprints remain the only building geometry promoted into the game.
+
+**Gate:** VECTOR EXTRACTION GREEN / GEOREFERENCE VALIDATION PENDING / GAME GEOMETRY UNCHANGED.
+
+Next operation: use the authoritative MTM8 road/park geometry to solve the PDF-to-local transform, then promote only validated polygons and rerun build + browser QA.
