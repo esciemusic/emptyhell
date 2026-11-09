@@ -463,8 +463,19 @@ interactable(
   'A park artwork marker. The first slice records the place without turning it into exposition.'
 );
 
+const discoveryStorageKey = 'emptyhell.discovery.v1';
+const savedDiscovery = (() => {
+  try {
+    const raw = localStorage.getItem(discoveryStorageKey);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+})();
+
 const discoveryState = {
-  found: new Set(),
+  found: new Set(savedDiscovery),
   total: 3
 };
 const worldStatus = document.querySelector('#world-status');
@@ -478,6 +489,9 @@ function updateWorldStatus() {
 
 function discoverSignal(id) {
   discoveryState.found.add(id);
+  try {
+    localStorage.setItem(discoveryStorageKey, JSON.stringify([...discoveryState.found]));
+  } catch {}
   updateWorldStatus();
   if (discoveryState.found.size === discoveryState.total) {
     routeMarker.visible = true;
@@ -511,8 +525,11 @@ const routeMarker = interactable(
   'ROUTE / OPEN',
   'The three signals converge here. The route is dormant until all three are found.'
 );
-routeMarker.visible = false;
+routeMarker.visible = discoveryState.found.size === discoveryState.total;
 routeMarker.userData.route = true;
+if (routeMarker.visible) {
+  routeMarker.userData.interaction.text = 'Three receivers are answering each other. The route is no longer dormant.';
+}
 
 updateWorldStatus();
 
