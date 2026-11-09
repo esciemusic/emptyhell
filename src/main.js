@@ -405,7 +405,8 @@ player.add(body);
 scene.add(player);
 
 // Spawn near the Saint-Roch / Stuart / park area.
-// Spawn at the Saint-Roch-facing edge of the park, not inside the park geometry.\nplayer.position.set(63,0,36);
+// Spawn at the Saint-Roch-facing edge of the park, not inside the park geometry.
+player.position.set(63,0,36);
 
 const playerRadius = 0.48;
 const testPosition = new THREE.Vector3();
