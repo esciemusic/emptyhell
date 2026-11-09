@@ -493,6 +493,7 @@ const accessStorageKey = 'emptyhell.access.v1';
 const chamberStorageKey = 'emptyhell.chamber.v1';
 const descentStorageKey = 'emptyhell.descent.v1';
 const sublevelStorageKey = 'emptyhell.sublevel.v1';
+const lowerSignalStorageKey = 'emptyhell.lower-signal.v1';
 const savedEncounter = (() => {
   try {
     return localStorage.getItem(encounterStorageKey) === 'complete';
@@ -550,6 +551,8 @@ const savedDescent = (() => { try { return localStorage.getItem(descentStorageKe
 let descentOpen = savedDescent;
 const savedSublevel = (() => { try { return localStorage.getItem(sublevelStorageKey) === 'entered'; } catch { return false; } })();
 let sublevelEntered = savedSublevel;
+const savedLowerSignal = (() => { try { return localStorage.getItem(lowerSignalStorageKey) === 'heard'; } catch { return false; } })();
+let lowerSignalHeard = savedLowerSignal;
 warm.intensity = powerRestored ? 24 : 18;
 const savedDiscovery = (() => {
   try {
@@ -637,16 +640,18 @@ addCollider(382,-243,6,.22,lowerGate);
 const lowerLamp=new THREE.PointLight(0x6b45c8,.85,9,2);
 lowerLamp.position.set(382,2.35,-228);
 scene.add(lowerLamp);
-const lowerPulseLamp=new THREE.PointLight(0x7b5cff,0,8,2);
+const lowerPulseLamp=new THREE.PointLight(0x7b5cff,lowerSignalHeard ? .9 : 0,8,2);
 lowerPulseLamp.position.set(382,1.7,-240);
 scene.add(lowerPulseLamp);
 
 const sublevelReceiver = interactable(
   box(.7,1.3,.5,darkMat,382,1.1,-228),
-  sublevelEntered ? 'SIGNAL / BELOW' : 'SIGNAL / DESCEND',
-  sublevelEntered
-    ? 'The lower receiver is still transmitting. The active slice ends here, but the signal does not.'
-    : 'The first sound below is not mechanical. Something is transmitting through the structure.'
+  lowerSignalHeard ? 'SIGNAL / HEARD' : (sublevelEntered ? 'SIGNAL / BELOW' : 'SIGNAL / DESCEND'),
+  lowerSignalHeard
+    ? 'The lower receiver answers once. The gate ahead is carrying the same signal.'
+    : (sublevelEntered
+      ? 'The lower receiver is still transmitting. The active slice ends here, but the signal does not.'
+      : 'The first sound below is not mechanical. Something is transmitting through the structure.')
 );
 sublevelReceiver.visible = sublevelEntered;
 sublevelReceiver.userData.sublevelState = sublevelEntered ? 'entered' : 'locked';
@@ -716,7 +721,9 @@ function completeSublevelSignal() {
   sublevelReceiver.userData.interaction.title = 'SIGNAL / HEARD';
   sublevelReceiver.userData.interaction.text = 'The lower receiver answers once. The gate ahead is carrying the same signal.';
   lowerPulseLamp.intensity = .9;
+  lowerSignalHeard = true;
   lowerGate.userData = { ...(lowerGate.userData || {}), powered: true };
+  try { localStorage.setItem(lowerSignalStorageKey, 'heard'); } catch {}
   const index = colliders.indexOf(lowerGate);
   if (index >= 0) colliders.splice(index, 1);
   lowerGate.position.y = 3.1;
