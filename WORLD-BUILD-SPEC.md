@@ -212,3 +212,13 @@ Operational sequence is therefore locked:
 Important: the SQRC grid identifies sheet coverage; it does **not** by itself supply the railway geometry. No game coordinates are to be derived from the grid alone.
 
 **Gate:** SHEET-INDEX IDENTIFIED / EXACT SHEET + GEOMETRY EXTRACTION PENDING.
+
+### SQRC index access audit — 2026-11-09
+
+The ARTM catalogue page was rechecked. It still explicitly identifies the SQRC 1:1000 sheet breakdown and the interactive sheet-based cartography tool. The catalogue page's direct SQRC index link currently resolves to a 404 through the available retrieval path, so the exact sheet identifier cannot yet be responsibly recorded from that link.
+
+The 2024 cartography resources remain confirmed at 1:1000 and include Villeray–Saint-Michel–Parc-Extension.
+
+**Decision:** do not infer a sheet number from street names, visual maps, or approximate coordinates. The exact sheet identifier remains pending access to the working SQRC index/viewer.
+
+**Gate:** AUTHORITATIVE SOURCE VERIFIED / SQRC LINK PATH BLOCKED / GEOMETRY UNTOUCHED.
