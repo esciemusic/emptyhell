@@ -463,6 +463,47 @@ interactable(
   'A park artwork marker. The first slice records the place without turning it into exposition.'
 );
 
+const discoveryState = {
+  found: new Set(),
+  total: 3
+};
+const worldStatus = document.querySelector('#world-status');
+
+function updateWorldStatus() {
+  if (worldStatus) {
+    const count = discoveryState.found.size;
+    worldStatus.textContent = `SIGNALS ${count} / ${discoveryState.total} · ${count === discoveryState.total ? 'ROUTE OPEN' : 'WORLD STATE ACTIVE'}`;
+  }
+}
+
+function discoverSignal(id) {
+  discoveryState.found.add(id);
+  updateWorldStatus();
+}
+
+const signalNorth = interactable(
+  box(.35,1.1,.35,darkMat,-42,.55,15),
+  'SIGNAL / NORTH',
+  'A small receiver fixed to the edge of the street. It has power, but no readable message.'
+);
+signalNorth.userData.signalId = 'north';
+
+const signalEast = interactable(
+  box(.35,1.1,.35,darkMat,74,.55,-18),
+  'SIGNAL / EAST',
+  'A second receiver. The indicator is still warm. Whatever passed through here was recent.'
+);
+signalEast.userData.signalId = 'east';
+
+const signalRail = interactable(
+  box(.35,1.1,.35,darkMat,166,.55,-103),
+  'SIGNAL / RAIL',
+  'A receiver near the railway corridor. The casing is marked, but the marking is not a name.'
+);
+signalRail.userData.signalId = 'rail';
+
+updateWorldStatus();
+
 // Verified frontage-derived massing from Ville de Montréal compilation sheet 31H12-010-0530.
 // The footprints are traced from the official 1:1000 building outlines; height remains visual massing,
 // not a claim about municipal storey/height attributes. The current slice starts with the closest
@@ -758,6 +799,7 @@ function updateInteraction() {
 function openInteraction(target) {
   if (!target) return;
   const data = target.userData.interaction;
+  if (target.userData.signalId) discoverSignal(target.userData.signalId);
   interactionTitle.textContent = data.title;
   interactionText.textContent = data.text;
   interactionPanel.classList.remove('hidden');
