@@ -460,17 +460,30 @@ The next building operation is to solve the PDF-to-local transform against autho
 Audit record: `data/first_sector_building_validation.md`.
 
 
-## 1:1000 building transform — SOLVED (2026-11-09)
-The page-to-local transform for sheet 31H12-010-0530 is now explicitly tied to the authoritative Parc du Centenaire MTM8 anchor.
+## 1:1000 building transform — SOLVED / SIGN CORRECTED (2026-11-09)
+The page-to-local transform for sheet 31H12-010-0530 is explicitly tied to the authoritative Parc du Centenaire MTM8 anchor.
 
-- Page anchor: `[1820.841, 1556.941]` points
-- Authoritative MTM8 anchor: `[294602.04000401904, 5043011.143267743]`
-- Local anchor: `[0, 0]`
-- Scale: `72 / 25.4` PDF points per metre
-- Axis: `x = east`, `z = -north`
+- Page anchor: [1820.841, 1556.941] points
+- Authoritative MTM8 anchor: [294602.04000401904, 5043011.143267743]
+- Local anchor: [0, 0]
+- Scale: 72 / 25.4 PDF points per metre
+- Axis: x = east, z = -north
+- Correct game transform: x = (page_x - 1820.841) / (72/25.4); z = (page_y - 1556.941) / (72/25.4)
+- No arbitrary rotation or visual adjustment.
 
-This is a translation/scale calibration for the north-up 1:1000 sheet; no arbitrary rotation or visual adjustment was introduced.
+The sign is important: PDF Y increases southward, MTM8 north increases northward, and EMPTYHELL uses z = -north. The two sign inversions therefore cancel for game Z.
 
-A post-calibration screen found 2 candidate bounding boxes overlapping the verified park polygon and 38 whose nearest bounding-box corner is within 3 m of a verified road centerline. These are **screening flags only** because the current candidate manifest does not retain polygon vertices. They must not be promoted until polygon-level reconstruction and setback/park-overlap QA are complete.
+The polygon-level validation screen now uses reconstructed vector geometry rather than candidate bounding boxes:
 
-**Gate:** PDF-TO-MTM8 TRANSFORM GREEN / CANDIDATE SCREEN COMPLETE / POLYGON VALIDATION PENDING / PROMOTION BLOCKED.
+- 0 / 141 candidates intersect a verified runtime road centerline.
+- 1 / 141 overlaps the verified park polygon: drawing 15122.
+- 6 / 141 are under 3 m from a verified road centerline.
+- 6 / 141 are between 3 m and 5.8 m.
+- 129 / 141 are at least 5.8 m from a verified road centerline.
+- 128 / 141 are provisionally clear of the park overlap and setback review threshold.
+- 12 setback-review drawings: 14962, 14973, 14981, 14987, 14993, 15016, 15056, 15075, 15083, 15093, 15099, 15112.
+- Park-overlap hold: 15122.
+
+The 128 provisional passes remain outside runtime until their actual polygons are serialized with source drawing IDs and pass build/browser/irregular-footprint collision QA.
+
+**Gate:** TRANSFORM GREEN / POLYGON SCREEN GREEN / 13 REVIEW HOLDS / RUNTIME PROMOTION BLOCKED.
