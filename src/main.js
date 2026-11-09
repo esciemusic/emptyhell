@@ -1151,6 +1151,12 @@ for (const p of [[-34,30],[22,45],[65,-5],[112,-52],[165,-105],[250,60]]) lamp(p
 
 // Player placeholder — temporary until the first character asset.
 const keys = new Set();
+const touchDevice = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+const touchAxes = { x: 0, z: 0 };
+let touchLookId = null;
+let touchStickId = null;
+let touchLookX = 0;
+let touchLookY = 0;
 
 addEventListener('keydown', event => {
   keys.add(event.code);
@@ -1229,7 +1235,12 @@ function togglePause(open) {
 }
 
 function lockGame() {
-  if (!pauseOpen) renderer.domElement.requestPointerLock();
+  if (pauseOpen) return;
+  if (touchDevice) {
+    locked = true;
+    return;
+  }
+  renderer.domElement.requestPointerLock();
 }
 
 renderer.domElement.addEventListener('click', lockGame);
@@ -1238,10 +1249,95 @@ document.addEventListener('pointerlockchange', () => {
   if (!locked && !pauseOpen) togglePause(true);
 });
 document.addEventListener('mousemove', e => {
-  if (!locked || pauseOpen) return;
+  if (!locked || pauseOpen || touchDevice) return;
   yaw -= e.movementX * 0.0025;
   pitch -= e.movementY * 0.0018;
   pitch = THREE.MathUtils.clamp(pitch, -0.05, 0.65);
+});
+
+const touchStick = document.querySelector('#touch-stick');
+const touchKnob = document.querySelector('#touch-knob');
+const touchLook = document.querySelector('#touch-look');
+const touchInteract = document.querySelector('#touch-interact');
+const touchMap = document.querySelector('#touch-map');
+const touchPause = document.querySelector('#touch-pause');
+
+function resetTouchStick() {
+  touchAxes.x = 0;
+  touchAxes.z = 0;
+  touchKnob.style.transform = 'translate(0, 0)';
+}
+
+touchStick?.addEventListener('pointerdown', event => {
+  if (!touchDevice) return;
+  event.preventDefault();
+  touchStickId = event.pointerId;
+  touchStick.setPointerCapture(event.pointerId);
+  lockGame();
+});
+
+touchStick?.addEventListener('pointermove', event => {
+  if (event.pointerId !== touchStickId) return;
+  const rect = touchStick.getBoundingClientRect();
+  const max = rect.width * .34;
+  const dx = event.clientX - (rect.left + rect.width / 2);
+  const dy = event.clientY - (rect.top + rect.height / 2);
+  const distance = Math.hypot(dx, dy) || 1;
+  const scale = Math.min(1, max / distance);
+  const x = dx * scale;
+  const y = dy * scale;
+  touchAxes.x = x / max;
+  touchAxes.z = y / max;
+  touchKnob.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+});
+
+function releaseTouchStick(event) {
+  if (event.pointerId !== touchStickId) return;
+  touchStickId = null;
+  resetTouchStick();
+}
+touchStick?.addEventListener('pointerup', releaseTouchStick);
+touchStick?.addEventListener('pointercancel', releaseTouchStick);
+
+touchLook?.addEventListener('pointerdown', event => {
+  if (!touchDevice) return;
+  event.preventDefault();
+  touchLookId = event.pointerId;
+  touchLookX = event.clientX;
+  touchLookY = event.clientY;
+  touchLook.setPointerCapture(event.pointerId);
+  lockGame();
+});
+
+touchLook?.addEventListener('pointermove', event => {
+  if (event.pointerId !== touchLookId || pauseOpen || !locked) return;
+  event.preventDefault();
+  const dx = event.clientX - touchLookX;
+  const dy = event.clientY - touchLookY;
+  touchLookX = event.clientX;
+  touchLookY = event.clientY;
+  yaw -= dx * .009;
+  pitch -= dy * .006;
+  pitch = THREE.MathUtils.clamp(pitch, -0.05, 0.65);
+});
+
+function releaseTouchLook(event) {
+  if (event.pointerId === touchLookId) touchLookId = null;
+}
+touchLook?.addEventListener('pointerup', releaseTouchLook);
+touchLook?.addEventListener('pointercancel', releaseTouchLook);
+
+touchInteract?.addEventListener('pointerdown', event => {
+  event.preventDefault();
+  if (!pauseOpen && !mapOpen && activeInteraction) openInteraction(activeInteraction);
+});
+touchMap?.addEventListener('pointerdown', event => {
+  event.preventDefault();
+  if (!pauseOpen) toggleMap(!mapOpen);
+});
+touchPause?.addEventListener('pointerdown', event => {
+  event.preventDefault();
+  togglePause(!pauseOpen);
 });
 
 resume.addEventListener('click', () => {
@@ -1379,6 +1475,10 @@ function move(dt) {
   if (keys.has('KeyS')) direction.z += 1;
   if (keys.has('KeyA')) direction.x -= 1;
   if (keys.has('KeyD')) direction.x += 1;
+  if (touchDevice) {
+    direction.x += touchAxes.x;
+    direction.z += touchAxes.z;
+  }
   if (direction.lengthSq()) direction.normalize();
 
   const speed = keys.has('ShiftLeft') || keys.has('ShiftRight') ? 7 : 3.2;
