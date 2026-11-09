@@ -237,9 +237,11 @@ jobs:
           cp first_sector_railway_quebec.json data/first_sector_railway_quebec.json
           cp first_sector_railway_runtime.json data/first_sector_railway_runtime.json
           cp first_sector_railway_promotion.json data/first_sector_railway_promotion.json
+          mkdir -p public/data
+          cp first_sector_railway_runtime.json public/data/first_sector_railway_runtime.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/first_sector_railway_reconciliation.json data/first_sector_railway_montreal.json data/first_sector_railway_quebec.json data/first_sector_railway_runtime.json data/first_sector_railway_promotion.json
+          git add data/first_sector_railway_reconciliation.json data/first_sector_railway_montreal.json data/first_sector_railway_quebec.json data/first_sector_railway_runtime.json data/first_sector_railway_promotion.json public/data/first_sector_railway_runtime.json
           if git diff --cached --quiet; then
             echo "No railway geometry changes to commit."
           else
