@@ -137,163 +137,90 @@ function lamp(x,z) {
 }
 
 /*
-  GEOGRAPHIC BLOCKOUT — v1
-  Anchor: Parc du Centenaire-de-Parc-Extension.
-  The layout follows verified street/park relationships from Montréal sources.
-  It is intentionally simplified; it is not cadastral geometry.
+  VERIFIED GEOGRAPHIC FIRST-SECTOR REBUILD
+  Source: Ville de Montréal road centerlines + Parc du Centenaire polygon.
+  Local origin: official Parc du Centenaire anchor.
+  Coordinates: x=east, z=-north, metres.
+  Railway is intentionally absent: the verified 1:1000 sheet contains no rail corridor.
 */
-
-// World reference: 1 unit ≈ 1 metre.
-// Parc du Centenaire is officially located facing rue Saint-Roch,
-// between avenues Wiseman and Stuart.
 const WORLD = {
-  // Localized first-sector reference. Street ordering follows the City map:
-  // west/east: Durocher → De L'Épée → Bloomfield → Champagneur → Stuart → Wiseman.
-  park: { x: 63, z: 18, w: 27, d: 30 },
-  saintRoch: { z: 5 },
-  ball: { z: 55 },
-  ogilvy: { z: -48 },
-  jarry: { z: 82 },
-  westEdge: -90,
-  eastEdge: 102,
-  southEdge: 70,
-  northEdge: -68,
-  deLepee: -42,
-  bloomfield: -12,
-  champagneur: 18,
-  wiseman: 78,
-  stuart: 48,
-  durocher: -72
+  minX: -180, maxX: 380, minZ: -330, maxZ: 180,
+  parkAnchor: { x: 0, z: 0 }
 };
 
-// Ground plane.
-box(240,.18,210,groundMat,3,-.09,4,{castShadow:false});
+const VERIFIED_ROADS = [["Avenue Stuart",[400.78,189.879],[267.603,134.144]],["Avenue Stuart",[267.603,134.144],[261.014,131.355]],["Avenue Stuart",[261.014,131.355],[254.364,128.653]],["Avenue Stuart",[254.364,128.653],[41.008,40.381]],["Avenue Stuart",[41.008,40.381],[-29.568,11.112]],["Avenue Stuart",[-29.568,11.112],[-35.844,8.686]],["Avenue Stuart",[-35.844,8.686],[-42.097,6.231]],["Avenue Stuart",[-42.097,6.231],[-114.37,-23.545]],["Avenue Stuart",[-114.37,-23.545],[-273.133,-89.388]],["Avenue Wiseman",[425.731,131.604],[292.166,76.438]],["Avenue Wiseman",[292.166,76.438],[285.013,73.476]],["Avenue Wiseman",[285.013,73.476],[277.971,70.618]],["Avenue Wiseman",[277.971,70.618],[-12.164,-48.49]],["Avenue Wiseman",[-12.164,-48.49],[-18.185,-51.004]],["Avenue Wiseman",[-18.185,-51.004],[-255.53,-148.543]],["Rue Saint-Roch",[113.879,-350.873],[91.616,-296.848]],["Rue Saint-Roch",[91.616,-296.848],[89.296,-291.588]],["Rue Saint-Roch",[89.296,-291.588],[87.03,-286.417]],["Rue Saint-Roch",[87.03,-286.417],[66.352,-236.772]],["Rue Saint-Roch",[66.352,-236.772],[63.735,-230.739]],["Rue Saint-Roch",[63.735,-230.739],[61.584,-225.821]],["Rue Saint-Roch",[61.584,-225.821],[40.914,-176.336]],["Rue Saint-Roch",[40.914,-176.336],[38.727,-170.848]],["Rue Saint-Roch",[38.727,-170.848],[36.518,-165.235]],["Rue Saint-Roch",[36.518,-165.235],[16.087,-116.22]],["Rue Saint-Roch",[16.087,-116.22],[13.702,-110.369]],["Rue Saint-Roch",[13.702,-110.369],[11.393,-104.719]],["Rue Saint-Roch",[11.393,-104.719],[-10.069,-53.394]],["Rue Saint-Roch",[-10.069,-53.394],[-12.164,-48.49]],["Rue Saint-Roch",[-12.164,-48.49],[-14.3,-43.403]],["Rue Saint-Roch",[-14.3,-43.403],[-33.634,2.941]],["Rue Saint-Roch",[-33.634,2.941],[-35.844,8.686]],["Rue Saint-Roch",[-35.844,8.686],[-38.295,14.822]],["Rue Saint-Roch",[-38.295,14.822],[-54.643,53.536]],["Rue Saint-Roch",[-54.643,53.536],[-57.02,59.352]],["Rue Saint-Roch",[-57.02,59.352],[-59.295,65.027]],["Rue Saint-Roch",[-59.295,65.027],[-81.022,117.117]],["Rue Saint-Roch",[-85.311,127.52],[-81.022,117.117]],["Avenue Champagneur",[475.081,11.032],[342.266,-44.163]],["Avenue Champagneur",[342.266,-44.163],[335.384,-47.068]],["Avenue Champagneur",[335.384,-47.068],[328.822,-49.954]],["Avenue Champagneur",[328.822,-49.954],[45.211,-168.005]],["Avenue Champagneur",[45.211,-168.005],[38.727,-170.848]],["Avenue Champagneur",[38.727,-170.848],[7.78,-183.527]],["Avenue Champagneur",[7.78,-183.527],[-203.824,-271.987]],["Avenue Bloomfield",[360.513,-107.152],[353.632,-109.82]],["Avenue Bloomfield",[353.632,-109.82],[70.558,-227.791]],["Avenue Bloomfield",[70.558,-227.791],[63.735,-230.739]],["Avenue Bloomfield",[63.735,-230.739],[57.287,-233.572]],["Avenue Bloomfield",[57.287,-233.572],[40.51,-240.872]],["Avenue Bloomfield",[40.51,-240.872],[-144.13,-317.832]],["Avenue Bloomfield",[-144.13,-317.832],[-178.624,-332.423]],["Avenue Bloomfield",[396.508,-92.461],[367.572,-104.429]],["Avenue Bloomfield",[367.572,-104.429],[360.513,-107.152]],["Avenue De L'Épée",[385.778,-167.647],[378.74,-170.346]],["Avenue De L'Épée",[378.74,-170.346],[95.708,-288.967]],["Avenue De L'Épée",[95.708,-288.967],[89.296,-291.588]],["Avenue De L'Épée",[89.296,-291.588],[82.213,-294.468]],["Avenue De L'Épée",[82.213,-294.468],[-153.669,-393.144]],["Avenue Ogilvy",[383.797,-162.785],[363.036,-112.92]],["Avenue Ogilvy",[363.036,-112.92],[360.513,-107.152]],["Avenue Ogilvy",[360.513,-107.152],[358.004,-101.409]],["Avenue Ogilvy",[358.004,-101.409],[337.829,-52.774]],["Avenue Ogilvy",[337.829,-52.774],[335.384,-47.068]],["Avenue Ogilvy",[335.384,-47.068],[333.028,-41.323]],["Avenue Ogilvy",[333.028,-41.323],[313.092,6.841]],["Avenue Ogilvy",[313.092,6.841],[310.518,13.067]],["Avenue Ogilvy",[310.518,13.067],[307.97,19.213]],["Avenue Ogilvy",[307.97,19.213],[287.374,67.797]],["Avenue Ogilvy",[287.374,67.797],[285.013,73.476]],["Avenue Ogilvy",[285.013,73.476],[282.705,79.188]],["Avenue Ogilvy",[282.705,79.188],[263.272,125.933]],["Avenue Ogilvy",[263.272,125.933],[261.014,131.355]],["Avenue Ogilvy",[261.014,131.355],[258.562,137.404]],["Avenue Ogilvy",[258.562,137.404],[242.09,176.628]],["Avenue Ogilvy",[242.09,176.628],[239.735,182.071]]];
+const PARK_POLYGON = [[14.119,-15.454],[-11.819,-26.105],[-13.536,-26.778],[-25.077,0.621],[-25.19,0.916],[-25.279,1.22],[-25.342,1.53],[-25.378,1.844],[-25.389,2.16],[-25.373,2.476],[-25.33,2.79],[-25.261,3.098],[-25.167,3.4],[-25.048,3.693],[-24.905,3.975],[-24.738,4.244],[-24.55,4.499],[-24.341,4.736],[-24.113,4.955],[-23.867,5.155],[-23.606,5.333],[-23.33,5.489],[-23.043,5.621],[1.194,15.56],[10.291,-6.271],[10.552,-6.898],[11.484,-9.132],[14.119,-15.454]];
 
-// Primary street skeleton. Keep the avenues separated as distinct blocks instead of a generic grid.
-street(7.5,138, WORLD.durocher, 7);
-street(7.5,138, WORLD.deLepee, 7);
-street(7.5,138, WORLD.bloomfield, 7);
-street(7.5,138, WORLD.champagneur, 7);
-street(7.5,138, WORLD.stuart, 7);
-street(7.5,138, WORLD.wiseman, 7);
-
-street(7.5,190, 3, WORLD.saintRoch, Math.PI/2);
-street(7.5,190, 3, WORLD.ball, Math.PI/2);
-street(7.5,190, 3, WORLD.ogilvy, Math.PI/2);
-street(7.5,190, 3, WORLD.jarry, Math.PI/2);
-
-// Sidewalk bands — simple but physically readable.
-for (const x of [WORLD.durocher, WORLD.deLepee, WORLD.bloomfield, WORLD.champagneur, WORLD.stuart, WORLD.wiseman]) {
-  sidewalk(2.0,138,x-4.75,7);
-  sidewalk(2.0,138,x+4.75,7);
-}
-for (const z of [WORLD.saintRoch, WORLD.ball, WORLD.ogilvy, WORLD.jarry]) {
-  sidewalk(2.0,190,3,z-4.75,Math.PI/2);
-  sidewalk(2.0,190,3,z+4.75,Math.PI/2);
+function verifiedRoadSegment(a, b, width=8.2) {
+  const dx=b[0]-a[0], dz=b[1]-a[1];
+  const length=Math.hypot(dx,dz);
+  if (length < 1) return;
+  const x=(a[0]+b[0])/2, z=(a[1]+b[1])/2;
+  const rotation=Math.atan2(dx,dz);
+  street(width,length,x,z,rotation);
+  sidewalk(1.7,length,x + Math.cos(rotation)*5.0,z - Math.sin(rotation)*5.0,rotation);
+  sidewalk(1.7,length,x - Math.cos(rotation)*5.0,z + Math.sin(rotation)*5.0,rotation);
 }
 
-// Park du Centenaire — between Wiseman and Stuart, facing Saint-Roch.
-box(WORLD.park.w,.10,WORLD.park.d,snowMat,WORLD.park.x,.13,WORLD.park.z,{castShadow:false});
-box(WORLD.park.w-.4,.06,.16,concreteMat,WORLD.park.x,.20,WORLD.park.z-WORLD.park.d/2,{castShadow:false});
-box(.16,.06,WORLD.park.d-.4,concreteMat,WORLD.park.x-WORLD.park.w/2,.20,WORLD.park.z,{castShadow:false});
-box(.16,.06,WORLD.park.d-.4,concreteMat,WORLD.park.x+WORLD.park.w/2,.20,WORLD.park.z,{castShadow:false});
-box(WORLD.park.w-.8,.05,.8,darkMat,WORLD.park.x,.2,WORLD.park.z-WORLD.park.d/2+1);
-box(WORLD.park.w-.8,.05,.8,darkMat,WORLD.park.x,.2,WORLD.park.z+WORLD.park.d/2-1);
+for (const road of VERIFIED_ROADS) verifiedRoadSegment(road.a,road.b);
 
-// Park paths and modest winter landscaping.
-street(2.2,WORLD.park.d-4,WORLD.park.x,WORLD.park.z);
-street(2.2,WORLD.park.w-4,WORLD.park.x,WORLD.park.z,Math.PI/2);
-for (const x of [16,23,30,37]) {
-  box(.55,3.8,.55,darkMat,x,1.9,18);
-  box(3.2,.9,3.2,darkMat,x,4.0,18);
+const parkShape = new THREE.Shape();
+PARK_POLYGON.forEach(([x,z],i) => i ? parkShape.lineTo(x,z) : parkShape.moveTo(x,z));
+const parkMesh = new THREE.Mesh(new THREE.ShapeGeometry(parkShape),snowMat);
+parkMesh.rotation.x = -Math.PI/2;
+parkMesh.position.y = .14;
+parkMesh.receiveShadow = false;
+scene.add(parkMesh);
+
+// Verified park perimeter, kept as low concrete edging rather than an invented fence.
+for (let i=0;i<PARK_POLYGON.length-1;i++) {
+  const a=PARK_POLYGON[i], b=PARK_POLYGON[i+1];
+  verifiedRoadSegment(a,b,.35);
 }
-box(3.5,1.4,1.2,darkMat,17,.7,27);
-box(3.5,1.4,1.2,darkMat,35,.7,27);
 
-// Real-world park details documented by Montréal:
-// two micro-libraries and the artwork Terre en vue.
+// Park paths remain subordinate to the verified footprint.
+street(2.2,26, -6, -4, .1);
+street(2.2,30, -9, 2, Math.PI/2-.12);
+
 interactable(
-  box(1.6,1.7,.7,brickDarkMat,18,.85,12),
+  box(1.6,1.7,.7,brickDarkMat,-15,.85,8),
   'MICRO-LIBRARY',
   'A small neighbourhood library in the park. A place for exchange, pause, and ordinary life.'
 );
 interactable(
-  box(1.6,1.7,.7,brickDarkMat,34,.85,12),
+  box(1.6,1.7,.7,brickDarkMat,5,.85,7),
   'MICRO-LIBRARY',
   'Another small community library. The object is simple; the fact that it is here matters.'
 );
 interactable(
-  box(5,.08,.8,glassMat,26,1.0,14),
+  box(5,.08,.8,glassMat,-3,1.0,9),
   'TERRE EN VUE',
   'A park artwork marker. The first slice records the place without turning it into exposition.'
 );
 
-// Residential/commercial frontage blocks.
-// These follow the street corridors and keep interiors simplified.
+// Temporary frontage: intentionally sparse until parcel/building footprints are imported.
+// Buildings are kept away from the verified park polygon and road corridors.
 const frontage = [
-  [-57,-45,12,10,brickMat], [-27,-45,13,12,concreteMat],
-  [3,-45,12,11,brickDarkMat], [33,-45,13,12,brickMat],
-  [63,-45,12,10,concreteMat],
-  [-57,22,13,11,concreteMat], [-27,22,12,12,brickMat],
-  [3,22,13,10,brickDarkMat], [33,22,12,11,brickMat],
-  [78,22,12,12,concreteMat],
-  [-57,58,12,11,brickMat], [-27,58,13,12,concreteMat],
-  [3,58,12,10,brickDarkMat], [33,58,13,11,brickMat],
-  [63,58,12,12,concreteMat]
+  [-45,35,16,10,brickMat], [18,53,18,11,concreteMat],
+  [82,-6,18,12,brickDarkMat], [120,-55,20,11,brickMat],
+  [160,-125,18,12,concreteMat], [235,55,20,11,brickDarkMat],
+  [285,-105,18,12,brickMat], [-70,-55,18,11,concreteMat],
+  [-105,82,16,10,brickMat], [70,-260,20,12,brickDarkMat]
 ];
 for (const [x,z,w,h,mat] of frontage) building(w,13,h,x,z,mat);
 
-// Buildings near the park remain lower and more open so the park reads.
-building(16,10,9,-57,-20,brickMat);
-building(15,10,10,84,-20,concreteMat);
-// Narrower Montréal residential frontage along the park-facing blocks.
-// The park remains open between Stuart and Wiseman rather than being buried in the grid.
-building(12,9,8,33,18,brickDarkMat);
-// Keep the rail-side frontage clear; the railway remains a physical boundary.
-
-// Alley structure documented by Montréal: Ruelle De la Fête
-// is in the quadrilateral Champagneur / Ball / Bloomfield / Saint-Roch.
-box(4.5,.06,34,asphaltMat,3,0,30,{castShadow:false});
-for (const z of [15,30,45]) {
-  box(5.3,.08,.8,snowMat,3,.08,z,{castShadow:false});
+// Development boundary only: a visible low snow berm marks the current loaded slice.
+// It is not claimed as a real municipal boundary.
+function sliceEdge(x,z,w,d) {
+  const edge=box(w,.28,d,snowMat,x,.14,z,{castShadow:false});
+  addCollider(x,z,w,d,edge);
 }
-// Ruelle Wiseman occupies the Saint-Roch / Wiseman / d'Outremont / Ogilvy block.
-box(4.5,.06,34,asphaltMat,-3,0,-22,{castShadow:false});
+sliceEdge((WORLD.minX+WORLD.maxX)/2,WORLD.minZ, WORLD.maxX-WORLD.minX,.8);
+sliceEdge((WORLD.minX+WORLD.maxX)/2,WORLD.maxZ, WORLD.maxX-WORLD.minX,.8);
+sliceEdge(WORLD.minX,(WORLD.minZ+WORLD.maxZ)/2,.8,WORLD.maxZ-WORLD.minZ);
+sliceEdge(WORLD.maxX,(WORLD.minZ+WORLD.maxZ)/2,.8,WORLD.maxZ-WORLD.minZ);
 
-// The verified 1:1000 first-sector sheet (31H12-010-0530) contains no railway corridor.
-// The authoritative Montréal 3D railway dataset places the nearest rail geometry outside this
-// sheet, on adjacent sheets (notably 31H12-010-0531 / 0431). Do not invent a rail boundary
-// inside the Parc du Centenaire first-sector slice. Railway geometry is therefore deferred
-// until the adjacent-sheet corridor is explicitly brought into the playable world.
-
-// Simplified Autoroute 40 edge: environmental pressure only until verified road geometry is imported.
-const highwayZ = WORLD.northEdge;
-box(236,.18,10,asphaltMat,3,.04,highwayZ,{castShadow:false});
-box(236,.18,1.2,concreteMat,3,.22,highwayZ+5.2,{castShadow:false});
-for (let x=-112; x<=118; x+=12) {
-  box(5,.08,.12,snowMat,x,.18,highwayZ-2.1,{castShadow:false});
-}
-const highwayBarrier = box(236,1.1,.28,concreteMat,3,.55,highwayZ+5.4,{castShadow:false,receiveShadow:false});
-addCollider(3,highwayZ+5.4,236,.28,highwayBarrier);
-
-// Winter shoulder and reflectors reinforce the highway as a physical edge.
-box(236,.14,1.4,snowMat,3,.20,highwayZ-5.5,{castShadow:false});
-for (let x=-108; x<=114; x+=9) {
-  box(.22,.06,.08,concreteMat,x,.18,highwayZ-3.8,{castShadow:false});
-}
-
-// Keep the camera from crossing the railway while preserving the physical appearance.
-const railCameraEast = box(5,.9,140,darkMat,94,.45,1,{castShadow:false,receiveShadow:false});
-const railCameraSouth = box(174,.9,5,darkMat,3,.45,70,{castShadow:false,receiveShadow:false});
-collisionMeshes.push(railCameraEast,railCameraSouth);
-
-// Western municipal boundary pressure: fence condition at the edge.
-const fenceX = WORLD.westEdge;
-for (let z=WORLD.northEdge+4; z<=WORLD.southEdge-2; z+=4) {
-  box(.08,2.2,.08,darkMat,fenceX,1.1,z);
-}
-const fenceMesh = box(.08,2.2,WORLD.southEdge-WORLD.northEdge-6,darkMat,fenceX,1,(WORLD.northEdge+WORLD.southEdge)/2);
-addCollider(fenceX,(WORLD.northEdge+WORLD.southEdge)/2,.08,WORLD.southEdge-WORLD.northEdge-6,fenceMesh);
+// No railway mesh, railway camera clamp, or guessed crossing is present in this slice.
 
 // Winter surface details: compressed snow banks, tire grooves and curb accumulation.
 function snowBank(x,z,w,d,h=.32) {
