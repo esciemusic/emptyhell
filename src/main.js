@@ -499,7 +499,8 @@ const worldStatus = document.querySelector('#world-status');
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    worldStatus.textContent = `SIGNALS ${count} / ${discoveryState.total} · ${count === discoveryState.total ? 'ROUTE OPEN' : 'WORLD STATE ACTIVE'}`;
+    const stage = savedTransmission ? 'TRANSMISSION COMPLETE' : (count === discoveryState.total ? 'ROUTE OPEN' : 'WORLD STATE ACTIVE');
+    worldStatus.textContent = `SIGNALS \${count} / \${discoveryState.total} · \${stage}`;
   }
 }
 
@@ -592,6 +593,7 @@ function completeTransmission() {
   try {
     localStorage.setItem(transmissionStorageKey, 'complete');
   } catch {}
+  updateWorldStatus();
 }
 
 updateWorldStatus();
