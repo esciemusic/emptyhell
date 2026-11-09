@@ -15,7 +15,8 @@
     <div class="hud-brand">EMPTYHELL</div>
     <div class="hud-state">PARC-EXTENSION / PROTOTYPE</div>
     <div class="hud-crosshair">+</div>
-    <div class="hud-hint">WASD MOVE · MOUSE LOOK · ESC PAUSE</div>
+    <div class="hud-hint">WASD MOVE · MOUSE LOOK · E INTERACT · M MAP · ESC PAUSE</div>
+    <div id="interaction-prompt" class="interaction-prompt hidden">E  EXAMINE</div>
   </div>
 
   <div id="pause" class="pause hidden">
@@ -24,6 +25,41 @@
       <h1>PAUSED</h1>
       <p>MAP / SYSTEMS / EXIT</p>
       <button id="resume">RESUME</button>
+    </div>
+  </div>
+
+  <div id="interaction-panel" class="interaction-panel hidden">
+    <div class="interaction-card">
+      <div class="interaction-kicker">OBSERVE</div>
+      <h2 id="interaction-title">OBJECT</h2>
+      <p id="interaction-text"></p>
+      <button id="interaction-close">CLOSE</button>
+    </div>
+  </div>
+
+  <div id="map-overlay" class="map-overlay hidden">
+    <div class="map-card">
+      <div class="map-head">
+        <div>
+          <div class="map-kicker">EMPTYHELL / MAP</div>
+          <h2>PARC-EXTENSION</h2>
+        </div>
+        <button id="map-close" aria-label="Close map">×</button>
+      </div>
+      <div class="map">
+        <div class="map-road horizontal saint-roch">SAINT-ROCH</div>
+        <div class="map-road horizontal ball">BALL</div>
+        <div class="map-road horizontal ogilvy">OGILVY</div>
+        <div class="map-road vertical durocher">DUROCHER</div>
+        <div class="map-road vertical de-lepee">DE L'ÉPÉE</div>
+        <div class="map-road vertical bloomfield">BLOOMFIELD</div>
+        <div class="map-road vertical champagneur">CHAMPAGNEUR</div>
+        <div class="map-park">PARC DU CENTENAIRE</div>
+        <div class="map-rail rail-east"></div>
+        <div class="map-rail rail-south"></div>
+        <div id="map-player" class="map-player" aria-label="Player position"></div>
+      </div>
+      <div class="map-foot">BLUE = CURRENT POSITION · MAP REVEALS ONLY THE CURRENT SLICE</div>
     </div>
   </div>
 
