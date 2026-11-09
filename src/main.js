@@ -30,7 +30,7 @@ moon.shadow.camera.top = 180;
 moon.shadow.camera.bottom = -180;
 scene.add(moon);
 
-const warm = new THREE.PointLight(0xffc78a, 18, 18, 2);
+const warm = new THREE.PointLight(0xffc78a, powerRestored ? 24 : 18, 18, 2);
 warm.position.set(12, 4, -8);
 scene.add(warm);
 
@@ -79,6 +79,7 @@ const collisionMeshes = [];
 const playerRadius = 0.48;
 const interactables = [];
 const streetLights = [];
+const livingWindows = [];
 
 function addCollider(x, z, w, d, mesh=null) {
   colliders.push({ minX:x-w/2, maxX:x+w/2, minZ:z-d/2, maxZ:z+d/2 });
@@ -135,7 +136,10 @@ function building(w,d,h,x,z,mat=brickMat) {
       const wy = 2.0 + row * 3.0;
       if (wy < h-.8) {
         const lit = ((row * 17 + col * 31 + Math.round(x * 3)) % 9) === 0;
-        box(1.15,1.45,.08,lit ? windowWarmMat : windowMat,wx,wy,frontZ,{castShadow:false});
+        (() => {
+          const window = box(1.15,1.45,.08,lit ? windowWarmMat : windowMat,wx,wy,frontZ,{castShadow:false});
+          livingWindows.push(window);
+        })();
       }
     }
   }
@@ -802,6 +806,7 @@ function reachSignalTrail() {
     localStorage.setItem(powerStorageKey, 'restored');
   } catch {}
   for (const source of streetLights) source.restored = true;
+  for (const window of livingWindows) window.material = windowWarmMat;
   updateWorldStatus();
 }
 
