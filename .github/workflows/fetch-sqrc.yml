@@ -1,4 +1,4 @@
-name: Fetch SQRC 1:1000 source
+name: Fetch railway reconciliation source
 
 on:
   push:
@@ -7,793 +7,117 @@ on:
   workflow_dispatch:
 
 jobs:
-  fetch-sqrc:
+  railway:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Download SQRC 1:1000 GeoJSON
-        id: sqrc
-        continue-on-error: true
-        run: |
-          set -u
-          urls=(
-            "https://donnees.montreal.ca/fr/dataset/e160983c-f5d2-49ec-9b81-d0f6fb66518a/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson"
-            "https://www.donneesquebec.ca/recherche/dataset/vmtl-quadrillage-sqrc/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson"
-          )
-          rm -f sqrc_1000.geojson
-          for url in "${urls[@]}"; do
-            echo "Trying: $url"
-            if curl -fL --retry 2 --retry-all-errors \
-              -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
-              "$url" -o sqrc_1000.geojson && test -s sqrc_1000.geojson; then
-              wc -c sqrc_1000.geojson
-              echo "SQRC_DOWNLOAD=success" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-            rm -f sqrc_1000.geojson
-          done
-          echo "SQRC_DOWNLOAD=blocked" >> "$GITHUB_OUTPUT"
-          echo "Official SQRC download endpoints are blocked from this GitHub runner; continuing so independent railway extraction can run."
-
-      - name: Inspect grid and identify sheets around Parc du Centenaire
-        if: steps.sqrc.outputs.SQRC_DOWNLOAD == 'success'
-        run: |
-          python -m pip install --quiet pyproj shapely
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from pyproj import Transformer
-          from shapely.geometry import shape, Point
-          from shapely.ops import transform
-
-          data = json.loads(Path("sqrc_1000.geojson").read_text())
-          features = data.get("features", [])
-          transformer = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
-          x, y = transformer.transform(-73.630554, 45.526943)
-          p = Point(x, y)
-
-          to_mtm8 = lambda geom: transform(transformer.transform, geom)
-
-          matches = []
-          nearby = []
-          for f in features:
-              geom = to_mtm8(shape(f["geometry"]))
-              d = geom.distance(p)
-              if geom.contains(p) or geom.touches(p) or d < 1:
-                  matches.append(f)
-              if d <= 500:
-                  nearby.append((d, f))
-
-          report = {
-              "source": "Ville de Montréal SQRC 1:1000 GeoJSON",
-              "resource": "ad1924d4-2579-40aa-8aa7-b83d88166ee5",
-              "park_wgs84": {"lat": 45.526943, "lon": -73.630554},
-              "park_mtm8": {"x": x, "y": y},
-              "feature_count": len(features),
-              "containing_or_touching_sheets": [
-                  {"properties": f.get("properties", {}), "geometry": f.get("geometry")}
-                  for f in matches
-              ],
-              "nearby_sheets_500m": [
-                  {"distance_m": round(d, 2), "properties": f.get("properties", {})}
-                  for d, f in sorted(nearby, key=lambda z: z[0])
-              ],
-          }
-          Path("sqrc_1000_parc_extension_report.json").write_text(
-              json.dumps(report, ensure_ascii=False, indent=2)
-          )
-          print(json.dumps({
-              "feature_count": len(features),
-              "containing_or_touching": len(matches),
-              "nearby_500m": len(nearby),
-              "containing_properties": [f.get("properties", {}) for f in matches],
-          }, ensure_ascii=False, indent=2))
-          PY
-
-      - name: Fetch official Montréal railway geometry around the first sector
+      - name: Download official Montréal railway archive
         run: |
           set -euo pipefail
-          urls=(
-            "https://donnees.montreal.ca/fr/dataset/e135b6df-5bfc-43bc-a743-5f306c8900fb/resource/fe46cc87-f2d2-4b2d-9134-9e0dc431f21c/download/voies-ferrees-2020.zip"
-            "https://www.donneesquebec.ca/recherche/fr/dataset/vmtl-voies-ferrees-3d/resource/fe46cc87-f2d2-4b2d-9134-9e0dc431f21c/download/voies-ferrees-2020.zip"
-          )
-          rm -rf railway_src railway_extract
-          mkdir -p railway_src railway_extract
-          ok=0
-          for url in "${urls[@]}"; do
-            echo "Trying: $url"
-            if curl -fL --retry 2 --retry-all-errors \
-              -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
-              "$url" -o railway_src/voies-ferrees-2020.zip; then
-              ok=1
-              break
-            fi
-            rm -f railway_src/voies-ferrees-2020.zip
-          done
-          test "$ok" = "1"
-          unzip -q railway_src/voies-ferrees-2020.zip -d railway_extract
-          find railway_extract -maxdepth 2 -type f | sort
-          python -m pip install --quiet pyshp shapely pyproj
+          mkdir -p source extract
+          curl -fL --retry 3 --retry-all-errors \
+            -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
+            "https://donnees.montreal.ca/fr/dataset/e135b6df-5bfc-43bc-a743-5f306c8900fb/resource/fe46cc87-f2d2-4b2d-9134-9e0dc431f21c/download/voies-ferrees-2020.zip" \
+            -o source/voies-ferrees-2020.zip
+          unzip -q source/voies-ferrees-2020.zip -d extract
+
+      - name: Extract railway track linework
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pyshp pyproj shapely
           python - <<'PY'
           import json
           from pathlib import Path
           import shapefile
-          from shapely.geometry import shape, box, mapping
-          from shapely.ops import transform
           from pyproj import Transformer
+          from shapely.geometry import box, mapping, shape
+          from shapely.ops import transform
 
-          shp_paths = list(Path("railway_extract").rglob("*.shp"))
-          if not shp_paths:
-              raise SystemExit("No SHP file found in official Montréal railway archive")
-
-          source_to_wgs84 = Transformer.from_crs("EPSG:32188", "EPSG:4326", always_xy=True)
-          wgs84_to_source = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
           target_wgs84 = box(-73.645, 45.515, -73.610, 45.540)
-          target_source = transform(wgs84_to_source.transform, target_wgs84)
-          selected = []
-          source_files = []
+          to_source = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
+          to_wgs84 = Transformer.from_crs("EPSG:32188", "EPSG:4326", always_xy=True)
+          target_source = transform(to_source.transform, target_wgs84)
 
-          for shp_path in shp_paths:
-              reader = shapefile.Reader(str(shp_path))
+          features = []
+          inventories = []
+
+          for shp in Path("extract").rglob("*.shp"):
+              reader = shapefile.Reader(str(shp))
               fields = [f[0] for f in reader.fields[1:]]
-              source_files.append({
-                  "path": str(shp_path),
-                  "fields": fields,
+              inventories.append({
+                  "path": str(shp),
                   "shape_type": reader.shapeType,
                   "records": len(reader),
-                  "source_bounds": reader.bbox,
-                  "prj_exists": shp_path.with_suffix(".prj").exists(),
+                  "fields": fields,
+                  "bounds": reader.bbox,
               })
-              # The railway archive contains multiple CARTO-FER layers.
-              # Use only the railway-track line layer, not station/bridge/accessory polygons.
-              if "voie" not in shp_path.stem.lower():
+              if "voie" not in shp.stem.lower() or reader.shapeType not in (3, 13, 23):
                   continue
-              if reader.shapeType not in (3, 13, 23):
-                  continue
-              for sr in reader.iterShapeRecords():
-                  geom_source = shape(sr.shape.__geo_interface__)
-                  if not geom_source.intersects(target_source):
+              for row in reader.iterShapeRecords():
+                  geom = shape(row.shape.__geo_interface__)
+                  if not geom.intersects(target_source):
                       continue
-                  props = dict(zip(fields, sr.record))
-                  geom_wgs84 = transform(source_to_wgs84.transform, geom_source)
-                  selected.append({
-                      "type":"Feature",
-                      "properties":props,
-                      "geometry":mapping(geom_wgs84)
+                  props = dict(zip(fields, row.record))
+                  features.append({
+                      "type": "Feature",
+                      "properties": props,
+                      "geometry": mapping(transform(to_wgs84.transform, geom)),
                   })
 
-          report = {
-              "source": "Ville de Montréal — Voies ferrées 3D (2020)",
-              "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
-              "source_crs": "NAD83 / MTM zone 8 (EPSG:32188)",
-              "target_bbox_wgs84": [-73.645,45.515,-73.610,45.540],
-              "source_files": source_files,
-              "feature_count": len(selected),
-              "features": selected,
-          }
-
           Path("railway_parc_extension.geojson").write_text(
-              json.dumps({"type":"FeatureCollection","features":selected}, ensure_ascii=False)
+              json.dumps({"type":"FeatureCollection","features":features}, ensure_ascii=False)
           )
           Path("railway_source_inventory.json").write_text(
-              json.dumps(report, ensure_ascii=False, indent=2)
+              json.dumps({"source_crs":"EPSG:32188","files":inventories,"selected_features":len(features)}, ensure_ascii=False, indent=2)
           )
-          print(json.dumps({
-              "source_files": source_files,
-              "selected_features": len(selected),
-              "property_keys": sorted({k for f in selected for k in f["properties"]}),
-          }, ensure_ascii=False, indent=2))
+          print("selected railway features:", len(features))
           PY
 
-      - name: Build railway reconciliation report
+      - name: Build reconciliation report
         run: |
+          set -euo pipefail
           python -m pip install --quiet pyproj shapely
           python - <<'PY'
           import json
           from pathlib import Path
           from pyproj import Transformer
-          from shapely.geometry import shape, Point
+          from shapely.geometry import Point, shape
           from shapely.ops import transform
 
-          data = json.loads(Path("railway_parc_extension.geojson").read_text())
-          features = data.get("features", [])
-          transformer = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
-          park = Point(*transformer.transform(-73.630554, 45.526943))
-          station = Point(*transformer.transform(-73.62467, 45.53164))
-
-          rows = []
-          for f in features:
-              geom = transform(transformer.transform, shape(f["geometry"]))
-              props = f.get("properties", {})
+          data=json.loads(Path("railway_parc_extension.geojson").read_text())
+          to_mtm8=Transformer.from_crs("EPSG:4326","EPSG:32188",always_xy=True)
+          park=Point(*to_mtm8.transform(-73.630554,45.526943))
+          station=Point(*to_mtm8.transform(-73.62467,45.53164))
+          rows=[]
+          for f in data["features"]:
+              g=transform(to_mtm8.transform,shape(f["geometry"]))
+              p=f.get("properties",{})
               rows.append({
-                  "objectid": props.get("OBJECTID"),
-                  "name": props.get("nomvoie"),
-                  "class": props.get("classvoie"),
-                  "use": props.get("typeutilis"),
-                  "state": props.get("etat"),
-                  "operator": props.get("nmfrexploi"),
-                  "owner": props.get("nmfrpropr"),
-                  "subdivision": props.get("nomsubdiv1"),
-                  "distance_to_park_m": round(geom.distance(park), 2),
-                  "distance_to_station_m": round(geom.distance(station), 2),
-                  "geometry": f.get("geometry"),
+                  "objectid":p.get("OBJECTID"),
+                  "distance_to_park_m":round(g.distance(park),2),
+                  "distance_to_gare_parc_m":round(g.distance(station),2),
+                  "properties":p
               })
-
-          report = {
-              "source": "Ville de Montréal — Voies ferrées 3D (2020)",
-              "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
-              "target_bbox_wgs84": [-73.645, 45.515, -73.610, 45.540],
-              "feature_count": len(features),
-              "park_wgs84": {"lat": 45.526943, "lon": -73.630554},
-              "gare_parc_wgs84": {"lat": 45.53164, "lon": -73.62467},
-              "segments": sorted(rows, key=lambda r: r["distance_to_park_m"]),
+          rows.sort(key=lambda x:x["distance_to_park_m"])
+          report={
+              "source":"Ville de Montréal — Voies ferrées 3D (2020)",
+              "dataset_id":"e135b6df-5bfc-43bc-a743-5f306c8900fb",
+              "source_crs":"EPSG:32188",
+              "target_bbox_wgs84":[-73.645,45.515,-73.610,45.540],
+              "park_wgs84":[45.526943,-73.630554],
+              "gare_parc_wgs84":[45.53164,-73.62467],
+              "feature_count":len(rows),
+              "nearest_segments":rows[:20]
           }
-          Path("railway_parc_extension_report.json").write_text(
-              json.dumps(report, ensure_ascii=False, indent=2)
-          )
-          print(json.dumps({
-              "feature_count": len(features),
-              "nearest_segments": [
-                  {k:v for k,v in r.items() if k != "geometry"}
-                  for r in sorted(rows, key=lambda r: r["distance_to_park_m"])[:10]
-              ]
-          }, ensure_ascii=False, indent=2))
+          Path("railway_parc_extension_report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          print(json.dumps({"feature_count":len(rows),"nearest":rows[:5]},ensure_ascii=False,indent=2))
           PY
 
-      - name: Upload source and inspection report
+      - name: Upload verified railway extraction
         uses: actions/upload-artifact@v4
         with:
-          name: sqrc-1000-source
+          name: railway-reconciliation
           if-no-files-found: error
           path: |
             railway_parc_extension.geojson
             railway_parc_extension_report.json
             railway_source_inventory.json
-            sqrc_1000.geojson
-            carto_2024/target_index.txt
-            carto_2024/selected/*.pdf
-            sqrc_1000_parc_extension_report.json
-
-      - name: Persist the verified sheet report
-        if: steps.sqrc.outputs.SQRC_DOWNLOAD == 'success'
-        run: |
-          set -euo pipefail
-          mkdir -p data
-          cp sqrc_1000_parc_extension_report.json data/sqrc_1000_parc_extension_report.json
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/sqrc_1000_parc_extension_report.json
-          if git diff --cached --quiet; then
-            echo "No report changes to commit."
-          else
-            git commit -m "Record verified Parc-Extension SQRC sheet extraction"
-            git push
-          fi
- | tee carto_2024/target_index.txt
-            mkdir -p carto_2024/selected
-            while read -r line; do
-              file=$(echo "$line" | sed -E 's/^[[:space:]]*[0-9]+[[:space:]]+[0-9:-]+[[:space:]]+//')
-              [ -n "$file" ] || continue
-              unzip -p carto_2024/compilation_carto_2024_pdf.zip "$file" > "carto_2024/selected/$(basename "$file")"
-            done < <(grep -E '31H12-010-(0431|0530|0531|0630|0631)\.pdf
-        id: sqrc
-        continue-on-error: true
-        run: |
-          set -u
-          urls=(
-            "https://donnees.montreal.ca/fr/dataset/e160983c-f5d2-49ec-9b81-d0f6fb66518a/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson"
-            "https://www.donneesquebec.ca/recherche/dataset/vmtl-quadrillage-sqrc/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson"
-          )
-          rm -f sqrc_1000.geojson
-          for url in "${urls[@]}"; do
-            echo "Trying: $url"
-            if curl -fL --retry 2 --retry-all-errors \
-              -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
-              "$url" -o sqrc_1000.geojson && test -s sqrc_1000.geojson; then
-              wc -c sqrc_1000.geojson
-              echo "SQRC_DOWNLOAD=success" >> "\$GITHUB_OUTPUT"
-              exit 0
-            fi
-            rm -f sqrc_1000.geojson
-          done
-          echo "SQRC_DOWNLOAD=blocked" >> "\$GITHUB_OUTPUT"
-          echo "Official SQRC download endpoints are blocked from this GitHub runner; continuing so independent railway extraction can run."
-
-      - name: Inspect grid and identify sheets around Parc du Centenaire
-        if: steps.sqrc.outputs.SQRC_DOWNLOAD == 'success'
-        run: |
-          python -m pip install --quiet pyproj shapely
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from pyproj import Transformer
-          from shapely.geometry import shape, Point
-          from shapely.ops import transform
-
-          data = json.loads(Path("sqrc_1000.geojson").read_text())
-          features = data.get("features", [])
-          transformer = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
-          x, y = transformer.transform(-73.630554, 45.526943)
-          p = Point(x, y)
-
-          to_mtm8 = lambda geom: transform(transformer.transform, geom)
-
-          matches = []
-          nearby = []
-          for f in features:
-              geom = to_mtm8(shape(f["geometry"]))
-              d = geom.distance(p)
-              if geom.contains(p) or geom.touches(p) or d < 1:
-                  matches.append(f)
-              if d <= 500:
-                  nearby.append((d, f))
-
-          report = {
-              "source": "Ville de Montréal SQRC 1:1000 GeoJSON",
-              "resource": "ad1924d4-2579-40aa-8aa7-b83d88166ee5",
-              "park_wgs84": {"lat": 45.526943, "lon": -73.630554},
-              "park_mtm8": {"x": x, "y": y},
-              "feature_count": len(features),
-              "containing_or_touching_sheets": [
-                  {"properties": f.get("properties", {}), "geometry": f.get("geometry")}
-                  for f in matches
-              ],
-              "nearby_sheets_500m": [
-                  {"distance_m": round(d, 2), "properties": f.get("properties", {})}
-                  for d, f in sorted(nearby, key=lambda z: z[0])
-              ],
-          }
-          Path("sqrc_1000_parc_extension_report.json").write_text(
-              json.dumps(report, ensure_ascii=False, indent=2)
-          )
-          print(json.dumps({
-              "feature_count": len(features),
-              "containing_or_touching": len(matches),
-              "nearby_500m": len(nearby),
-              "containing_properties": [f.get("properties", {}) for f in matches],
-          }, ensure_ascii=False, indent=2))
-          PY
-
-      - name: Fetch official Montréal railway geometry around the first sector
-        run: |
-          set -euo pipefail
-          urls=(
-            "https://donnees.montreal.ca/fr/dataset/e135b6df-5bfc-43bc-a743-5f306c8900fb/resource/fe46cc87-f2d2-4b2d-9134-9e0dc431f21c/download/voies-ferrees-2020.zip"
-            "https://www.donneesquebec.ca/recherche/fr/dataset/vmtl-voies-ferrees-3d/resource/fe46cc87-f2d2-4b2d-9134-9e0dc431f21c/download/voies-ferrees-2020.zip"
-          )
-          rm -rf railway_src railway_extract
-          mkdir -p railway_src railway_extract
-          ok=0
-          for url in "${urls[@]}"; do
-            echo "Trying: $url"
-            if curl -fL --retry 2 --retry-all-errors \
-              -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
-              "$url" -o railway_src/voies-ferrees-2020.zip; then
-              ok=1
-              break
-            fi
-            rm -f railway_src/voies-ferrees-2020.zip
-          done
-          test "$ok" = "1"
-          unzip -q railway_src/voies-ferrees-2020.zip -d railway_extract
-          find railway_extract -maxdepth 2 -type f | sort
-          python -m pip install --quiet pyshp shapely pyproj
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          import shapefile
-          from shapely.geometry import shape, box, mapping
-          from shapely.ops import transform
-          from pyproj import Transformer
-
-          shp_paths = list(Path("railway_extract").rglob("*.shp"))
-          if not shp_paths:
-              raise SystemExit("No SHP file found in official Montréal railway archive")
-
-          source_to_wgs84 = Transformer.from_crs("EPSG:32188", "EPSG:4326", always_xy=True)
-          wgs84_to_source = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
-          target_wgs84 = box(-73.645, 45.515, -73.610, 45.540)
-          target_source = transform(wgs84_to_source.transform, target_wgs84)
-          selected = []
-          source_files = []
-
-          for shp_path in shp_paths:
-              reader = shapefile.Reader(str(shp_path))
-              fields = [f[0] for f in reader.fields[1:]]
-              source_files.append({
-                  "path": str(shp_path),
-                  "fields": fields,
-                  "shape_type": reader.shapeType,
-                  "records": len(reader),
-                  "source_bounds": reader.bbox,
-                  "prj_exists": shp_path.with_suffix(".prj").exists(),
-              })
-              # The railway archive contains multiple CARTO-FER layers.
-              # Use only the railway-track line layer, not station/bridge/accessory polygons.
-              if "voie" not in shp_path.stem.lower():
-                  continue
-              if reader.shapeType not in (3, 13, 23):
-                  continue
-              for sr in reader.iterShapeRecords():
-                  geom_source = shape(sr.shape.__geo_interface__)
-                  if not geom_source.intersects(target_source):
-                      continue
-                  props = dict(zip(fields, sr.record))
-                  geom_wgs84 = transform(source_to_wgs84.transform, geom_source)
-                  selected.append({
-                      "type":"Feature",
-                      "properties":props,
-                      "geometry":mapping(geom_wgs84)
-                  })
-
-          report = {
-              "source": "Ville de Montréal — Voies ferrées 3D (2020)",
-              "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
-              "source_crs": "NAD83 / MTM zone 8 (EPSG:32188)",
-              "target_bbox_wgs84": [-73.645,45.515,-73.610,45.540],
-              "source_files": source_files,
-              "feature_count": len(selected),
-              "features": selected,
-          }
-
-          Path("railway_parc_extension.geojson").write_text(
-              json.dumps({"type":"FeatureCollection","features":selected}, ensure_ascii=False)
-          )
-          Path("railway_source_inventory.json").write_text(
-              json.dumps(report, ensure_ascii=False, indent=2)
-          )
-          print(json.dumps({
-              "source_files": source_files,
-              "selected_features": len(selected),
-              "property_keys": sorted({k for f in selected for k in f["properties"]}),
-          }, ensure_ascii=False, indent=2))
-          PY
-
-      - name: Build railway reconciliation report
-        run: |
-          python -m pip install --quiet pyproj shapely
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from pyproj import Transformer
-          from shapely.geometry import shape, Point
-          from shapely.ops import transform
-
-          data = json.loads(Path("railway_parc_extension.geojson").read_text())
-          features = data.get("features", [])
-          transformer = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
-          park = Point(*transformer.transform(-73.630554, 45.526943))
-          station = Point(*transformer.transform(-73.62467, 45.53164))
-
-          rows = []
-          for f in features:
-              geom = transform(transformer.transform, shape(f["geometry"]))
-              props = f.get("properties", {})
-              rows.append({
-                  "objectid": props.get("OBJECTID"),
-                  "name": props.get("nomvoie"),
-                  "class": props.get("classvoie"),
-                  "use": props.get("typeutilis"),
-                  "state": props.get("etat"),
-                  "operator": props.get("nmfrexploi"),
-                  "owner": props.get("nmfrpropr"),
-                  "subdivision": props.get("nomsubdiv1"),
-                  "distance_to_park_m": round(geom.distance(park), 2),
-                  "distance_to_station_m": round(geom.distance(station), 2),
-                  "geometry": f.get("geometry"),
-              })
-
-          report = {
-              "source": "Ville de Montréal — Voies ferrées 3D (2020)",
-              "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
-              "target_bbox_wgs84": [-73.645, 45.515, -73.610, 45.540],
-              "feature_count": len(features),
-              "park_wgs84": {"lat": 45.526943, "lon": -73.630554},
-              "gare_parc_wgs84": {"lat": 45.53164, "lon": -73.62467},
-              "segments": sorted(rows, key=lambda r: r["distance_to_park_m"]),
-          }
-          Path("railway_parc_extension_report.json").write_text(
-              json.dumps(report, ensure_ascii=False, indent=2)
-          )
-          print(json.dumps({
-              "feature_count": len(features),
-              "nearest_segments": [
-                  {k:v for k,v in r.items() if k != "geometry"}
-                  for r in sorted(rows, key=lambda r: r["distance_to_park_m"])[:10]
-              ]
-          }, ensure_ascii=False, indent=2))
-          PY
-
-      - name: Upload source and inspection report
-        uses: actions/upload-artifact@v4
-        with:
-          name: sqrc-1000-source
-          if-no-files-found: error
-          path: |
-            railway_parc_extension.geojson
-            railway_parc_extension_report.json
-            railway_source_inventory.json
-            sqrc_1000.geojson
-            sqrc_1000_parc_extension_report.json
-
-      - name: Persist the verified sheet report
-        if: steps.sqrc.outputs.SQRC_DOWNLOAD == 'success'
-        run: |
-          set -euo pipefail
-          mkdir -p data
-          cp sqrc_1000_parc_extension_report.json data/sqrc_1000_parc_extension_report.json
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/sqrc_1000_parc_extension_report.json
-          if git diff --cached --quiet; then
-            echo "No report changes to commit."
-          else
-            git commit -m "Record verified Parc-Extension SQRC sheet extraction"
-            git push
-          fi
- carto_2024/target_index.txt)
-            echo "CARTO_2024_DOWNLOAD=success" >> "$GITHUB_OUTPUT"
-            find carto_2024/selected -type f -maxdepth 1 -print
-          else
-            echo "CARTO_2024_DOWNLOAD=blocked" >> "$GITHUB_OUTPUT"
-            echo "Official 2024 PDF archive could not be downloaded from this runner."
-          fi
-
-      - name: Download SQRC 1:1000 GeoJSON
-        id: sqrc
-        continue-on-error: true
-        run: |
-          set -u
-          urls=(
-            "https://donnees.montreal.ca/fr/dataset/e160983c-f5d2-49ec-9b81-d0f6fb66518a/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson"
-            "https://www.donneesquebec.ca/recherche/dataset/vmtl-quadrillage-sqrc/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson"
-          )
-          rm -f sqrc_1000.geojson
-          for url in "${urls[@]}"; do
-            echo "Trying: $url"
-            if curl -fL --retry 2 --retry-all-errors \
-              -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
-              "$url" -o sqrc_1000.geojson && test -s sqrc_1000.geojson; then
-              wc -c sqrc_1000.geojson
-              echo "SQRC_DOWNLOAD=success" >> "\$GITHUB_OUTPUT"
-              exit 0
-            fi
-            rm -f sqrc_1000.geojson
-          done
-          echo "SQRC_DOWNLOAD=blocked" >> "\$GITHUB_OUTPUT"
-          echo "Official SQRC download endpoints are blocked from this GitHub runner; continuing so independent railway extraction can run."
-
-      - name: Inspect grid and identify sheets around Parc du Centenaire
-        if: steps.sqrc.outputs.SQRC_DOWNLOAD == 'success'
-        run: |
-          python -m pip install --quiet pyproj shapely
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from pyproj import Transformer
-          from shapely.geometry import shape, Point
-          from shapely.ops import transform
-
-          data = json.loads(Path("sqrc_1000.geojson").read_text())
-          features = data.get("features", [])
-          transformer = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
-          x, y = transformer.transform(-73.630554, 45.526943)
-          p = Point(x, y)
-
-          to_mtm8 = lambda geom: transform(transformer.transform, geom)
-
-          matches = []
-          nearby = []
-          for f in features:
-              geom = to_mtm8(shape(f["geometry"]))
-              d = geom.distance(p)
-              if geom.contains(p) or geom.touches(p) or d < 1:
-                  matches.append(f)
-              if d <= 500:
-                  nearby.append((d, f))
-
-          report = {
-              "source": "Ville de Montréal SQRC 1:1000 GeoJSON",
-              "resource": "ad1924d4-2579-40aa-8aa7-b83d88166ee5",
-              "park_wgs84": {"lat": 45.526943, "lon": -73.630554},
-              "park_mtm8": {"x": x, "y": y},
-              "feature_count": len(features),
-              "containing_or_touching_sheets": [
-                  {"properties": f.get("properties", {}), "geometry": f.get("geometry")}
-                  for f in matches
-              ],
-              "nearby_sheets_500m": [
-                  {"distance_m": round(d, 2), "properties": f.get("properties", {})}
-                  for d, f in sorted(nearby, key=lambda z: z[0])
-              ],
-          }
-          Path("sqrc_1000_parc_extension_report.json").write_text(
-              json.dumps(report, ensure_ascii=False, indent=2)
-          )
-          print(json.dumps({
-              "feature_count": len(features),
-              "containing_or_touching": len(matches),
-              "nearby_500m": len(nearby),
-              "containing_properties": [f.get("properties", {}) for f in matches],
-          }, ensure_ascii=False, indent=2))
-          PY
-
-      - name: Fetch official Montréal railway geometry around the first sector
-        run: |
-          set -euo pipefail
-          urls=(
-            "https://donnees.montreal.ca/fr/dataset/e135b6df-5bfc-43bc-a743-5f306c8900fb/resource/fe46cc87-f2d2-4b2d-9134-9e0dc431f21c/download/voies-ferrees-2020.zip"
-            "https://www.donneesquebec.ca/recherche/fr/dataset/vmtl-voies-ferrees-3d/resource/fe46cc87-f2d2-4b2d-9134-9e0dc431f21c/download/voies-ferrees-2020.zip"
-          )
-          rm -rf railway_src railway_extract
-          mkdir -p railway_src railway_extract
-          ok=0
-          for url in "${urls[@]}"; do
-            echo "Trying: $url"
-            if curl -fL --retry 2 --retry-all-errors \
-              -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
-              "$url" -o railway_src/voies-ferrees-2020.zip; then
-              ok=1
-              break
-            fi
-            rm -f railway_src/voies-ferrees-2020.zip
-          done
-          test "$ok" = "1"
-          unzip -q railway_src/voies-ferrees-2020.zip -d railway_extract
-          find railway_extract -maxdepth 2 -type f | sort
-          python -m pip install --quiet pyshp shapely pyproj
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          import shapefile
-          from shapely.geometry import shape, box, mapping
-          from shapely.ops import transform
-          from pyproj import Transformer
-
-          shp_paths = list(Path("railway_extract").rglob("*.shp"))
-          if not shp_paths:
-              raise SystemExit("No SHP file found in official Montréal railway archive")
-
-          source_to_wgs84 = Transformer.from_crs("EPSG:32188", "EPSG:4326", always_xy=True)
-          wgs84_to_source = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
-          target_wgs84 = box(-73.645, 45.515, -73.610, 45.540)
-          target_source = transform(wgs84_to_source.transform, target_wgs84)
-          selected = []
-          source_files = []
-
-          for shp_path in shp_paths:
-              reader = shapefile.Reader(str(shp_path))
-              fields = [f[0] for f in reader.fields[1:]]
-              source_files.append({
-                  "path": str(shp_path),
-                  "fields": fields,
-                  "shape_type": reader.shapeType,
-                  "records": len(reader),
-                  "source_bounds": reader.bbox,
-                  "prj_exists": shp_path.with_suffix(".prj").exists(),
-              })
-              # The railway archive contains multiple CARTO-FER layers.
-              # Use only the railway-track line layer, not station/bridge/accessory polygons.
-              if "voie" not in shp_path.stem.lower():
-                  continue
-              if reader.shapeType not in (3, 13, 23):
-                  continue
-              for sr in reader.iterShapeRecords():
-                  geom_source = shape(sr.shape.__geo_interface__)
-                  if not geom_source.intersects(target_source):
-                      continue
-                  props = dict(zip(fields, sr.record))
-                  geom_wgs84 = transform(source_to_wgs84.transform, geom_source)
-                  selected.append({
-                      "type":"Feature",
-                      "properties":props,
-                      "geometry":mapping(geom_wgs84)
-                  })
-
-          report = {
-              "source": "Ville de Montréal — Voies ferrées 3D (2020)",
-              "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
-              "source_crs": "NAD83 / MTM zone 8 (EPSG:32188)",
-              "target_bbox_wgs84": [-73.645,45.515,-73.610,45.540],
-              "source_files": source_files,
-              "feature_count": len(selected),
-              "features": selected,
-          }
-
-          Path("railway_parc_extension.geojson").write_text(
-              json.dumps({"type":"FeatureCollection","features":selected}, ensure_ascii=False)
-          )
-          Path("railway_source_inventory.json").write_text(
-              json.dumps(report, ensure_ascii=False, indent=2)
-          )
-          print(json.dumps({
-              "source_files": source_files,
-              "selected_features": len(selected),
-              "property_keys": sorted({k for f in selected for k in f["properties"]}),
-          }, ensure_ascii=False, indent=2))
-          PY
-
-      - name: Build railway reconciliation report
-        run: |
-          python -m pip install --quiet pyproj shapely
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from pyproj import Transformer
-          from shapely.geometry import shape, Point
-          from shapely.ops import transform
-
-          data = json.loads(Path("railway_parc_extension.geojson").read_text())
-          features = data.get("features", [])
-          transformer = Transformer.from_crs("EPSG:4326", "EPSG:32188", always_xy=True)
-          park = Point(*transformer.transform(-73.630554, 45.526943))
-          station = Point(*transformer.transform(-73.62467, 45.53164))
-
-          rows = []
-          for f in features:
-              geom = transform(transformer.transform, shape(f["geometry"]))
-              props = f.get("properties", {})
-              rows.append({
-                  "objectid": props.get("OBJECTID"),
-                  "name": props.get("nomvoie"),
-                  "class": props.get("classvoie"),
-                  "use": props.get("typeutilis"),
-                  "state": props.get("etat"),
-                  "operator": props.get("nmfrexploi"),
-                  "owner": props.get("nmfrpropr"),
-                  "subdivision": props.get("nomsubdiv1"),
-                  "distance_to_park_m": round(geom.distance(park), 2),
-                  "distance_to_station_m": round(geom.distance(station), 2),
-                  "geometry": f.get("geometry"),
-              })
-
-          report = {
-              "source": "Ville de Montréal — Voies ferrées 3D (2020)",
-              "dataset_id": "e135b6df-5bfc-43bc-a743-5f306c8900fb",
-              "target_bbox_wgs84": [-73.645, 45.515, -73.610, 45.540],
-              "feature_count": len(features),
-              "park_wgs84": {"lat": 45.526943, "lon": -73.630554},
-              "gare_parc_wgs84": {"lat": 45.53164, "lon": -73.62467},
-              "segments": sorted(rows, key=lambda r: r["distance_to_park_m"]),
-          }
-          Path("railway_parc_extension_report.json").write_text(
-              json.dumps(report, ensure_ascii=False, indent=2)
-          )
-          print(json.dumps({
-              "feature_count": len(features),
-              "nearest_segments": [
-                  {k:v for k,v in r.items() if k != "geometry"}
-                  for r in sorted(rows, key=lambda r: r["distance_to_park_m"])[:10]
-              ]
-          }, ensure_ascii=False, indent=2))
-          PY
-
-      - name: Upload source and inspection report
-        uses: actions/upload-artifact@v4
-        with:
-          name: sqrc-1000-source
-          if-no-files-found: error
-          path: |
-            railway_parc_extension.geojson
-            railway_parc_extension_report.json
-            railway_source_inventory.json
-            sqrc_1000.geojson
-            sqrc_1000_parc_extension_report.json
-
-      - name: Persist the verified sheet report
-        if: steps.sqrc.outputs.SQRC_DOWNLOAD == 'success'
-        run: |
-          set -euo pipefail
-          mkdir -p data
-          cp sqrc_1000_parc_extension_report.json data/sqrc_1000_parc_extension_report.json
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/sqrc_1000_parc_extension_report.json
-          if git diff --cached --quiet; then
-            echo "No report changes to commit."
-          else
-            git commit -m "Record verified Parc-Extension SQRC sheet extraction"
-            git push
-          fi
