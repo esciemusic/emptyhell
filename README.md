@@ -27,3 +27,7 @@ The geometry is intentionally provisional. It is **not yet a verified reconstruc
 
 ## Development rule
 Do not scale the world until a small vertical slice looks and feels correct.
+
+## Build verification
+
+GitHub Actions builds the project on pushes and pull requests to `main`.
