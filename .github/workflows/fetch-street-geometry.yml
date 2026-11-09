@@ -47,7 +47,7 @@ jobs:
           selected=[]
           for f in data.get("features",[]):
               p=f.get("properties",{})
-              od=str(p.get("ODONYME") or p.get("odonyme") or "").upper()
+              od=" ".join(str(p.get("ODONYME") or p.get("odonyme") or "").upper().split())
               if od not in {n.upper() for n in names}:
                   continue
               g=shape(f["geometry"])
