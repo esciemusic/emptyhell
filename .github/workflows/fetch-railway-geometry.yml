@@ -1,0 +1,143 @@
+name: Fetch and reconcile first-sector railway geometry
+
+on:
+  push:
+    paths:
+      - ".github/workflows/fetch-railway-geometry.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  railway:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download Montréal railway network
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --retry-all-errors \
+            -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
+            "https://donnees.montreal.ca/fr/dataset/30028e66-e3b1-4478-8349-149b7c046932/resource/d2d8d721-208d-4a4d-b016-24567862e638/download/reseauferroviaire.geojson" \
+            -o montreal_railway.geojson
+          test -s montreal_railway.geojson
+
+      - name: Download Québec railway network
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --retry-all-errors \
+            -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
+            "https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=2.0.0&request=getfeature&typename=ms:reseau_chfer_qc&outfile=ReseauFerroviaire&srsname=EPSG:4326&outputformat=geojson" \
+            -o quebec_railway.geojson
+          test -s quebec_railway.geojson
+
+      - name: Filter, transform, and reconcile first-sector rail geometry
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pyproj shapely
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from pyproj import Transformer
+          from shapely.geometry import shape, box, mapping
+          from shapely.ops import transform, unary_union
+
+          ANCHOR_MTM8 = (294602.04000401904, 5043011.143267743)
+          TARGET = box(-73.640, 45.515, -73.615, 45.545)
+          to_mtm8 = Transformer.from_crs("EPSG:4326","EPSG:32188",always_xy=True)
+
+          def load(path):
+              return json.loads(Path(path).read_text())
+
+          def filter_features(data):
+              out=[]
+              for f in data.get("features", []):
+                  g=shape(f["geometry"])
+                  if not g.is_empty and g.intersects(TARGET):
+                      gm=transform(to_mtm8.transform, g)
+                      local=transform(lambda x,y,z=None: (x-ANCHOR_MTM8[0], -(y-ANCHOR_MTM8[1])), gm)
+                      out.append({
+                          "type":"Feature",
+                          "properties":f.get("properties",{}),
+                          "geometry_wgs84":f["geometry"],
+                          "geometry_mtm8":mapping(gm),
+                          "geometry_local_m":mapping(local)
+                      })
+              return out
+
+          montreal=filter_features(load("montreal_railway.geojson"))
+          quebec=filter_features(load("quebec_railway.geojson"))
+
+          def union_geoms(features):
+              return unary_union([shape(f["geometry_mtm8"]) for f in features]) if features else None
+
+          mg=union_geoms(montreal)
+          qg=union_geoms(quebec)
+          if mg is None or qg is None:
+              raise SystemExit(f"No railway geometry in target: Montréal={len(montreal)} Québec={len(quebec)}")
+
+          hausdorff=float(mg.hausdorff_distance(qg))
+          intersection=float(mg.intersection(qg).length)
+          union_len=float(mg.union(qg).length)
+
+          report={
+              "status":"RECONCILIATION_REVIEW",
+              "target_bbox_wgs84":[-73.640, 45.515, -73.615, 45.545],
+              "authoritative_anchor_mtm8":list(ANCHOR_MTM8),
+              "local_transform":"x=east_mtm8_delta, z=-north_mtm8_delta",
+              "sources":{
+                  "montreal":{
+                      "dataset_id":"30028e66-e3b1-4478-8349-149b7c046932",
+                      "resource_id":"d2d8d721-208d-4a4d-b016-24567862e638",
+                      "url":"https://donnees.montreal.ca/fr/dataset/30028e66-e3b1-4478-8349-149b7c046932/resource/d2d8d721-208d-4a4d-b016-24567862e638/download/reseauferroviaire.geojson",
+                      "feature_count":len(montreal)
+                  },
+                  "quebec":{
+                      "dataset_id":"c2c4f386-a736-4eaa-b5b6-28c3a8f75466",
+                      "url":"https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=2.0.0&request=getfeature&typename=ms:reseau_chfer_qc&outfile=ReseauFerroviaire&srsname=EPSG:4326&outputformat=geojson",
+                      "feature_count":len(quebec)
+                  }
+              },
+              "geometry_comparison_m":{
+                  "hausdorff_distance":hausdorff,
+                  "intersection_length":intersection,
+                  "union_length":union_len
+              },
+              "note":"No railway geometry is promoted into EMPTYHELL runtime from this pass. The two authoritative datasets are reconciled first; runtime promotion remains gated."
+          }
+
+          Path("first_sector_railway_reconciliation.json").write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          Path("first_sector_railway_montreal.json").write_text(json.dumps({"type":"FeatureCollection","features":montreal},ensure_ascii=False,indent=2))
+          Path("first_sector_railway_quebec.json").write_text(json.dumps({"type":"FeatureCollection","features":quebec},ensure_ascii=False,indent=2))
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Persist railway reconciliation
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          cp first_sector_railway_reconciliation.json data/first_sector_railway_reconciliation.json
+          cp first_sector_railway_montreal.json data/first_sector_railway_montreal.json
+          cp first_sector_railway_quebec.json data/first_sector_railway_quebec.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/first_sector_railway_reconciliation.json data/first_sector_railway_montreal.json data/first_sector_railway_quebec.json
+          if git diff --cached --quiet; then
+            echo "No railway geometry changes to commit."
+          else
+            git commit -m "Record first-sector railway reconciliation"
+            git push
+          fi
+
+      - name: Upload railway reconciliation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-sector-railway-reconciliation
+          if-no-files-found: error
+          path: |
+            first_sector_railway_reconciliation.json
+            first_sector_railway_montreal.json
+            first_sector_railway_quebec.json
