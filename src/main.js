@@ -140,8 +140,6 @@ const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 const clock = new THREE.Clock();
 
-const clock = new THREE.Clock();
-
 function move(dt) {
   if (!locked || pauseOpen) return;
   direction.set(0,0,0);
@@ -155,8 +153,8 @@ function move(dt) {
   velocity.x = THREE.MathUtils.damp(velocity.x, direction.x * speed, 8, dt);
   velocity.z = THREE.MathUtils.damp(velocity.z, direction.z * speed, 8, dt);
 
-  const forward = new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw));
-  const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
+  const forward = new THREE.Vector3(Math.sin(yaw), 0, -Math.cos(yaw));
+  const right = new THREE.Vector3(Math.cos(yaw), 0, Math.sin(yaw));
   player.position.addScaledVector(forward, velocity.z * dt);
   player.position.addScaledVector(right, velocity.x * dt);
 
