@@ -636,7 +636,8 @@ for (let i=0;i<6;i++) {
   cable.rotation.y=Math.PI/2;
 }
 const lowerGate=box(6,2.7,.22,lowerGlowMat,382,1.35,-243,{castShadow:true});
-addCollider(382,-243,6,.22,lowerGate);
+if (!lowerSignalHeard) addCollider(382,-243,6,.22,lowerGate);
+if (lowerSignalHeard) lowerGate.position.y = 3.1;
 const lowerLamp=new THREE.PointLight(0x6b45c8,.85,9,2);
 lowerLamp.position.set(382,2.35,-228);
 scene.add(lowerLamp);
