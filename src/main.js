@@ -283,6 +283,39 @@ function railwayAlongZ(x, z, length) {
 railwayAlongZ(112,4,205);
 railwayAlongX(3,91,225);
 
+// Winter railway response: snow gathers on ballast edges while the running rails remain readable.
+const railSnowMat = new THREE.MeshStandardMaterial({ color:0xbfc3c1, roughness:1 });
+box(1.05,.16,201,railSnowMat,109.85,.25,4,{castShadow:false});
+box(1.05,.16,201,railSnowMat,114.15,.25,4,{castShadow:false});
+box(221,.16,1.05,railSnowMat,3,.25,88.85,{castShadow:false});
+box(221,.16,1.05,railSnowMat,3,.25,93.15,{castShadow:false});
+
+// Small railway markers keep the corridor visually legible without becoming HUD elements.
+for (const z of [-72,-28,16,60]) {
+  box(.12,1.4,.12,concreteMat,108.8,.7,z,{castShadow:true});
+  box(.42,.08,.12,darkMat,108.8,1.35,z,{castShadow:false});
+}
+for (const x of [-82,-38,6,50,94]) {
+  box(.12,1.4,.12,concreteMat,x,.7,89.0,{castShadow:true});
+  box(.42,.08,.12,darkMat,x,1.35,89.0,{castShadow:false});
+}
+
+// Simplified Autoroute 40 edge: environmental pressure only until verified road geometry is imported.
+const highwayZ = WORLD.northEdge;
+box(236,.18,10,asphaltMat,3,.04,highwayZ,{castShadow:false});
+box(236,.18,1.2,concreteMat,3,.22,highwayZ+5.2,{castShadow:false});
+for (let x=-112; x<=118; x+=12) {
+  box(5,.08,.12,snowMat,x,.18,highwayZ-2.1,{castShadow:false});
+}
+const highwayBarrier = box(236,1.1,.28,concreteMat,3,.55,highwayZ+5.4,{castShadow:false,receiveShadow:false});
+addCollider(3,highwayZ+5.4,236,.28,highwayBarrier);
+
+// Winter shoulder and reflectors reinforce the highway as a physical edge.
+box(236,.14,1.4,snowMat,3,.20,highwayZ-5.5,{castShadow:false});
+for (let x=-108; x<=114; x+=9) {
+  box(.22,.06,.08,concreteMat,x,.18,highwayZ-3.8,{castShadow:false});
+}
+
 // Keep the camera from crossing the railway while preserving the physical appearance.
 const railCameraEast = box(5,.9,205,darkMat,112,.45,4,{castShadow:false,receiveShadow:false});
 const railCameraSouth = box(225,.9,5,darkMat,3,.45,91,{castShadow:false,receiveShadow:false});
