@@ -465,9 +465,17 @@ interactable(
 
 const discoveryStorageKey = 'emptyhell.discovery.v1';
 const routeStorageKey = 'emptyhell.route.v1';
+const transmissionStorageKey = 'emptyhell.transmission.v1';
 const savedRoute = (() => {
   try {
     return localStorage.getItem(routeStorageKey) === 'reached';
+  } catch {
+    return false;
+  }
+})();
+const savedTransmission = (() => {
+  try {
+    return localStorage.getItem(transmissionStorageKey) === 'complete';
   } catch {
     return false;
   }
@@ -570,7 +578,21 @@ const nextTransmission = interactable(
   'A second receiver is waiting beyond the first route marker. The signal is weaker here.'
 );
 nextTransmission.visible = savedRoute;
-nextTransmission.userData.routeState = savedRoute ? 'active' : 'locked';
+nextTransmission.userData.routeState = savedTransmission ? 'complete' : (savedRoute ? 'active' : 'locked');
+if (savedTransmission) {
+  nextTransmission.userData.interaction.title = 'TRANSMISSION / COMPLETE';
+  nextTransmission.userData.interaction.text = 'The second receiver goes quiet. The next signal is no longer local.';
+}
+
+function completeTransmission() {
+  if (nextTransmission.userData.routeState !== 'active') return;
+  nextTransmission.userData.routeState = 'complete';
+  nextTransmission.userData.interaction.title = 'TRANSMISSION / COMPLETE';
+  nextTransmission.userData.interaction.text = 'The second receiver goes quiet. The next signal is no longer local.';
+  try {
+    localStorage.setItem(transmissionStorageKey, 'complete');
+  } catch {}
+}
 
 updateWorldStatus();
 
@@ -871,6 +893,7 @@ function openInteraction(target) {
   const data = target.userData.interaction;
   if (target.userData.signalId) discoverSignal(target.userData.signalId);
   if (target.userData === routeDestination?.userData && target.userData.routeState === 'open') reachRouteDestination();
+  if (target.userData === nextTransmission?.userData && target.userData.routeState === 'active') completeTransmission();
   interactionTitle.textContent = data.title;
   interactionText.textContent = data.text;
   interactionPanel.classList.remove('hidden');
