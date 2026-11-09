@@ -85,11 +85,14 @@ function building(w,d,h,x,z,mat=brickMat) {
   const roof = box(w+.12,.12,d+.12,darkMat,x,h+.06,z);
   roof.castShadow = true;
   addCollider(x,z,w,d,b);
-  // Repeated narrow windows give the blockout a distinctly Montréal residential rhythm.
+
+  // Street-facing Montréal residential rhythm: narrow windows, stacked entries, and exterior stairs.
   const frontZ = z - d/2 - .025;
   const rows = Math.max(2, Math.floor(h / 3.2));
   const columns = Math.max(2, Math.floor(w / 4.2));
-  const windowMat = new THREE.MeshStandardMaterial({ color:0x24343d, roughness:.28, metalness:.12, emissive:0x0a1116, emissiveIntensity:.25 });
+  const windowMat = new THREE.MeshStandardMaterial({
+    color:0x24343d, roughness:.28, metalness:.12, emissive:0x0a1116, emissiveIntensity:.25
+  });
   for (let row=0; row<rows; row++) {
     for (let col=0; col<columns; col++) {
       const wx = x - w/2 + 2.0 + col * ((w-4) / Math.max(1, columns-1));
@@ -97,9 +100,31 @@ function building(w,d,h,x,z,mat=brickMat) {
       if (wy < h-.8) box(1.15,1.45,.08,windowMat,wx,wy,frontZ,{castShadow:false});
     }
   }
-  // A few entrances break the repetition and make the frontage readable at street level.
+
   const doorMat = new THREE.MeshStandardMaterial({ color:0x17191c, roughness:.72 });
-  box(1.15,2.3,.1,doorMat,x + (w > 18 ? -w*.18 : 0),1.15,frontZ-.03,{castShadow:false});
+  const doorX = x + (w > 18 ? -w*.18 : 0);
+  box(1.15,2.3,.1,doorMat,doorX,1.15,frontZ-.03,{castShadow:false});
+
+  // Exterior steel stair and balcony language is used selectively, not on every building.
+  if (h >= 11) {
+    const railMat = new THREE.MeshStandardMaterial({ color:0x34383d, roughness:.72, metalness:.35 });
+    const stepMat = new THREE.MeshStandardMaterial({ color:0x4a4d50, roughness:.86, metalness:.18 });
+    const stairX = x + w*.18;
+    const baseZ = frontZ - .9;
+    for (let step=0; step<5; step++) {
+      box(1.5,.16,.55,stepMat,stairX,0.18 + step*.28,baseZ - step*.42,{castShadow:true});
+    }
+    box(1.5,.08,.08,railMat,stairX,1.75,baseZ-2.1,{castShadow:true});
+    box(.08,1.0,.08,railMat,stairX-.7,1.25,baseZ-2.1,{castShadow:true});
+    box(.08,1.0,.08,railMat,stairX+.7,1.25,baseZ-2.1,{castShadow:true});
+
+    // Shallow upper balcony: concrete/steel, recessed rather than ornamental.
+    box(2.5,.12,.9,stepMat,stairX,3.45,frontZ-.55,{castShadow:true});
+    box(2.5,.07,.07,railMat,stairX,4.35,frontZ-1.0,{castShadow:true});
+    box(.07,.95,.07,railMat,stairX-1.2,3.9,frontZ-1.0,{castShadow:true});
+    box(.07,.95,.07,railMat,stairX+1.2,3.9,frontZ-1.0,{castShadow:true});
+  }
+
   return b;
 }
 
@@ -269,6 +294,26 @@ for (const z of [WORLD.saintRoch, WORLD.ball, WORLD.ogilvy]) {
 }
 const tireMat = new THREE.MeshStandardMaterial({ color:0x303336, roughness:1 });
 for (const x of [-1.5,1.5]) box(.28,.012,210,tireMat,x,.105,4,{castShadow:false});
+
+// Utility infrastructure: restrained poles and overhead lines make the streets read as lived-in space.
+const utilityMat = new THREE.MeshStandardMaterial({ color:0x2b2d30, roughness:.82, metalness:.15 });
+function utilityPole(x,z) {
+  box(.18,7.5,.18,utilityMat,x,3.75,z);
+  box(2.4,.12,.12,utilityMat,x,7.0,z);
+  box(2.1,.035,.035,darkMat,x,7.0,z-.04,{castShadow:false});
+}
+for (const p of [[-52,12],[-18,12],[18,12],[54,12],[-52,58],[-18,58],[18,58],[54,58]]) utilityPole(p[0],p[1]);
+
+// Low service/parking structures keep the frontage from reading like isolated cubes.
+function lowGarage(x,z,w=6,d=5) {
+  const g=box(w,2.4,d,concreteMat,x,1.2,z);
+  addCollider(x,z,w,d,g);
+  box(w*.72,1.7,.08,darkMat,x,1.0,z-d/2-.05,{castShadow:false});
+}
+lowGarage(-88,12,7,5);
+lowGarage(88,12,7,5);
+lowGarage(-88,62,7,5);
+lowGarage(88,62,7,5);
 
 // Streetlights around the first playable area.
 for (const p of [
