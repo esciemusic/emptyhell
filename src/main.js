@@ -474,8 +474,8 @@ function animate() {
   const dt = Math.min(clock.getDelta(), .05);
   move(dt);
   updateInteraction();
-  const mapX = ((player.position.x - WORLD.westEdge) / (WORLD.eastEdge - WORLD.westEdge)) * 100;
-  const mapZ = ((player.position.z - WORLD.northEdge) / (WORLD.southEdge - WORLD.northEdge)) * 100;
+  const mapX = ((player.position.x - WORLD.minX) / (WORLD.maxX - WORLD.minX)) * 100;
+  const mapZ = ((player.position.z - WORLD.minZ) / (WORLD.maxZ - WORLD.minZ)) * 100;
   mapPlayer.style.left = mapX + '%';
   mapPlayer.style.top = mapZ + '%';
   renderer.render(scene, camera);
