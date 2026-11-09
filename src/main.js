@@ -143,6 +143,41 @@ function lamp(x,z) {
   Coordinates: x=east, z=-north, metres.
   Railway is intentionally absent: the verified 1:1000 sheet contains no rail corridor.
 */
+
+function footprintBuilding(points, h, mat=brickMat) {
+  if (!points || points.length < 4) return;
+  const shape = new THREE.Shape();
+  points.forEach(([x,z], i) => {
+    const sy = -z;
+    if (i === 0) shape.moveTo(x, sy);
+    else shape.lineTo(x, sy);
+  });
+  const geom = new THREE.ExtrudeGeometry(shape, { depth:h, bevelEnabled:false, curveSegments:1 });
+  geom.computeVertexNormals();
+  const mesh = new THREE.Mesh(geom, mat);
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+
+  const roofShape = new THREE.Shape();
+  points.forEach(([x,z], i) => {
+    const sy = -z;
+    if (i === 0) roofShape.moveTo(x, sy);
+    else roofShape.lineTo(x, sy);
+  });
+  const roof = new THREE.Mesh(new THREE.ShapeGeometry(roofShape), darkMat);
+  roof.rotation.x = -Math.PI / 2;
+  roof.position.y = h + .04;
+  roof.receiveShadow = true;
+  scene.add(roof);
+
+  const xs = points.map(p => p[0]), zs = points.map(p => p[1]);
+  addCollider((Math.min(...xs)+Math.max(...xs))/2, (Math.min(...zs)+Math.max(...zs))/2,
+    Math.max(...xs)-Math.min(...xs), Math.max(...zs)-Math.min(...zs), mesh);
+  return mesh;
+}
+
 const WORLD = {
   minX: -180, maxX: 380, minZ: -330, maxZ: 180,
   parkAnchor: { x: 0, z: 0 }
@@ -203,16 +238,29 @@ interactable(
   'A park artwork marker. The first slice records the place without turning it into exposition.'
 );
 
-// Temporary frontage: intentionally sparse until parcel/building footprints are imported.
-// Buildings are kept away from the verified park polygon and road corridors.
-const frontage = [
-  [-45,70,16,10,brickMat], [18,53,18,11,concreteMat],
-  [82,15,18,12,brickDarkMat], [120,-55,20,11,brickMat],
-  [160,-90,18,12,concreteMat], [235,75,20,11,brickDarkMat],
-  [285,-105,18,12,brickMat], [-70,-55,18,11,concreteMat],
-  [-105,82,16,10,brickMat], [70,-320,20,12,brickDarkMat]
+// Verified frontage-derived massing from Ville de Montréal compilation sheet 31H12-010-0530.
+// The footprints are traced from the official 1:1000 building outlines; height remains visual massing,
+// not a claim about municipal storey/height attributes. The current slice starts with the closest
+// verified frontage ring around the park while the remaining sheet footprints are reconciled.
+const VERIFIED_FRONTAGE = [
+  [[11.3,2.3],[15.8,15.9],[17.3,-1.8],[11.3,2.3]],
+  [[15.1,-28.1],[2.4,-36.2],[-6.8,-37.6],[-9.0,-27.7],[4.8,-22.0],[14.8,-23.3],[15.1,-28.1]],
+  [[18.6,-14.9],[28.0,-7.9],[40.9,-8.2],[43.1,-17.6],[36.7,-19.0],[29.5,-22.0],[18.5,-14.9],[18.6,-14.9]],
+  [[36.4,24.3],[47.7,21.6],[44.4,12.0],[40.4,13.5],[33.7,10.7],[31.5,8.2],[26.2,6.0],[18.2,16.9],[29.3,21.4],[36.4,24.3]],
+  [[-39.6,48.9],[-33.7,58.0],[-27.6,38.7],[-22.8,34.3],[-18.7,24.6],[-27.6,20.8],[-29.7,25.8],[-36.4,39.8],[-37.7,43.2],[-39.6,48.9]],
+  [[15.8,52.8],[24.3,56.3],[29.6,55.5],[44.9,63.3],[53.0,66.2],[58.6,67.1],[62.2,57.7],[59.8,56.0],[54.7,54.9],[46.2,51.4],[26.2,42.5],[21.6,40.5],[17.7,39.1],[12.9,37.7],[9.3,35.3],[4.7,33.4],[-0.5,29.9],[-4.4,30.2],[-10.2,27.4],[-18.5,40.1],[-10.2,44.0],[0.8,41.3],[0.7,45.3],[4.7,44.5],[7.1,49.9],[10.8,52.0],[15.8,52.8]],
+  [[-39.9,-12.5],[-25.3,-48.2],[-39.2,-41.0],[-43.3,-31.0],[-48.9,-23.9],[-61.6,-21.2],[-42.9,-5.1],[-39.9,-12.4],[-39.9,-12.5]],
+  [[16.4,76.1],[29.6,81.6],[33.2,83.1],[40.6,87.5],[45.6,77.0],[37.4,72.8],[29.7,70.0],[18.1,65.2],[11.6,63.8],[11.1,62.4],[3.5,59.2],[-5.4,55.0],[-13.3,51.8],[-18.6,46.4],[-26.0,58.5],[-17.4,62.0],[-8.9,65.5],[-3.4,67.7],[-0.5,68.4],[2.8,70.2],[7.9,71.9],[12.4,75.7],[15.8,75.8],[16.4,76.1]],
+  [[-69.9,23.4],[-80.7,7.5],[-70.2,0.9],[-57.2,33.9],[-63.3,33.2],[-75.5,37.2],[-69.9,23.4]],
+  [[68.1,-31.1],[75.0,-28.2],[79.2,-26.3],[80.2,-25.5],[82.0,-25.6],[94.2,-33.1],[86.0,-34.6],[80.4,-40.3],[76.4,-39.3],[69.0,-43.6],[62.7,-46.7],[55.2,-49.1],[51.2,-51.0],[46.3,-52.7],[43.2,-56.8],[38.5,-56.6],[35.6,-41.9],[38.4,-41.3],[45.6,-38.9],[49.3,-36.9],[52.7,-35.5],[56.6,-33.3],[66.4,-29.2],[68.1,-31.1]],
+  [[-66.9,-46.2],[-58.7,-58.7],[-59.2,-43.1],[-66.9,-46.2]],
+  [[69.0,6.9],[62.5,5.4],[61.6,3.3],[54.6,0.4],[49.4,1.7],[47.9,0.3],[47.1,-9.9],[54.2,-12.6],[59.1,-10.3],[63.9,-8.3],[68.6,-6.4],[80.1,-2.1],[87.1,0.6],[110.9,10.9],[114.7,14.1],[127.2,25.3],[118.2,27.0],[111.1,24.1],[102.5,23.9],[98.2,21.9],[92.4,19.5],[88.5,17.9],[84.1,14.9],[76.5,13.0],[72.7,9.9],[68.5,8.1],[69.0,6.9]]
 ];
-for (const [x,z,w,h,mat] of frontage) building(w,13,h,x,z,mat);
+const frontageMats = [brickMat, concreteMat, brickDarkMat, brickMat, concreteMat, brickDarkMat];
+for (let i=0;i<VERIFIED_FRONTAGE.length;i++) {
+  const h = i % 5 === 0 ? 10.5 : (i % 3 === 0 ? 9.5 : 8.5);
+  footprintBuilding(VERIFIED_FRONTAGE[i], h, frontageMats[i % frontageMats.length]);
+}
 
 // Development boundary only: a visible low snow berm marks the current loaded slice.
 // It is not claimed as a real municipal boundary.
