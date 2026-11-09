@@ -90,11 +90,27 @@ Do not expand beyond this slice until:
 - the scene is coherent without glitch effects
 - CI remains green
 
+## Geography gate — railway and access reconciliation
+The current game railway is still a deliberately simplified boundary model and must not be treated as a verified representation of the real rail alignment.
+
+Authoritative references confirm:
+- Montréal's 2025 electoral map identifies the Parc-Extension railway corridor and relevant street network.
+- Montréal documentation identifies the Ogilvy / De Castelnau level crossing as a real connection across the railway corridor.
+- Montréal/ARTM base cartography is available at 1:1000 scale and is the correct source for the next geometry reconstruction.
+
+Implementation rule: do not invent the crossing position in game coordinates. First derive railway/street intersections from the 1:1000 reference, then translate that verified geometry into the simplified game coordinate system.
+
+Until that conversion is completed:
+- no new railway openings are to be guessed;
+- no additional invisible boundary clamps are to be introduced;
+- the existing railway remains a provisional environmental placeholder;
+- first-sector expansion remains blocked.
+
 ## Status
 **Technical foundation:** GREEN  
-**Geographic reconstruction:** IN PROGRESS  
-**Environmental reconstruction:** PASS 1 COMPLETE
+**Geographic reconstruction:** IN PROGRESS — RAILWAY RECONCILIATION GATE  
+**Environmental reconstruction:** PASS 2 COMPLETE  
 **Production world geometry:** NOT READY  
 **Vertical slice:** NOT READY
 
-Next build task: verify and correct physical geography, then deepen winter/rail/highway environmental fidelity.
+Next build task: convert verified 1:1000 railway/street geometry into the game coordinate system, then implement only documented physical crossings/openings.
