@@ -615,6 +615,32 @@ box(7,3,.35,sublevelWallMat,382,1.5,-232);
 const sublevelLight = new THREE.PointLight(0x5139a8, sublevelEntered ? .9 : 0, 12, 2);
 sublevelLight.position.set(382,2.2,-222);
 scene.add(sublevelLight);
+const lowerTunnelMat = new THREE.MeshStandardMaterial({ color:0x30343a, roughness:.86, metalness:.12 });
+const lowerCableMat = new THREE.MeshStandardMaterial({ color:0x11151a, roughness:.72, metalness:.2 });
+const lowerGlowMat = new THREE.MeshStandardMaterial({ color:0x2b1b48, roughness:.38, metalness:.18, emissive:0x5a2fa0, emissiveIntensity:.55 });
+
+// Physical lower corridor: walls/ceiling and a short service tunnel with a gated receiver bay.
+box(7,.18,34,sublevelFloorMat,382,.02,-227,{castShadow:false});
+const lowerLeftWall=box(.35,3,34,sublevelWallMat,378.3,1.5,-227);
+const lowerRightWall=box(.35,3,34,sublevelWallMat,385.7,1.5,-227);
+const lowerCeiling=box(7,.22,34,sublevelWallMat,382,3.05,-227,{castShadow:false});
+addCollider(378.3,-227,.35,34,lowerLeftWall);
+addCollider(385.7,-227,.35,34,lowerRightWall);
+addCollider(382,-244,7,.35,lowerCeiling);
+for (let i=0;i<6;i++) {
+  const z=-213-i*4.4;
+  const cable=box(.08,.08,4,lowerCableMat,378.8,2.65,z,{castShadow:false});
+  cable.rotation.y=Math.PI/2;
+}
+const lowerGate=box(6,2.7,.22,lowerGlowMat,382,1.35,-243,{castShadow:true});
+addCollider(382,-243,6,.22,lowerGate);
+const lowerLamp=new THREE.PointLight(0x6b45c8,.85,9,2);
+lowerLamp.position.set(382,2.35,-228);
+scene.add(lowerLamp);
+const lowerPulseLamp=new THREE.PointLight(0x7b5cff,0,8,2);
+lowerPulseLamp.position.set(382,1.7,-240);
+scene.add(lowerPulseLamp);
+
 const sublevelReceiver = interactable(
   box(.7,1.3,.5,darkMat,382,1.1,-228),
   sublevelEntered ? 'SIGNAL / BELOW' : 'SIGNAL / DESCEND',
@@ -684,6 +710,19 @@ function enterSublevel() {
   updateWorldStatus();
 }
 
+function completeSublevelSignal() {
+  if (!sublevelEntered || sublevelReceiver.userData.sublevelState === 'heard') return;
+  sublevelReceiver.userData.sublevelState = 'heard';
+  sublevelReceiver.userData.interaction.title = 'SIGNAL / HEARD';
+  sublevelReceiver.userData.interaction.text = 'The lower receiver answers once. The gate ahead is carrying the same signal.';
+  lowerPulseLamp.intensity = .9;
+  lowerGate.userData = { ...(lowerGate.userData || {}), powered: true };
+  const index = colliders.indexOf(lowerGate);
+  if (index >= 0) colliders.splice(index, 1);
+  lowerGate.position.y = 3.1;
+  updateWorldStatus();
+}
+
 function openDescent() {
   if (!chamberHeard || descentHatch.userData.descentState !== 'active') return;
   descentHatch.userData.descentState = 'open';
@@ -701,7 +740,9 @@ function openDescent() {
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = sublevelEntered
+    const stage = sublevelReceiver?.userData.sublevelState === 'heard'
+      ? 'SIGNAL ANSWERED'
+      : sublevelEntered
       ? 'SIGNAL BELOW'
       : descentHatch?.userData.descentState === 'open'
       ? 'DESCENT OPEN'
@@ -1274,6 +1315,7 @@ function openInteraction(target) {
   if (target === powerAccess) activatePowerAccess();
   if (target === chamberReceiver && target.userData.chamberState === 'active') completeChamber();
   if (target === descentHatch && target.userData.descentState === 'active') openDescent();
+  if (target === sublevelReceiver && target.userData.sublevelState === 'entered') completeSublevelSignal();
 
   if (!target) return;
   if (target.userData.signalId) discoverSignal(target.userData.signalId);
