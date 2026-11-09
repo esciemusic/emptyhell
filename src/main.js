@@ -546,10 +546,35 @@ const discoveryState = {
 };
 const worldStatus = document.querySelector('#world-status');
 
+const powerAccess = interactable(
+  box(1.4,2.3,.16,darkMat,382,1.15,-204),
+  powerRestored ? 'ACCESS / POWERED' : 'ACCESS / LOCKED',
+  powerRestored
+    ? 'Power has reached the structure. The entrance is no longer dead.'
+    : 'The entrance has no power. Nothing responds.'
+);
+powerAccess.visible = powerRestored;
+powerAccess.userData.accessState = powerRestored ? 'active' : 'locked';
+
+const powerAccessLight = new THREE.PointLight(0x7b5cff, powerRestored ? 1.2 : 0, 6, 2);
+powerAccessLight.position.set(382,2.35,-203.7);
+scene.add(powerAccessLight);
+
+function activatePowerAccess() {
+  if (!powerRestored || powerAccess.userData.accessState !== 'active') return;
+  powerAccess.userData.accessState = 'complete';
+  powerAccess.userData.interaction.title = 'ACCESS / OPEN';
+  powerAccess.userData.interaction.text = 'The powered entrance releases with a low mechanical click. Whatever is inside belongs to the next layer.';
+  powerAccessLight.intensity = 2;
+  updateWorldStatus();
+}
+
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = powerRestored
+    const stage = powerAccess?.userData.accessState === 'complete'
+      ? 'ACCESS OPEN'
+      : powerRestored
       ? 'POWER RESTORED'
       : trailReached
         ? 'SIGNAL TRAIL COMPLETE'
@@ -807,6 +832,10 @@ function reachSignalTrail() {
   } catch {}
   for (const source of streetLights) source.restored = true;
   for (const window of livingWindows) window.material = windowWarmMat;
+  powerAccess.visible = true;
+  powerAccess.userData.accessState = 'active';
+  powerAccess.userData.interaction.title = 'ACCESS / POWERED';
+  powerAccessLight.intensity = 1.2;
   updateWorldStatus();
 }
 
@@ -1105,6 +1134,8 @@ function updateInteraction() {
 }
 
 function openInteraction(target) {
+  if (target === powerAccess) activatePowerAccess();
+
   if (!target) return;
   if (target.userData.signalId) discoverSignal(target.userData.signalId);
   if (target.userData === routeDestination?.userData && target.userData.routeState === 'open') reachRouteDestination();
