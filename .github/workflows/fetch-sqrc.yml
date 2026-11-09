@@ -23,11 +23,11 @@ jobs:
             "https://www.donneesquebec.ca/recherche/dataset/vmtl-quadrillage-sqrc/resource/ad1924d4-2579-40aa-8aa7-b83d88166ee5/download/sqrc_1000.geojson"
           )
           rm -f sqrc_1000.geojson
-          for url in "\${urls[@]}"; do
-            echo "Trying: \$url"
+          for url in "${urls[@]}"; do
+            echo "Trying: $url"
             if curl -fL --retry 2 --retry-all-errors \
               -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
-              "\$url" -o sqrc_1000.geojson && test -s sqrc_1000.geojson; then
+              "$url" -o sqrc_1000.geojson && test -s sqrc_1000.geojson; then
               wc -c sqrc_1000.geojson
               echo "SQRC_DOWNLOAD=success" >> "\$GITHUB_OUTPUT"
               exit 0
@@ -102,17 +102,17 @@ jobs:
           rm -rf railway_src railway_extract
           mkdir -p railway_src railway_extract
           ok=0
-          for url in "\${urls[@]}"; do
-            echo "Trying: \$url"
+          for url in "${urls[@]}"; do
+            echo "Trying: $url"
             if curl -fL --retry 2 --retry-all-errors \
               -A "Mozilla/5.0 EMPTYHELL-geography-reconciliation" \
-              "\$url" -o railway_src/voies-ferrees-2020.zip; then
+              "$url" -o railway_src/voies-ferrees-2020.zip; then
               ok=1
               break
             fi
             rm -f railway_src/voies-ferrees-2020.zip
           done
-          test "\$ok" = "1"
+          test "$ok" = "1"
           unzip -q railway_src/voies-ferrees-2020.zip -d railway_extract
           find railway_extract -maxdepth 2 -type f | sort
           python -m pip install --quiet pyshp shapely pyproj
