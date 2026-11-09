@@ -149,51 +149,54 @@ function lamp(x,z) {
 const WORLD = {
   // Localized first-sector reference. Street ordering follows the City map:
   // west/east: Durocher → De L'Épée → Bloomfield → Champagneur → Stuart → Wiseman.
-  park: { x: 26, z: 18, w: 28, d: 26 },
+  park: { x: 63, z: 18, w: 27, d: 30 },
   saintRoch: { z: 5 },
-  ball: { z: 54 },
-  ogilvy: { z: -58 },
-  jarry: { z: 103 },
-  westEdge: -112,
-  eastEdge: 118,
-  southEdge: 92,
-  northEdge: -88,
-  deLepee: -70,
-  bloomfield: -28,
-  champagneur: 23,
-  wiseman: 70,
-  stuart: 38,
-  durocher: -57
+  ball: { z: 55 },
+  ogilvy: { z: -48 },
+  jarry: { z: 82 },
+  westEdge: -90,
+  eastEdge: 102,
+  southEdge: 70,
+  northEdge: -68,
+  deLepee: -42,
+  bloomfield: -12,
+  champagneur: 18,
+  wiseman: 78,
+  stuart: 48,
+  durocher: -72
 };
 
 // Ground plane.
 box(240,.18,210,groundMat,3,-.09,4,{castShadow:false});
 
 // Primary street skeleton. Keep the avenues separated as distinct blocks instead of a generic grid.
-street(8,230, WORLD.durocher, 7);
-street(8,230, WORLD.deLepee, 7);
-street(8,230, WORLD.bloomfield, 7);
-street(8,230, WORLD.champagneur, 7);
-street(8,230, WORLD.stuart, 7);
-street(8,230, WORLD.wiseman, 7);
+street(7.5,138, WORLD.durocher, 7);
+street(7.5,138, WORLD.deLepee, 7);
+street(7.5,138, WORLD.bloomfield, 7);
+street(7.5,138, WORLD.champagneur, 7);
+street(7.5,138, WORLD.stuart, 7);
+street(7.5,138, WORLD.wiseman, 7);
 
-street(8,250, 3, WORLD.saintRoch, Math.PI/2);
-street(8,250, 3, WORLD.ball, Math.PI/2);
-street(8,250, 3, WORLD.ogilvy, Math.PI/2);
-street(8,250, 3, WORLD.jarry, Math.PI/2);
+street(7.5,190, 3, WORLD.saintRoch, Math.PI/2);
+street(7.5,190, 3, WORLD.ball, Math.PI/2);
+street(7.5,190, 3, WORLD.ogilvy, Math.PI/2);
+street(7.5,190, 3, WORLD.jarry, Math.PI/2);
 
 // Sidewalk bands — simple but physically readable.
 for (const x of [WORLD.durocher, WORLD.deLepee, WORLD.bloomfield, WORLD.champagneur, WORLD.stuart, WORLD.wiseman]) {
-  sidewalk(2.4,230,x-5.4,7);
-  sidewalk(2.4,230,x+5.4,7);
+  sidewalk(2.0,138,x-4.75,7);
+  sidewalk(2.0,138,x+4.75,7);
 }
 for (const z of [WORLD.saintRoch, WORLD.ball, WORLD.ogilvy, WORLD.jarry]) {
-  sidewalk(2.4,250,3,z-5.4,Math.PI/2);
-  sidewalk(2.4,250,3,z+5.4,Math.PI/2);
+  sidewalk(2.0,190,3,z-4.75,Math.PI/2);
+  sidewalk(2.0,190,3,z+4.75,Math.PI/2);
 }
 
 // Park du Centenaire — between Wiseman and Stuart, facing Saint-Roch.
 box(WORLD.park.w,.10,WORLD.park.d,snowMat,WORLD.park.x,.13,WORLD.park.z,{castShadow:false});
+box(WORLD.park.w-.4,.06,.16,concreteMat,WORLD.park.x,.20,WORLD.park.z-WORLD.park.d/2,{castShadow:false});
+box(.16,.06,WORLD.park.d-.4,concreteMat,WORLD.park.x-WORLD.park.w/2,.20,WORLD.park.z,{castShadow:false});
+box(.16,.06,WORLD.park.d-.4,concreteMat,WORLD.park.x+WORLD.park.w/2,.20,WORLD.park.z,{castShadow:false});
 box(WORLD.park.w-.8,.05,.8,darkMat,WORLD.park.x,.2,WORLD.park.z-WORLD.park.d/2+1);
 box(WORLD.park.w-.8,.05,.8,darkMat,WORLD.park.x,.2,WORLD.park.z+WORLD.park.d/2-1);
 
@@ -228,33 +231,34 @@ interactable(
 // Residential/commercial frontage blocks.
 // These follow the street corridors and keep interiors simplified.
 const frontage = [
-  [-96, -48, 18, 11, brickMat], [-72,-48,18,13,concreteMat],
-  [-42,-48,20,12,brickDarkMat], [-5,-48,18,14,brickMat],
-  [42,-48,20,11,concreteMat], [74,-48,18,13,brickMat],
-  [-96,20,18,12,concreteMat], [-73,20,20,14,brickMat],
-  [-43,20,18,11,brickDarkMat], [49,20,20,13,brickMat],
-  [76,20,18,12,concreteMat],
-  [-94,69,20,12,brickMat], [-67,69,18,14,concreteMat],
-  [-36,69,20,11,brickDarkMat], [5,69,18,13,brickMat],
-  [47,69,20,12,concreteMat], [78,69,18,14,brickMat]
+  [-57,-45,12,10,brickMat], [-27,-45,13,12,concreteMat],
+  [3,-45,12,11,brickDarkMat], [33,-45,13,12,brickMat],
+  [63,-45,12,10,concreteMat],
+  [-57,22,13,11,concreteMat], [-27,22,12,12,brickMat],
+  [3,22,13,10,brickDarkMat], [33,22,12,11,brickMat],
+  [78,22,12,12,concreteMat],
+  [-57,58,12,11,brickMat], [-27,58,13,12,concreteMat],
+  [3,58,12,10,brickDarkMat], [33,58,13,11,brickMat],
+  [63,58,12,12,concreteMat]
 ];
 for (const [x,z,w,h,mat] of frontage) building(w,13,h,x,z,mat);
 
 // Buildings near the park remain lower and more open so the park reads.
-building(18,11,9,-38,-20,brickMat);
-building(17,11,10,45,-20,concreteMat);
+building(16,10,9,-57,-20,brickMat);
+building(15,10,10,78,-20,concreteMat);
 // Narrower Montréal residential frontage along the park-facing blocks.
-building(13,10,8,9,18,brickDarkMat);
-building(13,10,9,49,18,brickMat);
+// The park remains open between Stuart and Wiseman rather than being buried in the grid.
+building(12,9,8,33,18,brickDarkMat);
+building(12,9,9,93,18,brickMat);
 
 // Alley structure documented by Montréal: Ruelle De la Fête
 // is in the quadrilateral Champagneur / Ball / Bloomfield / Saint-Roch.
-box(5,.06,48,asphaltMat,0,0,29,{castShadow:false});
-for (const z of [12,30,48]) {
-  box(5.8,.08,.8,snowMat,0,.08,z,{castShadow:false});
+box(4.5,.06,34,asphaltMat,3,0,30,{castShadow:false});
+for (const z of [15,30,45]) {
+  box(5.3,.08,.8,snowMat,3,.08,z,{castShadow:false});
 }
 // Ruelle Wiseman occupies the Saint-Roch / Wiseman / d'Outremont / Ogilvy block.
-box(5,.06,48,asphaltMat,-3,0,-25,{castShadow:false});
+box(4.5,.06,34,asphaltMat,-3,0,-22,{castShadow:false});
 
 // Railway infrastructure: model the boundary as track, sleepers and ballast rather than a
 // generic wall. The collision volume is deliberately low and physical; the camera can still
@@ -280,8 +284,10 @@ function railwayAlongZ(x, z, length) {
   addCollider(x,z,5,length,null);
 }
 
-railwayAlongZ(112,4,205);
-railwayAlongX(3,91,225);
+// Railway remains a physical boundary, but its exact alignment is deliberately kept
+// provisional until the 1:1000 source geometry is translated into game coordinates.
+railwayAlongZ(94,1,140);
+railwayAlongX(3,70,174);
 
 // Winter railway response: snow gathers on ballast edges while the running rails remain readable.
 const railSnowMat = new THREE.MeshStandardMaterial({ color:0xbfc3c1, roughness:1 });
@@ -317,17 +323,17 @@ for (let x=-108; x<=114; x+=9) {
 }
 
 // Keep the camera from crossing the railway while preserving the physical appearance.
-const railCameraEast = box(5,.9,205,darkMat,112,.45,4,{castShadow:false,receiveShadow:false});
-const railCameraSouth = box(225,.9,5,darkMat,3,.45,91,{castShadow:false,receiveShadow:false});
+const railCameraEast = box(5,.9,140,darkMat,94,.45,1,{castShadow:false,receiveShadow:false});
+const railCameraSouth = box(174,.9,5,darkMat,3,.45,70,{castShadow:false,receiveShadow:false});
 collisionMeshes.push(railCameraEast,railCameraSouth);
 
 // Western municipal boundary pressure: fence condition at the edge.
-const fenceX = -112;
-for (let z=-92; z<=94; z+=4) {
+const fenceX = WORLD.westEdge;
+for (let z=WORLD.northEdge+4; z<=WORLD.southEdge-2; z+=4) {
   box(.08,2.2,.08,darkMat,fenceX,1.1,z);
 }
-const fenceMesh = box(.08,2.2,186,darkMat,fenceX,1.1,1);
-addCollider(fenceX,1,.08,186,fenceMesh);
+const fenceMesh = box(.08,2.2,WORLD.southEdge-WORLD.northEdge-6,darkMat,fenceX,1,(WORLD.northEdge+WORLD.southEdge)/2);
+addCollider(fenceX,(WORLD.northEdge+WORLD.southEdge)/2,.08,WORLD.southEdge-WORLD.northEdge-6,fenceMesh);
 
 // Winter surface details: compressed snow banks, tire grooves and curb accumulation.
 function snowBank(x,z,w,d,h=.32) {
@@ -335,15 +341,15 @@ function snowBank(x,z,w,d,h=.32) {
   bank.rotation.y = (Math.random() - .5) * .08;
 }
 for (const x of [WORLD.durocher, WORLD.deLepee, WORLD.bloomfield, WORLD.champagneur, WORLD.stuart, WORLD.wiseman]) {
-  snowBank(x-5.95, 7, 1.0, 220, .28);
-  snowBank(x+5.95, 7, 1.0, 220, .28);
+  snowBank(x-5.0, 7, .75, 136, .28);
+  snowBank(x+5.0, 7, .75, 136, .28);
 }
 for (const z of [WORLD.saintRoch, WORLD.ball, WORLD.ogilvy]) {
-  snowBank(3, z-5.95, 220, 1.0, .28);
-  snowBank(3, z+5.95, 220, 1.0, .28);
+  snowBank(3, z-5.0, 136, .75, .28);
+  snowBank(3, z+5.0, 136, .75, .28);
 }
 const tireMat = new THREE.MeshStandardMaterial({ color:0x303336, roughness:1 });
-for (const x of [-1.5,1.5]) box(.28,.012,210,tireMat,x,.105,4,{castShadow:false});
+for (const x of [-1.5,1.5]) box(.28,.012,136,tireMat,x,.105,4,{castShadow:false});
 
 // Utility infrastructure: restrained poles and overhead lines make the streets read as lived-in space.
 const utilityMat = new THREE.MeshStandardMaterial({ color:0x2b2d30, roughness:.82, metalness:.15 });
@@ -399,7 +405,7 @@ player.add(body);
 scene.add(player);
 
 // Spawn near the Saint-Roch / Stuart / park area.
-player.position.set(48,0,18);
+player.position.set(61,0,18);
 
 const playerRadius = 0.48;
 const testPosition = new THREE.Vector3();
@@ -571,8 +577,8 @@ function animate() {
   const dt = Math.min(clock.getDelta(), .05);
   move(dt);
   updateInteraction();
-  const mapX = ((player.position.x + 112) / 224) * 100;
-  const mapZ = ((player.position.z + 88) / 180) * 100;
+  const mapX = ((player.position.x - WORLD.westEdge) / (WORLD.eastEdge - WORLD.westEdge)) * 100;
+  const mapZ = ((player.position.z - WORLD.northEdge) / (WORLD.southEdge - WORLD.northEdge)) * 100;
   mapPlayer.style.left = mapX + '%';
   mapPlayer.style.top = mapZ + '%';
   renderer.render(scene, camera);
