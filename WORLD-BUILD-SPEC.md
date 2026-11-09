@@ -338,3 +338,28 @@ Relative to the existing park anchor point, the verified footprint bounds are ap
 The current prototype rectangle (27 m × 30 m at local x=63, z=18) is therefore a temporary approximation and will be replaced during the first-sector rebuild.
 
 No partial park/building repositioning is being made until the verified street centerlines and park footprint are reconciled together.
+
+## First-sector verified geometry rebuild — COMPLETE
+
+The first-sector prototype has now been rebuilt from the verified Montréal sources rather than the previous axis-aligned blockout.
+
+Implemented:
+- verified Montréal road-centerline geometry for Stuart, Wiseman, Saint-Roch, Champagneur, Bloomfield, De l'Épée and Ogilvy;
+- local metre coordinate system anchored to Parc du Centenaire;
+- verified Parc du Centenaire polygon footprint;
+- diagonal road orientation and segment continuity;
+- road-side sidewalks and winter edge treatment following the imported segments;
+- development perimeter sized to the verified first-sector source window;
+- railway remains completely absent from this slice, as required by the 1:1000 reconciliation;
+- map overlay updated to represent the verified diagonal street network.
+
+The rebuild is intentionally **not yet production-final**: frontage/building footprints remain simplified placeholders, and traversal/collision/camera QA must still be performed against the rebuilt geography.
+
+Current status:
+- Geography source lock: GREEN
+- Street geometry rebuild: GREEN
+- Park footprint rebuild: GREEN
+- Railway gate: GREEN / DEFERRED OUTSIDE SLICE
+- Frontage/building fidelity: IN PROGRESS
+- Traversal/collision QA: PENDING
+- Production world: NOT READY
