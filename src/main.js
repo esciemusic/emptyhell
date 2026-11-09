@@ -552,6 +552,16 @@ const keys = new Set();
 addEventListener('keydown', event => {
   keys.add(event.code);
   if (event.code === 'Escape') {
+    // Modal priority: close the active world layer before touching the pause state.
+    if (!mapOverlay.classList.contains('hidden')) {
+      toggleMap(false);
+      return;
+    }
+    if (!interactionPanel.classList.contains('hidden')) {
+      interactionPanel.classList.add('hidden');
+      if (!pauseOpen) lockGame();
+      return;
+    }
     togglePause(!pauseOpen);
     return;
   }
