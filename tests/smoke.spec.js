@@ -32,3 +32,9 @@ test('EMPTYHELL accepts movement input without crashing the render shell', async
   await page.waitForTimeout(250);
   expect(errors).toEqual([]);
 });
+
+test('EMPTYHELL exposes the first discovery state', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await expect(page.locator('#world-status')).toContainText('SIGNALS 0 / 3');
+  await expect(page.locator('#world-status')).toContainText('WORLD STATE ACTIVE');
+});
