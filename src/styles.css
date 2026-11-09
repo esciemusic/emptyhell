@@ -74,15 +74,17 @@ canvas { display:block; width:100%; height:100%; }
   linear-gradient(90deg,rgba(216,212,202,.04) 1px,transparent 1px);
   background-size:32px 32px;
 }
-.map-road { position:absolute; color:rgba(216,212,202,.45); font-size:7px; letter-spacing:.12em; text-align:center; }
-.map-road.horizontal { left:5%; width:78%; height:3%; background:#34373a; padding-top:4px; }
-.map-road.vertical { top:5%; height:90%; width:3%; background:#34373a; writing-mode:vertical-rl; padding-left:4px; }
-.saint-roch { top:39%; }.ball { top:66%; }.ogilvy { top:23%; }
-.durocher { left:18%; }.de-lepee { left:38%; }.bloomfield { left:56%; }.champagneur { left:72%; }
-.map-park { position:absolute; left:36%; top:13%; width:20%; height:21%; border:1px solid rgba(216,212,202,.22); background:rgba(199,201,198,.12); display:grid; place-items:center; text-align:center; font-size:7px; letter-spacing:.08em; }
+.map-road { position:absolute; color:rgba(216,212,202,.45); font-size:7px; letter-spacing:.12em; text-align:center; background:#34373a; height:3px; transform-origin:center; padding-top:4px; }
+.map-road.verified-road { left:8%; width:84%; }
+.map-road.stuart { top:55%; transform:rotate(23deg); }
+.map-road.wiseman { top:47%; transform:rotate(21deg); }
+.map-road.saint-roch { top:52%; transform:rotate(-67deg); }
+.map-road.champagneur { top:42%; transform:rotate(23deg); }
+.map-road.bloomfield { top:48%; transform:rotate(22deg); }
+.map-road.de-lepee { top:37%; transform:rotate(23deg); }
+.map-road.ogilvy { top:42%; transform:rotate(-67deg); }
+.map-park { position:absolute; left:36%; top:38%; width:15%; height:18%; border:1px solid rgba(216,212,202,.22); background:rgba(199,201,198,.12); display:grid; place-items:center; text-align:center; font-size:7px; letter-spacing:.08em; }
 .map-rail { position:absolute; background:rgba(111,63,175,.65); }
-.rail-east { right:3%; top:3%; width:2%; height:94%; }
-.rail-south { left:3%; bottom:3%; width:94%; height:2%; }
 .map-player { position:absolute; width:10px; height:10px; margin:-5px 0 0 -5px; border:2px solid var(--blue); border-radius:50%; background:rgba(47,128,255,.2); box-shadow:0 0 12px rgba(47,128,255,.7); z-index:4; }
 .map-foot { margin-top:12px; font-size:8px; letter-spacing:.12em; opacity:.45; }
 @media (max-width:600px) {
