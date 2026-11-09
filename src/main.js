@@ -351,6 +351,7 @@ async function loadVerifiedRailway() {
     const response=await fetch('./data/first_sector_railway_runtime.json',{cache:'no-store'});
     if(!response.ok) throw new Error('railway layer HTTP '+response.status);
     const data=await response.json();
+    addRailwayToMap(data.features || []);
     for(const feature of data.features || []) {
       const geometry=feature.geometry_local_m;
       if(!geometry) continue;
@@ -583,6 +584,45 @@ const interactionText = document.querySelector('#interaction-text');
 const interactionClose = document.querySelector('#interaction-close');
 const mapOverlay = document.querySelector('#map-overlay');
 const mapPlayer = document.querySelector('#map-player');
+const worldMapSvg = document.querySelector('#world-map-svg');
+const mapRoads = document.querySelector('#map-roads');
+const mapRail = document.querySelector('#map-rail');
+const mapPark = document.querySelector('#map-park');
+
+function mapPoint([x,z]) { return `${x},${z}`; }
+
+function buildWorldMap() {
+  if (!worldMapSvg) return;
+  mapRoads.replaceChildren();
+  for (const road of VERIFIED_ROADS) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', road[1][0]); line.setAttribute('y1', road[1][1]);
+    line.setAttribute('x2', road[2][0]); line.setAttribute('y2', road[2][1]);
+    if (road[0] === 'Avenue Stuart' || road[0] === 'Rue Saint-Roch') line.classList.add('major');
+    line.dataset.name = road[0];
+    mapRoads.appendChild(line);
+  }
+  mapPark.setAttribute('points', PARK_POLYGON.map(mapPoint).join(' '));
+}
+function addRailwayToMap(features) {
+  if (!mapRail) return;
+  mapRail.replaceChildren();
+  for (const feature of features || []) {
+    const geometry = feature.geometry_local_m;
+    if (!geometry) continue;
+    const lines = geometry.type === 'LineString' ? [geometry.coordinates] : (geometry.type === 'MultiLineString' ? geometry.coordinates : []);
+    for (const points of lines) {
+      if (!Array.isArray(points) || points.length < 2) continue;
+      for (let i=0; i<points.length-1; i++) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+        line.setAttribute('x1', points[i][0]); line.setAttribute('y1', points[i][1]);
+        line.setAttribute('x2', points[i+1][0]); line.setAttribute('y2', points[i+1][1]);
+        mapRail.appendChild(line);
+      }
+    }
+  }
+}
+buildWorldMap();
 let activeInteraction = null;
 let mapOpen = false;
 
