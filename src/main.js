@@ -260,51 +260,11 @@ for (const z of [15,30,45]) {
 // Ruelle Wiseman occupies the Saint-Roch / Wiseman / d'Outremont / Ogilvy block.
 box(4.5,.06,34,asphaltMat,-3,0,-22,{castShadow:false});
 
-// Railway infrastructure: model the boundary as track, sleepers and ballast rather than a
-// generic wall. The collision volume is deliberately low and physical; the camera can still
-// read the railway as infrastructure.
-function railwayAlongX(x, z, length) {
-  box(length,.22,5,darkMat,x,.10,z,{castShadow:false});
-  for (const offset of [-1.45,1.45]) {
-    box(length,.12,.09,concreteMat,x,.28,z+offset,{castShadow:false});
-  }
-  for (let px=x-length/2+2; px<=x+length/2-2; px+=4) {
-    box(.22,.14,4.1,concreteMat,px,.20,z,{castShadow:false});
-  }
-  addCollider(x,z,length,5,null);
-}
-function railwayAlongZ(x, z, length) {
-  box(5,.22,length,darkMat,x,.10,z,{castShadow:false});
-  for (const offset of [-1.45,1.45]) {
-    box(.09,.12,length,concreteMat,x+offset,.28,z,{castShadow:false});
-  }
-  for (let pz=z-length/2+2; pz<=z+length/2-2; pz+=4) {
-    box(4.1,.14,.22,concreteMat,x,.20,pz,{castShadow:false});
-  }
-  addCollider(x,z,5,length,null);
-}
-
-// Railway remains a physical boundary, but its exact alignment is deliberately kept
-// provisional until the 1:1000 source geometry is translated into game coordinates.
-railwayAlongZ(94,1,140);
-railwayAlongX(3,70,174);
-
-// Winter railway response: snow gathers on ballast edges while the running rails remain readable.
-const railSnowMat = new THREE.MeshStandardMaterial({ color:0xbfc3c1, roughness:1 });
-box(1.05,.16,201,railSnowMat,109.85,.25,4,{castShadow:false});
-box(1.05,.16,201,railSnowMat,114.15,.25,4,{castShadow:false});
-box(221,.16,1.05,railSnowMat,3,.25,88.85,{castShadow:false});
-box(221,.16,1.05,railSnowMat,3,.25,93.15,{castShadow:false});
-
-// Small railway markers keep the corridor visually legible without becoming HUD elements.
-for (const z of [-72,-28,16,60]) {
-  box(.12,1.4,.12,concreteMat,108.8,.7,z,{castShadow:true});
-  box(.42,.08,.12,darkMat,108.8,1.35,z,{castShadow:false});
-}
-for (const x of [-82,-38,6,50,94]) {
-  box(.12,1.4,.12,concreteMat,x,.7,89.0,{castShadow:true});
-  box(.42,.08,.12,darkMat,x,1.35,89.0,{castShadow:false});
-}
+// The verified 1:1000 first-sector sheet (31H12-010-0530) contains no railway corridor.
+// The authoritative Montréal 3D railway dataset places the nearest rail geometry outside this
+// sheet, on adjacent sheets (notably 31H12-010-0531 / 0431). Do not invent a rail boundary
+// inside the Parc du Centenaire first-sector slice. Railway geometry is therefore deferred
+// until the adjacent-sheet corridor is explicitly brought into the playable world.
 
 // Simplified Autoroute 40 edge: environmental pressure only until verified road geometry is imported.
 const highwayZ = WORLD.northEdge;
