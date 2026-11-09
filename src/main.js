@@ -490,6 +490,7 @@ const fragmentStorageKey = 'emptyhell.fragment.v1';
 const trailStorageKey = 'emptyhell.trail.v1';
 const powerStorageKey = 'emptyhell.power.v1';
 const accessStorageKey = 'emptyhell.access.v1';
+const chamberStorageKey = 'emptyhell.chamber.v1';
 const savedEncounter = (() => {
   try {
     return localStorage.getItem(encounterStorageKey) === 'complete';
@@ -539,6 +540,10 @@ const savedAccess = (() => {
   }
 })();
 let accessOpen = savedAccess;
+const savedChamber = (() => {
+  try { return localStorage.getItem(chamberStorageKey) === 'heard'; } catch { return false; }
+})();
+let chamberHeard = savedChamber;
 warm.intensity = powerRestored ? 24 : 18;
 const savedDiscovery = (() => {
   try {
@@ -556,6 +561,32 @@ const discoveryState = {
 };
 const worldStatus = document.querySelector('#world-status');
 
+// Powered utility enclosure: a physical next-layer space, not a floating marker.
+const utilityWallMat = new THREE.MeshStandardMaterial({ color:0x3b3f42, roughness:.94, metalness:.08 });
+const utilityRoofMat = new THREE.MeshStandardMaterial({ color:0x272b2e, roughness:.9, metalness:.12 });
+box(8,.18,8,utilityRoofMat,382,3.15,-208,{castShadow:true});
+box(.35,3.0,8,utilityWallMat,377.85,1.5,-208,{castShadow:true});
+box(.35,3.0,8,utilityWallMat,386.15,1.5,-208,{castShadow:true});
+box(8,3.0,.35,utilityWallMat,382,1.5,-212,{castShadow:true});
+box(3.05,3.0,.35,utilityWallMat,379.5,1.5,-204,{castShadow:true});
+box(3.05,3.0,.35,utilityWallMat,384.5,1.5,-204,{castShadow:true});
+addCollider(377.85,-208,.35,8);
+addCollider(386.15,-208,.35,8);
+addCollider(382,-212,8,.35);
+addCollider(379.5,-204,3.05,.35);
+addCollider(384.5,-204,3.05,.35);
+const chamberLight = new THREE.PointLight(0x7b5cff, accessOpen ? 1.4 : 0, 10, 2);
+chamberLight.position.set(382,2.4,-209);
+scene.add(chamberLight);
+const chamberReceiver = interactable(
+  box(.75,1.2,.5,darkMat,382,1.05,-209),
+  chamberHeard ? 'RECEIVER / QUIET' : 'RECEIVER / LISTEN',
+  chamberHeard
+    ? 'The chamber has gone quiet. The signal has moved deeper into Montréal.'
+    : 'The receiver is close enough to hear now. Stay with it.'
+);
+chamberReceiver.visible = accessOpen;
+chamberReceiver.userData.chamberState = chamberHeard ? 'heard' : 'active';
 const powerAccess = interactable(
   box(1.4,2.3,.16,darkMat,382,1.15,-204),
   accessOpen ? 'ACCESS / OPEN' : (powerRestored ? 'ACCESS / POWERED' : 'ACCESS / LOCKED'),
@@ -583,14 +614,29 @@ function activatePowerAccess() {
   powerAccess.userData.interaction.title = 'ACCESS / OPEN';
   powerAccess.userData.interaction.text = 'The powered entrance releases with a low mechanical click. Whatever is inside belongs to the next layer.';
   powerAccessLight.intensity = 2;
+  chamberLight.intensity = 1.4;
+  chamberReceiver.visible = true;
   try { localStorage.setItem(accessStorageKey, 'open'); } catch {}
+  updateWorldStatus();
+}
+
+function completeChamber() {
+  if (!accessOpen || chamberReceiver.userData.chamberState !== 'active') return;
+  chamberReceiver.userData.chamberState = 'heard';
+  chamberHeard = true;
+  chamberReceiver.userData.interaction.title = 'RECEIVER / QUIET';
+  chamberReceiver.userData.interaction.text = 'The chamber has gone quiet. The signal has moved deeper into Montréal.';
+  chamberLight.intensity = .55;
+  try { localStorage.setItem(chamberStorageKey, 'heard'); } catch {}
   updateWorldStatus();
 }
 
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = powerAccess?.userData.accessState === 'open'
+    const stage = chamberReceiver?.userData.chamberState === 'heard'
+      ? 'SIGNAL MOVED DEEPER'
+      : powerAccess?.userData.accessState === 'open'
       ? 'ACCESS OPEN'
       : powerRestored
       ? 'POWER RESTORED'
@@ -1155,6 +1201,7 @@ function updateInteraction() {
 
 function openInteraction(target) {
   if (target === powerAccess) activatePowerAccess();
+  if (target === chamberReceiver && target.userData.chamberState === 'active') completeChamber();
 
   if (!target) return;
   if (target.userData.signalId) discoverSignal(target.userData.signalId);
