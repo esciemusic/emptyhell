@@ -92,8 +92,9 @@ Do not expand beyond this slice until:
 
 ## Status
 **Technical foundation:** GREEN  
-**Geographic reconstruction:** NOT STARTED  
+**Geographic reconstruction:** IN PROGRESS  
+**Environmental reconstruction:** PASS 1 COMPLETE
 **Production world geometry:** NOT READY  
 **Vertical slice:** NOT READY
 
-Next build task: geographic reconstruction/blockout pass.
+Next build task: verify and correct physical geography, then deepen winter/rail/highway environmental fidelity.
