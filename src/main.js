@@ -480,6 +480,16 @@ const savedTransmission = (() => {
     return false;
   }
 })();
+const encounterStorageKey = 'emptyhell.encounter.v1';
+const savedEncounter = (() => {
+  try {
+    return localStorage.getItem(encounterStorageKey) === 'complete';
+  } catch {
+    return false;
+  }
+})();
+let transmissionComplete = savedTransmission;
+let encounterComplete = savedEncounter;
 const savedDiscovery = (() => {
   try {
     const raw = localStorage.getItem(discoveryStorageKey);
@@ -499,8 +509,14 @@ const worldStatus = document.querySelector('#world-status');
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = savedTransmission ? 'TRANSMISSION COMPLETE' : (count === discoveryState.total ? 'ROUTE OPEN' : 'WORLD STATE ACTIVE');
-    worldStatus.textContent = `SIGNALS \${count} / \${discoveryState.total} · \${stage}`;
+    const stage = encounterComplete
+      ? 'ENCOUNTER COMPLETE'
+      : transmissionComplete
+        ? 'ENCOUNTER ACTIVE'
+        : count === discoveryState.total
+          ? 'ROUTE OPEN'
+          : 'WORLD STATE ACTIVE';
+    worldStatus.textContent = 'SIGNALS ' + count + ' / ' + discoveryState.total + ' · ' + stage;
   }
 }
 
@@ -590,8 +606,33 @@ function completeTransmission() {
   nextTransmission.userData.routeState = 'complete';
   nextTransmission.userData.interaction.title = 'TRANSMISSION / COMPLETE';
   nextTransmission.userData.interaction.text = 'The second receiver goes quiet. The next signal is no longer local.';
+  transmissionComplete = true;
+  encounterSite.visible = true;
+  encounterSite.userData.encounterState = encounterComplete ? 'complete' : 'active';
   try {
     localStorage.setItem(transmissionStorageKey, 'complete');
+  } catch {}
+  updateWorldStatus();
+}
+
+const encounterSite = interactable(
+  box(.48,1.55,.48,glassMat,270,.78,-164),
+  savedEncounter ? 'ENCOUNTER / COMPLETE' : 'ENCOUNTER / LISTEN',
+  savedEncounter
+    ? 'The receiver is silent now. Whatever was listening has moved beyond this slice.'
+    : 'A third receiver stands beyond the transmission. No message plays until you stay with it.'
+);
+encounterSite.visible = transmissionComplete;
+encounterSite.userData.encounterState = savedEncounter ? 'complete' : (transmissionComplete ? 'active' : 'locked');
+
+function completeEncounter() {
+  if (encounterSite.userData.encounterState !== 'active') return;
+  encounterSite.userData.encounterState = 'complete';
+  encounterSite.userData.interaction.title = 'ENCOUNTER / COMPLETE';
+  encounterSite.userData.interaction.text = 'The receiver is silent now. Whatever was listening has moved beyond this slice.';
+  encounterComplete = true;
+  try {
+    localStorage.setItem(encounterStorageKey, 'complete');
   } catch {}
   updateWorldStatus();
 }
@@ -892,10 +933,11 @@ function updateInteraction() {
 
 function openInteraction(target) {
   if (!target) return;
-  const data = target.userData.interaction;
   if (target.userData.signalId) discoverSignal(target.userData.signalId);
   if (target.userData === routeDestination?.userData && target.userData.routeState === 'open') reachRouteDestination();
   if (target.userData === nextTransmission?.userData && target.userData.routeState === 'active') completeTransmission();
+  if (target.userData === encounterSite?.userData && target.userData.encounterState === 'active') completeEncounter();
+  const data = target.userData.interaction;
   interactionTitle.textContent = data.title;
   interactionText.textContent = data.text;
   interactionPanel.classList.remove('hidden');
