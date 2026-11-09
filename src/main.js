@@ -492,6 +492,7 @@ const powerStorageKey = 'emptyhell.power.v1';
 const accessStorageKey = 'emptyhell.access.v1';
 const chamberStorageKey = 'emptyhell.chamber.v1';
 const descentStorageKey = 'emptyhell.descent.v1';
+const sublevelStorageKey = 'emptyhell.sublevel.v1';
 const savedEncounter = (() => {
   try {
     return localStorage.getItem(encounterStorageKey) === 'complete';
@@ -547,6 +548,8 @@ const savedChamber = (() => {
 let chamberHeard = savedChamber;
 const savedDescent = (() => { try { return localStorage.getItem(descentStorageKey) === 'open'; } catch { return false; } })();
 let descentOpen = savedDescent;
+const savedSublevel = (() => { try { return localStorage.getItem(sublevelStorageKey) === 'entered'; } catch { return false; } })();
+let sublevelEntered = savedSublevel;
 warm.intensity = powerRestored ? 24 : 18;
 const savedDiscovery = (() => {
   try {
@@ -602,6 +605,25 @@ descentHatch.userData.descentState = descentOpen ? 'open' : 'active';
 const descentCollider = { minX:381.1, maxX:382.9, minZ:-211.1, maxZ:-209.3 };
 if (!descentOpen && chamberHeard) colliders.push(descentCollider);
 
+// Fictional gameplay space below the verified surface slice. This is an explicit game layer, not a claim about a real Montréal structure.
+const sublevelWallMat = new THREE.MeshStandardMaterial({ color:0x24292d, roughness:.9, metalness:.14 });
+const sublevelFloorMat = new THREE.MeshStandardMaterial({ color:0x171b1e, roughness:1, metalness:.05 });
+box(7,.18,22,sublevelFloorMat,382,.02,-221,{castShadow:false});
+box(.35,3,22,sublevelWallMat,378.3,1.5,-221);
+box(.35,3,22,sublevelWallMat,385.7,1.5,-221);
+box(7,3,.35,sublevelWallMat,382,1.5,-232);
+const sublevelLight = new THREE.PointLight(0x5139a8, sublevelEntered ? .9 : 0, 12, 2);
+sublevelLight.position.set(382,2.2,-222);
+scene.add(sublevelLight);
+const sublevelReceiver = interactable(
+  box(.7,1.3,.5,darkMat,382,1.1,-228),
+  sublevelEntered ? 'SIGNAL / BELOW' : 'SIGNAL / DESCEND',
+  sublevelEntered
+    ? 'The lower receiver is still transmitting. The active slice ends here, but the signal does not.'
+    : 'The first sound below is not mechanical. Something is transmitting through the structure.'
+);
+sublevelReceiver.visible = sublevelEntered;
+sublevelReceiver.userData.sublevelState = sublevelEntered ? 'entered' : 'locked';
 const powerAccess = interactable(
   box(1.4,2.3,.16,darkMat,382,1.15,-204),
   accessOpen ? 'ACCESS / OPEN' : (powerRestored ? 'ACCESS / POWERED' : 'ACCESS / LOCKED'),
@@ -649,6 +671,19 @@ function completeChamber() {
   updateWorldStatus();
 }
 
+function enterSublevel() {
+  if (!descentOpen || sublevelEntered) return;
+  sublevelEntered = true;
+  sublevelReceiver.visible = true;
+  sublevelReceiver.userData.sublevelState = 'entered';
+  sublevelReceiver.userData.interaction.title = 'SIGNAL / BELOW';
+  sublevelReceiver.userData.interaction.text = 'The lower receiver is still transmitting. The active slice ends here, but the signal does not.';
+  sublevelLight.intensity = .9;
+  player.position.set(382,0,-218);
+  try { localStorage.setItem(sublevelStorageKey, 'entered'); } catch {}
+  updateWorldStatus();
+}
+
 function openDescent() {
   if (!chamberHeard || descentHatch.userData.descentState !== 'active') return;
   descentHatch.userData.descentState = 'open';
@@ -658,6 +693,7 @@ function openDescent() {
   const index = colliders.indexOf(descentCollider);
   if (index >= 0) colliders.splice(index, 1);
   descentHatch.position.y -= .22;
+  enterSublevel();
   try { localStorage.setItem(descentStorageKey, 'open'); } catch {}
   updateWorldStatus();
 }
@@ -665,7 +701,9 @@ function openDescent() {
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = descentHatch?.userData.descentState === 'open'
+    const stage = sublevelEntered
+      ? 'SIGNAL BELOW'
+      : descentHatch?.userData.descentState === 'open'
       ? 'DESCENT OPEN'
       : chamberReceiver?.userData.chamberState === 'heard'
       ? 'SIGNAL MOVED DEEPER'
