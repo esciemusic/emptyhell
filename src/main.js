@@ -484,6 +484,7 @@ const encounterStorageKey = 'emptyhell.encounter.v1';
 const doorStorageKey = 'emptyhell.door.v1';
 const fragmentStorageKey = 'emptyhell.fragment.v1';
 const trailStorageKey = 'emptyhell.trail.v1';
+const powerStorageKey = 'emptyhell.power.v1';
 const savedEncounter = (() => {
   try {
     return localStorage.getItem(encounterStorageKey) === 'complete';
@@ -517,6 +518,14 @@ const savedTrail = (() => {
   }
 })();
 let trailReached = savedTrail;
+const savedPower = (() => {
+  try {
+    return localStorage.getItem(powerStorageKey) === 'restored';
+  } catch {
+    return false;
+  }
+})();
+let powerRestored = savedPower;
 const savedDiscovery = (() => {
   try {
     const raw = localStorage.getItem(discoveryStorageKey);
@@ -536,8 +545,10 @@ const worldStatus = document.querySelector('#world-status');
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = trailReached
-      ? 'SIGNAL TRAIL COMPLETE'
+    const stage = powerRestored
+      ? 'POWER RESTORED'
+      : trailReached
+        ? 'SIGNAL TRAIL COMPLETE'
       : fragmentFound
         ? 'FRAGMENT FOUND'
         : doorOpen
@@ -785,9 +796,12 @@ function reachSignalTrail() {
   signalTerminal.userData.interaction.title = 'TRAIL / COMPLETE';
   signalTerminal.userData.interaction.text = 'The last receiver has gone quiet. The signal continues beyond this slice.';
   trailReached = true;
+  powerRestored = true;
   try {
     localStorage.setItem(trailStorageKey, 'reached');
+    localStorage.setItem(powerStorageKey, 'restored');
   } catch {}
+  for (const source of streetLights) source.restored = true;
   updateWorldStatus();
 }
 
@@ -1186,7 +1200,10 @@ function animate() {
 
   for (const source of streetLights) {
     const flicker = Math.sin(clock.elapsedTime * 5.7 + source.seed) * .025 + Math.sin(clock.elapsedTime * 13.1 + source.seed * 1.7) * .012;
-    source.light.intensity = source.base * (1 + flicker);
+    const restored = source.restored || powerRestored;
+    const target = restored ? source.base : source.base * .18;
+    source.light.intensity = target * (1 + flicker);
+    if (source.bulb) source.bulb.material.emissiveIntensity = restored ? .8 : .12;
   }
 
   if (encounterBeacon.visible) {
