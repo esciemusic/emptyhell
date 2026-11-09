@@ -122,6 +122,8 @@ function lamp(x,z) {
 // Parc du Centenaire is officially located facing rue Saint-Roch,
 // between avenues Wiseman and Stuart.
 const WORLD = {
+  // Localized first-sector reference. Street ordering follows the City map:
+  // west/east: Durocher → De L'Épée → Bloomfield → Champagneur → Stuart → Wiseman.
   park: { x: 26, z: 18, w: 28, d: 26 },
   saintRoch: { z: 5 },
   ball: { z: 54 },
@@ -131,11 +133,10 @@ const WORLD = {
   eastEdge: 118,
   southEdge: 92,
   northEdge: -88,
-  // Approximate frontage positions for the first slice.
   deLepee: -70,
   bloomfield: -28,
   champagneur: 23,
-  wiseman: -3,
+  wiseman: 70,
   stuart: 38,
   durocher: -57
 };
@@ -143,11 +144,13 @@ const WORLD = {
 // Ground plane.
 box(240,.18,210,groundMat,3,-.09,4,{castShadow:false});
 
-// Primary street skeleton.
+// Primary street skeleton. Keep the avenues separated as distinct blocks instead of a generic grid.
 street(8,230, WORLD.durocher, 7);
 street(8,230, WORLD.deLepee, 7);
 street(8,230, WORLD.bloomfield, 7);
 street(8,230, WORLD.champagneur, 7);
+street(8,230, WORLD.stuart, 7);
+street(8,230, WORLD.wiseman, 7);
 
 street(8,250, 3, WORLD.saintRoch, Math.PI/2);
 street(8,250, 3, WORLD.ball, Math.PI/2);
@@ -155,7 +158,7 @@ street(8,250, 3, WORLD.ogilvy, Math.PI/2);
 street(8,250, 3, WORLD.jarry, Math.PI/2);
 
 // Sidewalk bands — simple but physically readable.
-for (const x of [WORLD.durocher, WORLD.deLepee, WORLD.bloomfield, WORLD.champagneur]) {
+for (const x of [WORLD.durocher, WORLD.deLepee, WORLD.bloomfield, WORLD.champagneur, WORLD.stuart, WORLD.wiseman]) {
   sidewalk(2.4,230,x-5.4,7);
   sidewalk(2.4,230,x+5.4,7);
 }
@@ -215,6 +218,9 @@ for (const [x,z,w,h,mat] of frontage) building(w,13,h,x,z,mat);
 // Buildings near the park remain lower and more open so the park reads.
 building(18,11,9,-38,-20,brickMat);
 building(17,11,10,45,-20,concreteMat);
+// Narrower Montréal residential frontage along the park-facing blocks.
+building(13,10,8,9,18,brickDarkMat);
+building(13,10,9,49,18,brickMat);
 
 // Alley structure documented by Montréal: Ruelle De la Fête
 // is in the quadrilateral Champagneur / Ball / Bloomfield / Saint-Roch.
@@ -253,7 +259,7 @@ function snowBank(x,z,w,d,h=.32) {
   const bank = box(w,h,d,snowMat,x,h/2,z,{castShadow:false});
   bank.rotation.y = (Math.random() - .5) * .08;
 }
-for (const x of [WORLD.durocher, WORLD.deLepee, WORLD.bloomfield, WORLD.champagneur]) {
+for (const x of [WORLD.durocher, WORLD.deLepee, WORLD.bloomfield, WORLD.champagneur, WORLD.stuart, WORLD.wiseman]) {
   snowBank(x-5.95, 7, 1.0, 220, .28);
   snowBank(x+5.95, 7, 1.0, 220, .28);
 }
