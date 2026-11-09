@@ -222,47 +222,56 @@ sliceEdge(WORLD.maxX,(WORLD.minZ+WORLD.maxZ)/2,.8,WORLD.maxZ-WORLD.minZ);
 
 // No railway mesh, railway camera clamp, or guessed crossing is present in this slice.
 
-// Winter surface details: compressed snow banks, tire grooves and curb accumulation.
+// Winter surface details: road-edge snow follows the verified street segments.
 function snowBank(x,z,w,d,h=.32) {
   const bank = box(w,h,d,snowMat,x,h/2,z,{castShadow:false});
   bank.rotation.y = (Math.random() - .5) * .08;
 }
-for (const x of [WORLD.durocher, WORLD.deLepee, WORLD.bloomfield, WORLD.champagneur, WORLD.stuart, WORLD.wiseman]) {
-  snowBank(x-5.0, 7, .75, 136, .28);
-  snowBank(x+5.0, 7, .75, 136, .28);
-}
-for (const z of [WORLD.saintRoch, WORLD.ball, WORLD.ogilvy]) {
-  snowBank(3, z-5.0, 136, .75, .28);
-  snowBank(3, z+5.0, 136, .75, .28);
+for (const road of VERIFIED_ROADS) {
+  const a=road.a, b=road.b;
+  const dx=b[0]-a[0], dz=b[1]-a[1], len=Math.hypot(dx,dz);
+  if (len < 8) continue;
+  const angle=Math.atan2(dx,dz);
+  const x=(a[0]+b[0])/2, z=(a[1]+b[1])/2;
+  const nx=Math.cos(angle), nz=-Math.sin(angle);
+  snowBank(x+nx*5.2,z+nz*5.2,0.65,len,0.24);
+  snowBank(x-nx*5.2,z-nz*5.2,0.65,len,0.24);
 }
 const tireMat = new THREE.MeshStandardMaterial({ color:0x303336, roughness:1 });
-for (const x of [-1.5,1.5]) box(.28,.012,136,tireMat,x,.105,4,{castShadow:false});
+for (const road of VERIFIED_ROADS.slice(0,14)) {
+  const a=road.a,b=road.b,dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);
+  if(len<10) continue;
+  const angle=Math.atan2(dx,dz);
+  const x=(a[0]+b[0])/2,z=(a[1]+b[1])/2;
+  for(const offset of [-1.35,1.35]) {
+    const nx=Math.cos(angle),nz=-Math.sin(angle);
+    const g=box(.22,.012,len,tireMat,x+nx*offset,.105,z+nz*offset,{castShadow:false});
+    g.rotation.y=angle;
+  }
+}
 
-// Utility infrastructure: restrained poles and overhead lines make the streets read as lived-in space.
+// Utility infrastructure: restrained poles and overhead lines make the verified streets read as lived-in space.
 const utilityMat = new THREE.MeshStandardMaterial({ color:0x2b2d30, roughness:.82, metalness:.15 });
 function utilityPole(x,z) {
   box(.18,7.5,.18,utilityMat,x,3.75,z);
   box(2.4,.12,.12,utilityMat,x,7.0,z);
   box(2.1,.035,.035,darkMat,x,7.0,z-.04,{castShadow:false});
 }
-for (const p of [[-52,12],[-18,12],[18,12],[54,12],[-52,58],[-18,58],[18,58],[54,58]]) utilityPole(p[0],p[1]);
+for (const p of [[-34,30],[22,45],[65,-5],[112,-52],[165,-105],[250,60],[-65,75]]) utilityPole(p[0],p[1]);
 
-// Low service/parking structures keep the frontage from reading like isolated cubes.
+// Low service structures remain sparse placeholders until parcel footprints are imported.
 function lowGarage(x,z,w=6,d=5) {
   const g=box(w,2.4,d,concreteMat,x,1.2,z);
   addCollider(x,z,w,d,g);
   box(w*.72,1.7,.08,darkMat,x,1.0,z-d/2-.05,{castShadow:false});
 }
-lowGarage(-88,12,7,5);
-lowGarage(88,12,7,5);
-lowGarage(-88,62,7,5);
-lowGarage(88,62,7,5);
+lowGarage(-58,36);
+lowGarage(52,54);
+lowGarage(104,-36);
+lowGarage(190,-118);
 
-// Streetlights around the first playable area.
-for (const p of [
-  [-44,-4],[-8,-4],[30,-4],[-44,40],[-8,40],[30,40],
-  [-44,82],[-8,82],[30,82]
-]) lamp(p[0],p[1]);
+// Streetlights are placed near the verified road network rather than on the old axis-aligned grid.
+for (const p of [[-34,30],[22,45],[65,-5],[112,-52],[165,-105],[250,60]]) lamp(p[0],p[1]);
 
 // Player placeholder — temporary until the first character asset.
 const keys = new Set();
@@ -293,7 +302,7 @@ scene.add(player);
 
 // Spawn near the Saint-Roch / Stuart / park area.
 // Spawn at the Saint-Roch-facing edge of the park, not inside the park geometry.
-player.position.set(63,0,36);
+player.position.set(-2,0,24);
 
 const playerRadius = 0.48;
 const testPosition = new THREE.Vector3();
