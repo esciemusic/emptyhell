@@ -65,10 +65,19 @@ function sidewalk(width, length, x, z, rotation=0) {
   return s;
 }
 
+const colliders = [];
+const collisionMeshes = [];
+
+function addCollider(x, z, w, d, mesh=null) {
+  colliders.push({ minX:x-w/2, maxX:x+w/2, minZ:z-d/2, maxZ:z+d/2 });
+  if (mesh) collisionMeshes.push(mesh);
+}
+
 function building(w,d,h,x,z,mat=brickMat) {
   const b = box(w,h,d,mat,x,h/2,z);
   const roof = box(w+.12,.12,d+.12,darkMat,x,h+.06,z);
   roof.castShadow = true;
+  addCollider(x,z,w,d,b);
   return b;
 }
 
@@ -183,12 +192,14 @@ for (const z of [12,30,48]) {
 // Rail pressure boundaries: the neighbourhood is physically enclosed by rail infrastructure
 // on its eastern and southern edges. This slice renders pressure, not an arbitrary invisible wall.
 const railX = 112;
-box(5,1.4,205,darkMat,railX,.7,4);
+const railXMesh = box(5,1.4,205,darkMat,railX,.7,4);
+addCollider(railX,4,5,205,railXMesh);
 for (let z=-95; z<=103; z+=4) {
   box(1.8,.22,.24,snowMat,railX,.82,z);
 }
 const railZ = 91;
-box(225,1.4,5,darkMat,3,.7,railZ);
+const railZMesh = box(225,1.4,5,darkMat,3,.7,railZ);
+addCollider(3,railZ,225,5,railZMesh);
 for (let x=-108; x<=114; x+=4) {
   box(.24,.22,1.8,snowMat,x,.82,railZ);
 }
@@ -198,7 +209,8 @@ const fenceX = -112;
 for (let z=-92; z<=94; z+=4) {
   box(.08,2.2,.08,darkMat,fenceX,1.1,z);
 }
-box(.08,2.2,186,darkMat,fenceX,1.1,1);
+const fenceMesh = box(.08,2.2,186,darkMat,fenceX,1.1,1);
+addCollider(fenceX,1,.08,186,fenceMesh);
 
 // Streetlights around the first playable area.
 for (const p of [
@@ -207,6 +219,22 @@ for (const p of [
 ]) lamp(p[0],p[1]);
 
 // Player placeholder — temporary until the first character asset.
+const keys = new Set();
+
+addEventListener('keydown', event => {
+  keys.add(event.code);
+  if (event.code === 'Escape') {
+    togglePause(!pauseOpen);
+    return;
+  }
+  if (event.code === 'KeyM' && !pauseOpen) {
+    togglePause(true);
+  }
+});
+
+addEventListener('keyup', event => keys.delete(event.code));
+addEventListener('blur', () => keys.clear());
+
 const player = new THREE.Group();
 const body = new THREE.Mesh(
   new THREE.CapsuleGeometry(.38, .9, 5, 10),
@@ -219,6 +247,27 @@ scene.add(player);
 
 // Spawn near the Saint-Roch / Stuart / park area.
 player.position.set(28,0,18);
+
+const playerRadius = 0.48;
+const testPosition = new THREE.Vector3();
+
+function collidesAt(x, z) {
+  for (const c of colliders) {
+    const closestX = THREE.MathUtils.clamp(x, c.minX, c.maxX);
+    const closestZ = THREE.MathUtils.clamp(z, c.minZ, c.maxZ);
+    const dx = x - closestX;
+    const dz = z - closestZ;
+    if (dx * dx + dz * dz < playerRadius * playerRadius) return true;
+  }
+  return false;
+}
+
+function tryMove(dx, dz) {
+  testPosition.set(player.position.x + dx, player.position.y, player.position.z);
+  if (!collidesAt(testPosition.x, testPosition.z)) player.position.x = testPosition.x;
+  testPosition.set(player.position.x, player.position.y, player.position.z + dz);
+  if (!collidesAt(testPosition.x, testPosition.z)) player.position.z = testPosition.z;
+}
 
 let yaw = 0;
 let pitch = 0.16;
@@ -289,7 +338,15 @@ function move(dt) {
     target.y + Math.sin(pitch) * cameraDistance,
     target.z - Math.cos(yaw) * horizontal
   );
-  camera.position.lerp(desired, 1 - Math.pow(.0001, dt));
+  const cameraRay = desired.clone().sub(target);
+  const cameraLength = cameraRay.length();
+  cameraRay.normalize();
+  const raycaster = new THREE.Raycaster(target, cameraRay, 0.35, cameraLength);
+  const hits = raycaster.intersectObjects(collisionMeshes, false);
+  const safeDistance = hits.length ? Math.max(0.8, hits[0].distance - 0.18) : cameraLength;
+  const cameraTarget = target.clone().addScaledVector(cameraRay, safeDistance);
+
+  camera.position.lerp(cameraTarget, 1 - Math.pow(.0001, dt));
   camera.lookAt(target);
 }
 
