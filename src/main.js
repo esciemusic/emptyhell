@@ -238,7 +238,9 @@ function footprintBuilding(points, h, mat=brickMat) {
 }
 
 const WORLD = {
-  minX: -180, maxX: 380, minZ: -330, maxZ: 180,
+  // Verified first-sector envelope from the authoritative road centerlines.
+  // Padding keeps the map/world edge from clipping the outermost verified segments.
+  minX: -300, maxX: 500, minZ: -420, maxZ: 220,
   parkAnchor: { x: 0, z: 0 }
 };
 
@@ -438,7 +440,9 @@ sliceEdge(WORLD.maxX,(WORLD.minZ+WORLD.maxZ)/2,.8,WORLD.maxZ-WORLD.minZ);
 // Winter surface details: road-edge snow follows the verified street segments.
 function snowBank(x,z,w,d,h=.32) {
   const bank = box(w,h,d,snowMat,x,h/2,z,{castShadow:false});
-  bank.rotation.y = (Math.random() - .5) * .08;
+  // Deterministic micro-variation: visual noise must not change between QA runs.
+  const seed = Math.sin(x * 12.9898 + z * 78.233) * 43758.5453;
+  bank.rotation.y = (seed - Math.floor(seed) - .5) * .08;
 }
 for (const road of VERIFIED_ROADS) {
   const a=road[1], b=road[2];
