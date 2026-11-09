@@ -141,3 +141,5 @@ jobs:
             first_sector_railway_reconciliation.json
             first_sector_railway_montreal.json
             first_sector_railway_quebec.json
+
+# Railway source gate: government geometry only; runtime promotion remains blocked until reconciliation review.
