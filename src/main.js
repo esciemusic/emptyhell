@@ -489,6 +489,7 @@ const doorStorageKey = 'emptyhell.door.v1';
 const fragmentStorageKey = 'emptyhell.fragment.v1';
 const trailStorageKey = 'emptyhell.trail.v1';
 const powerStorageKey = 'emptyhell.power.v1';
+const accessStorageKey = 'emptyhell.access.v1';
 const savedEncounter = (() => {
   try {
     return localStorage.getItem(encounterStorageKey) === 'complete';
@@ -530,6 +531,14 @@ const savedPower = (() => {
   }
 })();
 let powerRestored = savedPower;
+const savedAccess = (() => {
+  try {
+    return localStorage.getItem(accessStorageKey) === 'open';
+  } catch {
+    return false;
+  }
+})();
+let accessOpen = savedAccess;
 warm.intensity = powerRestored ? 24 : 18;
 const savedDiscovery = (() => {
   try {
@@ -555,7 +564,9 @@ const powerAccess = interactable(
     : 'The entrance has no power. Nothing responds.'
 );
 powerAccess.visible = powerRestored;
-powerAccess.userData.accessState = powerRestored ? 'active' : 'locked';
+powerAccess.userData.accessState = accessOpen ? 'open' : (powerRestored ? 'active' : 'locked');
+const powerAccessCollider = { minX:381.3, maxX:382.7, minZ:-204.08, maxZ:-203.92 }; 
+if (!accessOpen && powerRestored) colliders.push(powerAccessCollider);
 
 const powerAccessLight = new THREE.PointLight(0x7b5cff, powerRestored ? 1.2 : 0, 6, 2);
 powerAccessLight.position.set(382,2.35,-203.7);
@@ -563,17 +574,21 @@ scene.add(powerAccessLight);
 
 function activatePowerAccess() {
   if (!powerRestored || powerAccess.userData.accessState !== 'active') return;
-  powerAccess.userData.accessState = 'complete';
+  powerAccess.userData.accessState = 'open';
+  accessOpen = true;
+  const index = colliders.indexOf(powerAccessCollider);
+  if (index >= 0) colliders.splice(index, 1);
   powerAccess.userData.interaction.title = 'ACCESS / OPEN';
   powerAccess.userData.interaction.text = 'The powered entrance releases with a low mechanical click. Whatever is inside belongs to the next layer.';
   powerAccessLight.intensity = 2;
+  try { localStorage.setItem(accessStorageKey, 'open'); } catch {}
   updateWorldStatus();
 }
 
 function updateWorldStatus() {
   if (worldStatus) {
     const count = discoveryState.found.size;
-    const stage = powerAccess?.userData.accessState === 'complete'
+    const stage = powerAccess?.userData.accessState === 'open'
       ? 'ACCESS OPEN'
       : powerRestored
       ? 'POWER RESTORED'
@@ -836,8 +851,9 @@ function reachSignalTrail() {
   for (const window of livingWindows) window.material = windowWarmMat;
   powerAccess.visible = true;
   powerAccess.userData.accessState = 'active';
-  powerAccess.userData.interaction.title = 'ACCESS / POWERED';
-  powerAccessLight.intensity = 1.2;
+  powerAccess.userData.interaction.title = accessOpen ? 'ACCESS / OPEN' : 'ACCESS / POWERED';
+  powerAccess.userData.accessState = accessOpen ? 'open' : 'active';
+  powerAccessLight.intensity = accessOpen ? 2 : 1.2;
   updateWorldStatus();
 }
 
