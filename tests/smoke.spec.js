@@ -138,3 +138,26 @@ test('EMPTYHELL restores the deeper chamber signal state', async ({ page }) => {
   await page.reload({ waitUntil: 'networkidle' });
   await expect(page.locator('#world-status')).toContainText('SIGNAL MOVED DEEPER');
 });
+
+
+test('EMPTYHELL boots cleanly at the deepest persisted progression state', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => {
+    localStorage.setItem('emptyhell.discovery.v1', JSON.stringify(['north','east','rail']));
+    localStorage.setItem('emptyhell.route.v1', 'reached');
+    localStorage.setItem('emptyhell.transmission.v1', 'complete');
+    localStorage.setItem('emptyhell.encounter.v1', 'complete');
+    localStorage.setItem('emptyhell.door.v1', 'open');
+    localStorage.setItem('emptyhell.fragment.v1', 'found');
+    localStorage.setItem('emptyhell.trail.v1', 'reached');
+    localStorage.setItem('emptyhell.power.v1', 'restored');
+    localStorage.setItem('emptyhell.access.v1', 'open');
+    localStorage.setItem('emptyhell.chamber.v1', 'heard');
+  });
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(page.locator('#world-status')).toContainText('SIGNALS 3 / 3');
+  await expect(page.locator('#world-status')).toContainText('SIGNAL MOVED DEEPER');
+  expect(errors).toEqual([]);
+});
