@@ -122,7 +122,7 @@ function lamp(x,z) {
 // Parc du Centenaire is officially located facing rue Saint-Roch,
 // between avenues Wiseman and Stuart.
 const WORLD = {
-  park: { x: 0, z: -18, w: 34, d: 38 },
+  park: { x: 26, z: 18, w: 28, d: 26 },
   saintRoch: { z: 5 },
   ball: { z: 54 },
   ogilvy: { z: -58 },
@@ -170,29 +170,29 @@ box(WORLD.park.w-.8,.05,.8,darkMat,WORLD.park.x,.2,WORLD.park.z-WORLD.park.d/2+1
 box(WORLD.park.w-.8,.05,.8,darkMat,WORLD.park.x,.2,WORLD.park.z+WORLD.park.d/2-1);
 
 // Park paths and modest winter landscaping.
-street(2.5,30,0,-18);
-street(2.5,30,0,-18,Math.PI/2);
-for (const x of [-12,-4,4,12]) {
-  box(.55,3.8,.55,darkMat,x,1.9,-18);
-  box(3.2,.9,3.2,darkMat,x,4.0,-18);
+street(2.2,WORLD.park.d-4,WORLD.park.x,WORLD.park.z);
+street(2.2,WORLD.park.w-4,WORLD.park.x,WORLD.park.z,Math.PI/2);
+for (const x of [16,23,30,37]) {
+  box(.55,3.8,.55,darkMat,x,1.9,18);
+  box(3.2,.9,3.2,darkMat,x,4.0,18);
 }
-box(3.5,1.4,1.2,darkMat,-9,.7,-7);
-box(3.5,1.4,1.2,darkMat,9,.7,-7);
+box(3.5,1.4,1.2,darkMat,17,.7,27);
+box(3.5,1.4,1.2,darkMat,35,.7,27);
 
 // Real-world park details documented by Montréal:
 // two micro-libraries and the artwork Terre en vue.
 interactable(
-  box(1.6,1.7,.7,brickDarkMat,-8,.85,-5),
+  box(1.6,1.7,.7,brickDarkMat,18,.85,12),
   'MICRO-LIBRARY',
   'A small neighbourhood library in the park. A place for exchange, pause, and ordinary life.'
 );
 interactable(
-  box(1.6,1.7,.7,brickDarkMat,8,.85,-5),
+  box(1.6,1.7,.7,brickDarkMat,34,.85,12),
   'MICRO-LIBRARY',
   'Another small community library. The object is simple; the fact that it is here matters.'
 );
 interactable(
-  box(5,.08,.8,glassMat,0,1.0,-4),
+  box(5,.08,.8,glassMat,26,1.0,14),
   'TERRE EN VUE',
   'A park artwork marker. The first slice records the place without turning it into exposition.'
 );
@@ -222,6 +222,8 @@ box(5,.06,48,asphaltMat,0,0,29,{castShadow:false});
 for (const z of [12,30,48]) {
   box(5.8,.08,.8,snowMat,0,.08,z,{castShadow:false});
 }
+// Ruelle Wiseman occupies the Saint-Roch / Wiseman / d'Outremont / Ogilvy block.
+box(5,.06,48,asphaltMat,-3,0,-25,{castShadow:false});
 
 // Rail pressure boundaries: the neighbourhood is physically enclosed by rail infrastructure
 // on its eastern and southern edges. This slice renders pressure, not an arbitrary invisible wall.
@@ -296,7 +298,7 @@ player.add(body);
 scene.add(player);
 
 // Spawn near the Saint-Roch / Stuart / park area.
-player.position.set(28,0,18);
+player.position.set(48,0,18);
 
 const playerRadius = 0.48;
 const testPosition = new THREE.Vector3();
