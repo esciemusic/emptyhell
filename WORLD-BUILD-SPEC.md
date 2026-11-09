@@ -110,7 +110,8 @@ Until that conversion is completed:
 **Technical foundation:** GREEN  
 **Geographic reconstruction:** IN PROGRESS — RAILWAY RECONCILIATION GATE  
 **Environmental reconstruction:** PASS 2 COMPLETE  
+**Physical scale / traversal fidelity:** IN PROGRESS — FIRST SECTOR REBUILT  
 **Production world geometry:** NOT READY  
 **Vertical slice:** NOT READY
 
-Next build task: convert verified 1:1000 railway/street geometry into the game coordinate system, then implement only documented physical crossings/openings.
+Next build task: finish physical-scale QA on the first sector (block widths, park entrances, frontage setbacks, traversal/camera behavior), then reconcile the railway/street intersections against the verified 1:1000 source before any sector expansion.
