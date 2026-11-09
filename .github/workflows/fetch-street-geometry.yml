@@ -6,6 +6,9 @@ on:
       - ".github/workflows/fetch-street-geometry.yml"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   streets:
     runs-on: ubuntu-latest
@@ -86,6 +89,21 @@ jobs:
               counts[n]=counts.get(n,0)+1
           print(json.dumps({"feature_count":len(selected),"counts":counts},ensure_ascii=False,indent=2))
           PY
+
+      - name: Persist street reconciliation source
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          cp first_sector_street_geometry.json data/first_sector_street_geometry.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/first_sector_street_geometry.json
+          if git diff --cached --quiet; then
+            echo "No street geometry changes to commit."
+          else
+            git commit -m "Record verified first-sector street geometry"
+            git push
+          fi
 
       - name: Upload street reconciliation source
         uses: actions/upload-artifact@v4
