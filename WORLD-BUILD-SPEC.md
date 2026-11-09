@@ -363,3 +363,16 @@ Current status:
 - Frontage/building fidelity: IN PROGRESS
 - Traversal/collision QA: PENDING
 - Production world: NOT READY
+
+## First-sector traversal / collision / camera QA — PASS 1
+
+Verified after the geometry rebuild:
+- legacy axis-aligned world-bound references removed from runtime map/camera logic;
+- all ten temporary frontage buildings now maintain a safe separation from the imported 8.2 m road corridors;
+- player spawn is outside the verified park polygon and approximately 8.86 m from the nearest verified road centerline;
+- park perimeter no longer uses the road/sidewalk helper and therefore does not generate false sidewalk geometry;
+- collision system remains active for buildings, garages and loaded-slice edges;
+- third-person camera collision remains tied to the same physical collider meshes;
+- railway collision/camera barriers remain absent from the rebuilt first sector.
+
+This is a static traversal/collision gate, not a substitute for hands-on browser traversal. Next gate is visual/playable traversal inspection, then verified frontage/building geometry.
