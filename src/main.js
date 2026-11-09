@@ -72,7 +72,9 @@ function sidewalk(width, length, x, z, rotation=0) {
 }
 
 const colliders = [];
+const polygonColliders = [];
 const collisionMeshes = [];
+const playerRadius = 0.48;
 const interactables = [];
 
 function addCollider(x, z, w, d, mesh=null) {
@@ -410,7 +412,6 @@ scene.add(player);
 // Spawn at the Saint-Roch-facing edge of the park, not inside the park geometry.
 player.position.set(15,0,20);
 
-const playerRadius = 0.48;
 const testPosition = new THREE.Vector3();
 
 function collidesAt(x, z) {
