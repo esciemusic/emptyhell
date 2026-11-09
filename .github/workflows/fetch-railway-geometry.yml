@@ -131,6 +131,28 @@ jobs:
                   "max_distance_m":max(values) if values else None
               }
 
+          primary_audit=[]
+          for idx,(f,d) in enumerate(zip(montreal_features,primary_feature_distances)):
+              if d > 2.0:
+                  primary_audit.append({
+                      "feature_index":idx,
+                      "distance_m":d,
+                      "class":f["properties"].get("CLASSVOIE"),
+                      "class_code":f["properties"].get("CLASSVOIC")
+                  })
+
+          reference_audit=[]
+          for idx,(f,d) in enumerate(zip(q_features,reference_feature_distances)):
+              if d > 2.0:
+                  reference_audit.append({
+                      "feature_index":idx,
+                      "distance_m":d,
+                      "idsegchfer":f["properties"].get("idsegchfer"),
+                      "nomvoie":f["properties"].get("nomvoie"),
+                      "class":f["properties"].get("classvoie"),
+                      "operator":f["properties"].get("siglexploi")
+                  })
+
           report={
               "status":"RECONCILIATION_REVIEW",
               "target_bbox_wgs84":[-73.640,45.515,-73.615,45.545],
@@ -156,6 +178,10 @@ jobs:
                   "union_intersection_length_m":float(mg.intersection(qg).length),
                   "union_length_m":float(mg.union(qg).length),
                   "legacy_union_hausdorff_distance_m":float(mg.hausdorff_distance(qg))
+              },
+              "feature_audit":{
+                  "montreal_primary_outside_2m":primary_audit,
+                  "quebec_reference_outside_2m":reference_audit
               },
               "runtime_promotion":"BLOCKED_PENDING_RECONCILIATION_REVIEW"
           }
