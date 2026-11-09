@@ -9,7 +9,7 @@ test('EMPTYHELL boots and exposes the playable shell', async ({ page }) => {
 
   await page.keyboard.press('m');
   await expect(page.locator('#map-overlay')).not.toHaveClass(/hidden/);
-  await expect(page.locator('#map-overlay')).toContainText('PARC DU CENTENAIRE');
+  await expect(page.locator('#map-overlay')).toContainText('PARC-EXTENSION');
   await page.screenshot({ path: 'test-results/emptyhell-map.png', fullPage: true });
 
   await page.keyboard.press('Escape');
