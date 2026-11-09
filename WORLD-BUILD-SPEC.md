@@ -280,3 +280,16 @@ The EMPTYHELL retrieval workflow now:
 **Important:** the workflow has been updated, but no Actions run is currently exposed through the connected GitHub status endpoint. Therefore the exact extracted sheet identifier and railway segment coordinates remain **UNVERIFIED AT RUNTIME**.
 
 No game geometry has been changed.
+
+## First-sector railway reconciliation — VERIFIED
+
+- Official Montréal railway source used: **Voies ferrées 3D (2020)**, dataset e135b6df-5bfc-43bc-a743-5f306c8900fb.
+- Source CRS: **NAD83 / MTM zone 8 (EPSG:32188)**; source quality records planimetric accuracy of approximately ±30–40 cm.
+- Automated extraction successfully downloaded the official railway archive and isolated the CARTO_FER_VOIE line layer.
+- The Parc du Centenaire first-sector SQRC sheet is **31H12-010-0530**.
+- The extracted SQRC 1:1000 grid confirms 31H12-010-0530 contains the park anchor and first-sector street fabric.
+- No authoritative railway track line intersects 31H12-010-0530.
+- The nearest authoritative railway lines are on adjacent sheets, including **31H12-010-0531** and **31H12-010-0431**; the nearest extracted rail geometry is outside the current first-sector sheet.
+- Consequence: the previous provisional railway meshes and railway camera barriers inside the first-sector prototype were not geographically justified and have been removed.
+- The railway is now **deferred**, not guessed. It remains a future adjacent-sector geometry task.
+- No railway expansion, crossing, camera boundary, or invisible clamp may be added until the adjacent 1:1000 sheets are reconciled with the official Montréal railway linework.
