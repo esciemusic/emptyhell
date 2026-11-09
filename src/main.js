@@ -245,11 +245,11 @@ for (const [x,z,w,h,mat] of frontage) building(w,13,h,x,z,mat);
 
 // Buildings near the park remain lower and more open so the park reads.
 building(16,10,9,-57,-20,brickMat);
-building(15,10,10,78,-20,concreteMat);
+building(15,10,10,84,-20,concreteMat);
 // Narrower Montréal residential frontage along the park-facing blocks.
 // The park remains open between Stuart and Wiseman rather than being buried in the grid.
 building(12,9,8,33,18,brickDarkMat);
-building(12,9,9,93,18,brickMat);
+// Keep the rail-side frontage clear; the railway remains a physical boundary.
 
 // Alley structure documented by Montréal: Ruelle De la Fête
 // is in the quadrilateral Champagneur / Ball / Bloomfield / Saint-Roch.
@@ -405,7 +405,7 @@ player.add(body);
 scene.add(player);
 
 // Spawn near the Saint-Roch / Stuart / park area.
-player.position.set(61,0,18);
+// Spawn at the Saint-Roch-facing edge of the park, not inside the park geometry.\nplayer.position.set(63,0,36);
 
 const playerRadius = 0.48;
 const testPosition = new THREE.Vector3();
