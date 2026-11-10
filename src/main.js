@@ -1803,9 +1803,16 @@ function move(dt) {
   }
   if (direction.lengthSq()) direction.normalize();
 
-  const speed = keys.has('ShiftLeft') || keys.has('ShiftRight') ? 7 : 3.2;
-  velocity.x = THREE.MathUtils.damp(velocity.x, direction.x * speed, 8, dt);
-  velocity.z = THREE.MathUtils.damp(velocity.z, direction.z * speed, 8, dt);
+  const sprinting = keys.has('ShiftLeft') || keys.has('ShiftRight');
+  const speed = sprinting ? 7 : 3.6;
+  const response = sprinting ? 16 : 18;
+  if (direction.lengthSq()) {
+    velocity.x = THREE.MathUtils.damp(velocity.x, direction.x * speed, response, dt);
+    velocity.z = THREE.MathUtils.damp(velocity.z, direction.z * speed, response, dt);
+  } else {
+    velocity.x = THREE.MathUtils.damp(velocity.x, 0, 24, dt);
+    velocity.z = THREE.MathUtils.damp(velocity.z, 0, 24, dt);
+  }
 
   const forward = new THREE.Vector3(Math.sin(yaw), 0, -Math.cos(yaw));
   const right = new THREE.Vector3(Math.cos(yaw), 0, Math.sin(yaw));
@@ -1817,11 +1824,9 @@ function move(dt) {
   // Cinematic third-person framing: subtle movement lead and speed-based
   // distance make the world feel physical without changing traversal.
   const speedRatio = THREE.MathUtils.clamp(Math.hypot(velocity.x, velocity.z) / 7, 0, 1);
-  const turnLead = reducedMotion ? 0 : THREE.MathUtils.clamp(
-    (direction.x * .11) + (velocity.x / 7) * .035, -.14, .14
-  );
-  const cameraDistance = THREE.MathUtils.lerp(5.2, 5.0, speedRatio);
-  const cameraHeight = THREE.MathUtils.lerp(1.25, 1.30, speedRatio);
+  const turnLead = reducedMotion ? 0 : THREE.MathUtils.clamp(direction.x * .035, -.05, .05);
+  const cameraDistance = 5.05;
+  const cameraHeight = 1.28;
   const target = new THREE.Vector3(
     player.position.x + Math.sin(yaw) * turnLead,
     player.position.y + cameraHeight,
@@ -1841,11 +1846,11 @@ function move(dt) {
   const safeDistance = hits.length ? Math.max(0.8, hits[0].distance - 0.18) : cameraLength;
   const cameraTarget = target.clone().addScaledVector(cameraRay, safeDistance);
 
-  const targetFov = reducedMotion ? 62 : THREE.MathUtils.lerp(62, 64.5, speedRatio);
-  camera.fov = THREE.MathUtils.damp(camera.fov, targetFov, 5, dt);
+  const targetFov = reducedMotion ? 62 : THREE.MathUtils.lerp(62, 63.2, speedRatio);
+  camera.fov = THREE.MathUtils.damp(camera.fov, targetFov, 9, dt);
   camera.updateProjectionMatrix();
 
-  const cameraFollow = reducedMotion ? 1 - Math.pow(.0001, dt) : 1 - Math.pow(.0000015, dt);
+  const cameraFollow = reducedMotion ? 1 - Math.pow(.00001, dt) : 1 - Math.pow(.000000001, dt);
   cameraPosition.copy(cameraTarget);
   if (!cameraInitialized) {
     camera.position.copy(cameraTarget);
@@ -1854,8 +1859,8 @@ function move(dt) {
     camera.position.lerp(cameraPosition, cameraFollow);
   }
 
-  const walkBob = reducedMotion ? 0 : Math.sin(clock.elapsedTime * (9.5 + speedRatio * 3.0)) * .012 * speedRatio;
-  const lookAhead = reducedMotion ? 0 : speedRatio * .06;
+  const walkBob = reducedMotion ? 0 : Math.sin(clock.elapsedTime * (9.5 + speedRatio * 3.0)) * .006 * speedRatio;
+  const lookAhead = reducedMotion ? 0 : speedRatio * .025;
   cameraLookTarget.set(
     target.x + Math.sin(yaw) * lookAhead,
     target.y + walkBob,
