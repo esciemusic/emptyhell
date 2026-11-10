@@ -1677,6 +1677,10 @@ mapClose.addEventListener('click', () => toggleMap(false));
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 const clock = new THREE.Clock();
+const cameraPosition = new THREE.Vector3();
+const cameraLookTarget = new THREE.Vector3();
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let cameraInitialized = false;
 
 function move(dt) {
   // Stable frame-rate-independent damping keeps desktop and touch movement consistent.
@@ -1705,8 +1709,19 @@ function move(dt) {
   delta.addScaledVector(right, velocity.x * dt);
   tryMove(delta.x, delta.z);
 
-  const target = new THREE.Vector3(player.position.x, player.position.y + 1.25, player.position.z);
-  const cameraDistance = 5.2;
+  // Cinematic third-person framing: subtle movement lead and speed-based
+  // distance make the world feel physical without changing traversal.
+  const speedRatio = THREE.MathUtils.clamp(Math.hypot(velocity.x, velocity.z) / 7, 0, 1);
+  const turnLead = reducedMotion ? 0 : THREE.MathUtils.clamp(
+    (direction.x * .11) + (velocity.x / 7) * .035, -.14, .14
+  );
+  const cameraDistance = THREE.MathUtils.lerp(5.2, 5.0, speedRatio);
+  const cameraHeight = THREE.MathUtils.lerp(1.25, 1.30, speedRatio);
+  const target = new THREE.Vector3(
+    player.position.x + Math.sin(yaw) * turnLead,
+    player.position.y + cameraHeight,
+    player.position.z + Math.cos(yaw) * turnLead
+  );
   const horizontal = Math.cos(pitch) * cameraDistance;
   const desired = new THREE.Vector3(
     target.x - Math.sin(yaw) * horizontal,
@@ -1721,8 +1736,23 @@ function move(dt) {
   const safeDistance = hits.length ? Math.max(0.8, hits[0].distance - 0.18) : cameraLength;
   const cameraTarget = target.clone().addScaledVector(cameraRay, safeDistance);
 
-  camera.position.lerp(cameraTarget, 1 - Math.pow(.0001, dt));
-  camera.lookAt(target);
+  const cameraFollow = reducedMotion ? 1 - Math.pow(.0001, dt) : 1 - Math.pow(.0000015, dt);
+  cameraPosition.copy(cameraTarget);
+  if (!cameraInitialized) {
+    camera.position.copy(cameraTarget);
+    cameraInitialized = true;
+  } else {
+    camera.position.lerp(cameraPosition, cameraFollow);
+  }
+
+  const walkBob = reducedMotion ? 0 : Math.sin(clock.elapsedTime * (9.5 + speedRatio * 3.0)) * .012 * speedRatio;
+  const lookAhead = reducedMotion ? 0 : speedRatio * .06;
+  cameraLookTarget.set(
+    target.x + Math.sin(yaw) * lookAhead,
+    target.y + walkBob,
+    target.z + Math.cos(yaw) * lookAhead
+  );
+  camera.lookAt(cameraLookTarget);
 }
 
 function animate() {
@@ -1732,7 +1762,10 @@ function animate() {
   updateSnow(dt);
 
   const moving = locked && (Math.abs(velocity.x) + Math.abs(velocity.z) > .15);
-  const bob = moving ? Math.sin(clock.elapsedTime * 11.5) * .035 : 0;
+  const speedRatio = THREE.MathUtils.clamp(Math.hypot(velocity.x, velocity.z) / 7, 0, 1);
+  const bob = reducedMotion ? 0 : (moving
+    ? Math.sin(clock.elapsedTime * (10.5 + speedRatio * 2.5)) * .018 * speedRatio
+    : 0);
   player.position.y = bob;
   player.rotation.y = yaw;
 
@@ -1764,6 +1797,7 @@ addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  cameraInitialized = false;
 });
 
 const loadingScreen = document.querySelector('#loading');
