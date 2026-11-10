@@ -250,3 +250,11 @@ test('EMPTYHELL mobile controls are usable and pause-safe', async ({ browser }) 
   expect(errors).toEqual([]);
   await context.close();
 });
+
+
+test('EMPTYHELL keyboard focus remains visible for core controls', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.keyboard.press('Escape');
+  await page.locator('#resume').focus();
+  await expect(page.locator('#resume')).toBeFocused();
+});
