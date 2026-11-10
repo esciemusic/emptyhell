@@ -222,3 +222,31 @@ test('EMPTYHELL restores lower signal state and opens the physical gate', async 
   await expect(page.locator('#world-status')).toContainText('SIGNAL ANSWERED');
   expect(errors).toEqual([]);
 });
+
+
+test('EMPTYHELL reaches world-ready state before hiding initialization', async ({ page }) => {
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => window.__emptyhellWorldReady === true);
+  await expect(page.locator('#loading')).toHaveClass(/hidden/, { timeout: 3000 });
+  expect(await page.evaluate(() => window.__emptyhellBuildingsLoaded)).toBe(128);
+});
+
+test('EMPTYHELL mobile controls are usable and pause-safe', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => window.__emptyhellWorldReady === true);
+  await expect(page.locator('#mobile-controls')).toBeVisible();
+  await expect(page.locator('#touch-stick')).toBeVisible();
+  await expect(page.locator('#touch-map')).toBeVisible();
+  await page.locator('#touch-pause').tap();
+  await expect(page.locator('#pause')).not.toHaveClass(/hidden/);
+  await expect(page.locator('#mobile-controls')).toHaveCSS('visibility', 'hidden');
+  await page.locator('#resume').tap();
+  await expect(page.locator('#pause')).toHaveClass(/hidden/);
+  await expect(page.locator('#mobile-controls')).toHaveCSS('visibility', 'visible');
+  expect(errors).toEqual([]);
+  await context.close();
+});
