@@ -319,6 +319,31 @@ const snowMaterial = new THREE.PointsMaterial({
 });
 const snowField = new THREE.Points(snowGeometry, snowMaterial);
 snowField.renderOrder = 2;
+
+// Physical winter cues: snowbanks and compacted edge snow make the weather read from the ground,
+// not only from falling particles. Visual-only overlays.
+const snowBankMat = new THREE.MeshStandardMaterial({ color:0xbfc4c4, roughness:.98, metalness:.005 });
+const iceMat = new THREE.MeshStandardMaterial({ color:0x9ea9ad, roughness:.22, metalness:.08, transparent:true, opacity:.48 });
+function winterEdge(x,z,w,d,rot=0){
+  const bank=box(w,.28,d,snowBankMat,x,.14,z,{castShadow:!mobileViewport});
+  bank.rotation.y=rot;
+  if(!mobileViewport){
+    const ice=box(w*.72,.012,d*.62,iceMat,x,.018,z,{castShadow:false});
+    ice.rotation.y=rot;
+  }
+}
+for(const p of [
+  [-40,28,7,.85,.08],[31,42,8,.8,-.12],[72,-8,6,.75,.16],
+  [119,-55,7,.8,-.08],[172,-108,8,.82,.1],[244,57,9,.85,-.14]
+]) winterEdge(p[0],p[1],p[2],p[3],p[4]);
+
+// A few deterministic compacted-snow patches break up the perfect sidewalk surface.
+const compactSnowMat=new THREE.MeshStandardMaterial({color:0x8f9493,roughness:.99,metalness:0});
+for(const p of [[-31,34,1.8,.75],[18,47,2.4,.8],[66,-2,1.6,.7],[109,-48,2.1,.8],[160,-102,2.5,.78],[248,61,1.9,.72]]){
+  const patch=box(p[2],.018,p[3],compactSnowMat,p[0],.012,p[1],{castShadow:false});
+  patch.rotation.y=((p[0]*.07+p[1]*.11)%1.2)-.6;
+}
+
 snowField.frustumCulled = false;
 scene.add(snowField);
 
