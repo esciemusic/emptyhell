@@ -140,6 +140,16 @@ test('EMPTYHELL restores the deeper chamber signal state', async ({ page }) => {
 });
 
 
+test('EMPTYHELL loads the verified source building geometry', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => window.__emptyhellBuildingsLoaded === 128);
+  expect(await page.evaluate(() => window.__emptyhellBuildingsLoaded)).toBe(128);
+  expect(errors).toEqual([]);
+});
+
+
 test('EMPTYHELL boots cleanly at the deepest persisted progression state', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
