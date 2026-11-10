@@ -1065,10 +1065,12 @@ async function loadSourceBuildingGeometry() {
     }
     window.__emptyhellBuildingsLoaded = loaded;
     worldReady = loaded === 128;
+    window.__emptyhellWorldReady = worldReady;
     console.info('Source-aligned building polygons loaded:',loaded);
   } catch(error) {
     window.__emptyhellBuildingsLoaded = 0;
     worldReady = true;
+    window.__emptyhellWorldReady = true;
     console.warn('Source building geometry failed to load:',error);
   }
 }
@@ -1616,5 +1618,13 @@ addEventListener('resize', () => {
   renderer.setSize(innerWidth, innerHeight);
 });
 
-setTimeout(() => document.querySelector('#loading').classList.add('hidden'), 900);
+const loadingScreen = document.querySelector('#loading');
+const loadingStarted = performance.now();
+const finishLoading = () => {
+  if (!loadingScreen || loadingScreen.classList.contains('hidden')) return;
+  const elapsed = performance.now() - loadingStarted;
+  if (window.__emptyhellWorldReady || elapsed > 4500) loadingScreen.classList.add('hidden');
+  else setTimeout(finishLoading, 100);
+};
+finishLoading();
 animate();
