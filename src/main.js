@@ -291,6 +291,33 @@ function footprintBuilding(points, h, mat=brickMat) {
   return mesh;
 }
 
+
+// FINAL VISUAL DENSITY LAYER
+// Decorative only: no verified geometry, collision, progression, or railway changes.
+const detailMat = new THREE.MeshStandardMaterial({ color:0x363a3c, roughness:.9, metalness:.08 });
+const rustMat = new THREE.MeshStandardMaterial({ color:0x554a43, roughness:.96, metalness:.12 });
+function facadeDetail(x,z,h=1.0,kind='pipe',rot=0){
+  if (mobileViewport && kind !== 'light') return;
+  if(kind==='pipe'){
+    const p=box(.07,h,.07,detailMat,x,h/2,z,{castShadow:false}); p.rotation.y=rot;
+  } else if(kind==='vent'){
+    const v=box(.5,.34,.08,detailMat,x,.55,z,{castShadow:false}); v.rotation.y=rot;
+  } else {
+    const s=box(.18,.18,.18,rustMat,x,.18,z,{castShadow:false}); s.rotation.y=rot;
+  }
+}
+for(const p of [[-12,14,2.4,'pipe',0],[36,31,2.0,'vent',Math.PI/2],[79,-27,2.8,'pipe',0],[132,-76,1.8,'vent',0],[205,-39,2.3,'pipe',Math.PI/2]]) facadeDetail(...p);
+
+// Sparse winter residue at human scale: footprints/packed tracks are represented as
+// shallow marks rather than decals, keeping the scene readable on mobile.
+if(!mobileViewport){
+  const trackMat=new THREE.MeshStandardMaterial({color:0x777b79,roughness:1,metalness:0});
+  for(const p of [[-14,19,.42,.12,.08],[4,37,.5,.14,-.1],[47,25,.46,.13,.12],[94,-24,.5,.14,-.08],[146,-72,.44,.12,.1]]){
+    const mark=box(p[2],.006,p[3],trackMat,p[0],.055,p[1],{castShadow:false});
+    mark.rotation.y=p[4];
+  }
+}
+
 let worldReady = false;
 
 const WORLD = {
