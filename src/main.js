@@ -1149,8 +1149,44 @@ parkedCar(292,72,Math.atan2(0.38,1),.9);
 // Streetlights are placed near the verified road network rather than on the old axis-aligned grid.
 for (const p of [[-34,30],[22,45],[65,-5],[112,-52],[165,-105],[250,60]]) lamp(p[0],p[1]);
 
-// Player placeholder — temporary until the first character asset.
+// Player character: fully 3D in-world body; no 2D gameplay avatar.
 const keys = new Set();
+function createPlayerCharacter() {
+  const root = new THREE.Group();
+  const coatMat = new THREE.MeshStandardMaterial({ color:0x16181c, roughness:.82, metalness:.05 });
+  const clothMat = new THREE.MeshStandardMaterial({ color:0x2a2d32, roughness:.9 });
+  const skinMat = new THREE.MeshStandardMaterial({ color:0x6d5548, roughness:.95 });
+  const shoeMat = new THREE.MeshStandardMaterial({ color:0x090a0c, roughness:.78 });
+  const head = new THREE.Mesh(new THREE.SphereGeometry(.24,14,10), skinMat);
+  head.position.y = 1.72;
+  head.castShadow = true;
+  root.add(head);
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.34,.58,5,10), coatMat);
+  torso.position.y = 1.12;
+  torso.castShadow = true;
+  root.add(torso);
+  const hood = new THREE.Mesh(new THREE.TorusGeometry(.27,.055,8,16), clothMat);
+  hood.rotation.x = Math.PI / 2;
+  hood.position.set(0,1.73,0);
+  hood.castShadow = true;
+  root.add(hood);
+  for (const side of [-1,1]) {
+    const arm = new THREE.Mesh(new THREE.CapsuleGeometry(.09,.48,4,8), clothMat);
+    arm.position.set(side*.39,1.14,0);
+    arm.rotation.z = side*.08;
+    arm.castShadow = true;
+    root.add(arm);
+    const leg = new THREE.Mesh(new THREE.CapsuleGeometry(.105,.5,4,8), coatMat);
+    leg.position.set(side*.14,.55,0);
+    leg.castShadow = true;
+    root.add(leg);
+    const shoe = new THREE.Mesh(new THREE.BoxGeometry(.22,.12,.42), shoeMat);
+    shoe.position.set(side*.14,.22,-.07);
+    shoe.castShadow = true;
+    root.add(shoe);
+  }
+  return root;
+}
 const touchDevice = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
 const touchAxes = { x: 0, z: 0 };
 let touchLookId = null;
@@ -1179,14 +1215,7 @@ addEventListener('keydown', event => {
 addEventListener('keyup', event => keys.delete(event.code));
 addEventListener('blur', () => keys.clear());
 
-const player = new THREE.Group();
-const body = new THREE.Mesh(
-  new THREE.CapsuleGeometry(.38, .9, 5, 10),
-  new THREE.MeshStandardMaterial({ color:0x16181c, roughness:.8 })
-);
-body.position.y = .9;
-body.castShadow = true;
-player.add(body);
+const player = createPlayerCharacter();
 scene.add(player);
 
 // Spawn near the Saint-Roch / Stuart / park area.
@@ -1228,9 +1257,16 @@ const pause = document.querySelector('#pause');
 const resume = document.querySelector('#resume');
 let pauseOpen = false;
 
+function setTouchControlsVisible(visible) {
+  const controls = document.querySelector('#mobile-controls');
+  if (!controls || !touchDevice) return;
+  controls.style.visibility = visible ? 'visible' : 'hidden';
+  controls.style.opacity = visible ? '1' : '0';
+}
 function togglePause(open) {
   pauseOpen = open;
   pause.classList.toggle('hidden', !open);
+  setTouchControlsVisible(!open && !mapOpen && !interactionPanel?.classList.contains('hidden'));
   if (open && document.pointerLockElement) document.exitPointerLock();
 }
 
@@ -1343,6 +1379,7 @@ touchPause?.addEventListener('pointerdown', event => {
 resume.addEventListener('click', () => {
   pauseOpen = false;
   pause.classList.add('hidden');
+  setTouchControlsVisible(!mapOpen && interactionPanel.classList.contains('hidden'));
   lockGame();
 });
 
@@ -1433,18 +1470,21 @@ function openInteraction(target) {
   interactionTitle.textContent = data.title;
   interactionText.textContent = data.text;
   interactionPanel.classList.remove('hidden');
+  setTouchControlsVisible(false);
   if (document.pointerLockElement) document.exitPointerLock();
 }
 
 function toggleMap(open) {
   mapOpen = open;
   mapOverlay.classList.toggle('hidden', !open);
+  setTouchControlsVisible(!open && !pauseOpen && interactionPanel.classList.contains('hidden'));
   if (open && document.pointerLockElement) document.exitPointerLock();
   if (!open && !pauseOpen) lockGame();
 }
 
 interactionClose.addEventListener('click', () => {
   interactionPanel.classList.add('hidden');
+  setTouchControlsVisible(!pauseOpen && !mapOpen);
   if (!pauseOpen && !mapOpen) lockGame();
 });
 
@@ -1520,8 +1560,8 @@ function animate() {
 
   const moving = locked && (Math.abs(velocity.x) + Math.abs(velocity.z) > .15);
   const bob = moving ? Math.sin(clock.elapsedTime * 11.5) * .035 : 0;
-  body.position.y = .9 + bob;
-  body.rotation.y = yaw;
+  player.position.y = bob;
+  player.rotation.y = yaw;
 
   for (const source of streetLights) {
     const flicker = Math.sin(clock.elapsedTime * 5.7 + source.seed) * .025 + Math.sin(clock.elapsedTime * 13.1 + source.seed * 1.7) * .012;
