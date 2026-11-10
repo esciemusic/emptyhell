@@ -11,8 +11,8 @@
   .mobile-controls { display:none !important; }
 }
 
-@media (max-width:600px), (pointer:coarse) {
-  .mobile-controls { display:block; }
+@media (max-width:600px) {
+  .mobile-controls { display:block !important; }
   .hud-hint { display:none; }
   .hud-crosshair { opacity:.28; }
   .interaction-prompt { bottom:30%; }
@@ -25,4 +25,9 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .mobile-controls, .touch-knob { transition: none !important; }
+}
+
+
+@media (pointer:coarse) {
+  .mobile-controls { display:block !important; }
 }
