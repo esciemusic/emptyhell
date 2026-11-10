@@ -1620,10 +1620,11 @@ addEventListener('resize', () => {
 
 const loadingScreen = document.querySelector('#loading');
 const loadingStarted = performance.now();
+let loadingFinished = false;
 const finishLoading = () => {
   if (!loadingScreen || loadingScreen.classList.contains('hidden')) return;
   const elapsed = performance.now() - loadingStarted;
-  if (window.__emptyhellWorldReady || elapsed > 4500) loadingScreen.classList.add('hidden');
+  if (window.__emptyhellWorldReady || elapsed > 4500) { loadingFinished = true; loadingScreen.classList.add('hidden'); }
   else setTimeout(finishLoading, 100);
 };
 finishLoading();
