@@ -37,10 +37,13 @@ warm.position.set(12, 4, -8);
 scene.add(warm);
 
 const groundMat = new THREE.MeshStandardMaterial({ color:0x4a4a48, roughness:.92, metalness:.02 });
-const asphaltMat = new THREE.MeshStandardMaterial({ color:0x25282b, roughness:.94, metalness:.01 });
-const sidewalkMat = new THREE.MeshStandardMaterial({ color:0x777876, roughness:.96 });
+const asphaltMat = new THREE.MeshStandardMaterial({ color:0x25282b, roughness:.82, metalness:.035 });
+const sidewalkMat = new THREE.MeshStandardMaterial({ color:0x777876, roughness:.9, metalness:.01 });
 const snowMat = new THREE.MeshStandardMaterial({ color:0xc7c9c6, roughness:1 });
-const brickMat = new THREE.MeshStandardMaterial({ color:0x654f4b, roughness:.9 });
+const brickMat = new THREE.MeshStandardMaterial({ color:0x654f4b, roughness:.88 });
+const brickMatCool = new THREE.MeshStandardMaterial({ color:0x5b5050, roughness:.9 });
+const brickMatWarm = new THREE.MeshStandardMaterial({ color:0x6b5148, roughness:.87 });
+const brickMatPale = new THREE.MeshStandardMaterial({ color:0x62585a, roughness:.91 });
 const brickDarkMat = new THREE.MeshStandardMaterial({ color:0x4c4140, roughness:.94 });
 const concreteMat = new THREE.MeshStandardMaterial({ color:0x626467, roughness:.94 });
 const darkMat = new THREE.MeshStandardMaterial({ color:0x1c2024, roughness:.82 });
@@ -198,6 +201,12 @@ function lamp(x,z) {
 
 function footprintBuilding(points, h, mat=brickMat) {
   if (!points || points.length < 4) return;
+  // Small material variation keeps the verified block from reading like one repeated asset.
+  // Geometry and authoritative footprints remain untouched.
+  const seed = Math.abs(Math.round((points[0][0] * 17 + points[0][1] * 31)));
+  const facadeMat = mat === brickMat
+    ? [brickMat, brickMatCool, brickMatWarm, brickMatPale][seed % 4]
+    : mat;
   const shape = new THREE.Shape();
   points.forEach(([x,z], i) => {
     const sy = -z;
@@ -206,7 +215,7 @@ function footprintBuilding(points, h, mat=brickMat) {
   });
   const geom = new THREE.ExtrudeGeometry(shape, { depth:h, bevelEnabled:false, curveSegments:1 });
   geom.computeVertexNormals();
-  const mesh = new THREE.Mesh(geom, mat);
+  const mesh = new THREE.Mesh(geom, facadeMat);
   mesh.rotation.x = -Math.PI / 2;
   mesh.castShadow = !mobileViewport;
   mesh.receiveShadow = true;
@@ -288,13 +297,14 @@ const snowGeometry = new THREE.BufferGeometry();
 snowGeometry.setAttribute('position', new THREE.BufferAttribute(snowPositions, 3));
 const snowMaterial = new THREE.PointsMaterial({
   color:0xe4e7e6,
-  size:.075,
+  size: mobileViewport ? .065 : .085,
   transparent:true,
-  opacity:.72,
+  opacity:.68,
   depthWrite:false,
   sizeAttenuation:true
 });
 const snowField = new THREE.Points(snowGeometry, snowMaterial);
+snowField.renderOrder = 2;
 snowField.frustumCulled = false;
 scene.add(snowField);
 
