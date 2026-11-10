@@ -1287,7 +1287,7 @@ touchStick?.addEventListener('pointermove', event => {
   const x = dx * scale;
   const y = dy * scale;
   touchAxes.x = x / max;
-  touchAxes.z = y / max;
+  touchAxes.z = -y / max;
   touchKnob.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
 });
 
