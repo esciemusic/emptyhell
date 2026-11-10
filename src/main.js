@@ -1060,6 +1060,7 @@ async function loadSourceBuildingGeometry() {
       footprintBuilding(points,h,brickMat);
       loaded++;
     }
+    window.__emptyhellBuildingsLoaded = loaded;
     console.info('Source-aligned building polygons loaded:',loaded);
   } catch(error) { console.warn('Source building geometry failed to load:',error); }
 }
