@@ -15,13 +15,14 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = mobileViewport ? 1.0 : 1.05;
+renderer.shadowMap.autoUpdate = true;
 document.querySelector('#game').appendChild(renderer.domElement);
 
-const hemi = new THREE.HemisphereLight(0x9db8d5, 0x20252b, 1.25);
+const hemi = new THREE.HemisphereLight(0x9db8d5, 0x20252b, mobileViewport ? 1.1 : 1.25);
 scene.add(hemi);
 
-const moon = new THREE.DirectionalLight(0xc5d7ef, 2.0);
+const moon = new THREE.DirectionalLight(0xc5d7ef, mobileViewport ? 1.85 : 2.0);
 moon.position.set(-80, 95, 60);
 moon.castShadow = true;
 moon.shadow.mapSize.set(mobileViewport ? 1024 : 1536, mobileViewport ? 1024 : 1536);
