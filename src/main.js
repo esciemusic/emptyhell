@@ -1533,6 +1533,8 @@ const direction = new THREE.Vector3();
 const clock = new THREE.Clock();
 
 function move(dt) {
+  // Stable frame-rate-independent damping keeps desktop and touch movement consistent.
+
   if (!locked || pauseOpen || !worldReady) return;
 
   direction.set(0,0,0);
