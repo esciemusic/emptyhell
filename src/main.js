@@ -1335,6 +1335,7 @@ function parkedCar(x,z,rotation=0,scale=1) {
   trunk.castShadow=true;
   root.add(trunk);
   const wheelMat = new THREE.MeshStandardMaterial({ color:0x111315, roughness:.92, metalness:.05 });
+  const wheelHubMat = new THREE.MeshStandardMaterial({ color:0x555a5d, roughness:.55, metalness:.55 });
   for (const side of [-1,1]) {
     for (const zOff of [-1.35,1.35]) {
       const wheel = new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.12,12),wheelMat);
@@ -1342,6 +1343,20 @@ function parkedCar(x,z,rotation=0,scale=1) {
       wheel.position.set(side*.93,.34,zOff);
       wheel.castShadow=true;
       root.add(wheel);
+      if (!mobileViewport) {
+        const hub = new THREE.Mesh(new THREE.CylinderGeometry(.11,.11,.125,10),wheelHubMat);
+        hub.rotation.z=Math.PI/2;
+        hub.position.set(side*.996,.34,zOff);
+        root.add(hub);
+      }
+    }
+  }
+  if (!mobileViewport) {
+    const mirrorMat = new THREE.MeshStandardMaterial({ color:0x20272b, roughness:.32, metalness:.22 });
+    for (const side of [-1,1]) {
+      const mirror = new THREE.Mesh(new THREE.BoxGeometry(.12,.09,.18),mirrorMat);
+      mirror.position.set(side*.82,.79,.78);
+      root.add(mirror);
     }
   }
   for (const side of [-1,1]) {
@@ -1356,6 +1371,27 @@ parkedCar(54.5,-15.5,Math.atan2(0.7,1),1.0);
 parkedCar(101,-47,Math.atan2(0.55,1),.9);
 parkedCar(173,-109,Math.atan2(0.55,1),.95);
 parkedCar(292,72,Math.atan2(0.38,1),.9);
+
+// Street-level fixtures add restrained human-scale clutter without touching
+// verified roads, building footprints, collision, or progression.
+const streetFixtureMat = new THREE.MeshStandardMaterial({ color:0x303538, roughness:.88, metalness:.12 });
+const utilityBoxMat = new THREE.MeshStandardMaterial({ color:0x4b5051, roughness:.84, metalness:.18 });
+function streetFixture(x,z,kind='bollard',rotation=0){
+  if (mobileViewport && kind === 'bin') return;
+  if (kind === 'bin') {
+    const body=box(.48,.82,.48,streetFixtureMat,x,.41,z,{castShadow:false});
+    body.rotation.y=rotation;
+    const lid=box(.52,.08,.52,utilityBoxMat,x,.86,z,{castShadow:false});
+    lid.rotation.y=rotation;
+  } else if (kind === 'box') {
+    box(.42,.72,.24,utilityBoxMat,x,.36,z,{castShadow:false});
+  } else {
+    box(.12,.72,.12,streetFixtureMat,x,.36,z,{castShadow:false});
+  }
+}
+for (const p of [[-20,18,'bin',.1],[44,28,'box',0],[87,-21,'bollard',0],[141,-70,'bin',-.12],[216,-35,'box',0]]) {
+  streetFixture(p[0],p[1],p[2],p[3]);
+}
 
 // Streetlights are placed near the verified road network rather than on the old axis-aligned grid.
 for (const p of [[-34,30],[22,45],[65,-5],[112,-52],[165,-105],[250,60]]) lamp(p[0],p[1]);
