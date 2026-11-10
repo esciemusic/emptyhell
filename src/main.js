@@ -247,6 +247,10 @@ function footprintBuilding(points, h, mat=brickMat) {
   addPolygonCollider(points, mesh);
 
   // Restrained Montréal residential facade language: windows, entries, and roof hardware.
+  // Facade layering: shallow lintels/frames and occasional balcony slabs create
+  // real depth cues while remaining decorative and outside the verified collider.
+  const facadeDetailMat = new THREE.MeshStandardMaterial({ color:0x45494b, roughness:.78, metalness:.08 });
+  const balconyMat = new THREE.MeshStandardMaterial({ color:0x3a3e40, roughness:.88, metalness:.12 });
   const rows=Math.max(2,Math.floor(h/3.2));
   const cols=Math.max(2,Math.min(6,Math.floor(w/4.5)));
   for(let row=0;row<rows;row++){
@@ -256,6 +260,12 @@ function footprintBuilding(points, h, mat=brickMat) {
       const x=minX+(col+1)*w/(cols+1);
       const win=box(1.15,.9,.06,glassMat,x,y,minZ-.035,{castShadow:false});
       win.receiveShadow=false;
+      // Thin frame/sill reads at close range; disabled on mobile to preserve fill-rate.
+      if (!mobileViewport) {
+        box(1.28,.055,.045,facadeDetailMat,x,y-.49,minZ-.06,{castShadow:false});
+        box(.055,.9,.045,facadeDetailMat,x-.62,y,minZ-.06,{castShadow:false});
+        box(.055,.9,.045,facadeDetailMat,x+.62,y,minZ-.06,{castShadow:false});
+      }
       const back=box(1.15,.9,.06,((row * 19 + col * 23 + Math.round(x * 2)) % 11 === 0) ? windowWarmMat : glassMat,x,y,maxZ+.035,{castShadow:false});
       back.receiveShadow=false;
     }
@@ -272,6 +282,11 @@ function footprintBuilding(points, h, mat=brickMat) {
   }
   const door=box(1.15,2.2,.08,darkMat,(minX+maxX)/2,1.1,minZ-.06,{castShadow:false});
   door.receiveShadow=false;
+  if (!mobileViewport) {
+    const canopy=box(1.45,.08,.58,balconyMat,(minX+maxX)/2,2.28,minZ-.28,{castShadow:true});
+    canopy.rotation.x=0;
+    box(1.2,.06,.08,facadeDetailMat,(minX+maxX)/2,1.98,minZ-.13,{castShadow:false});
+  }
   const chimney=box(.7,.9,.7,darkMat,maxX-w*.18,h+.45,minZ+d*.18,{castShadow:true});
   return mesh;
 }
