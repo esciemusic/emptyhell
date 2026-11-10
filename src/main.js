@@ -340,7 +340,37 @@ function verifiedRoadSegment(a, b, width=8.2) {
   sidewalk(1.7,length,x - Math.cos(rotation)*5.0,z + Math.sin(rotation)*5.0,rotation);
 }
 
+
 for (const road of VERIFIED_ROADS) verifiedRoadSegment(road[1],road[2]);
+
+// Environmental realism layer: curbs, compressed snow and subtle road wear.
+// These are visual-only overlays; authoritative road centerlines remain unchanged.
+const curbMat = new THREE.MeshStandardMaterial({ color:0x5f6263, roughness:.9, metalness:.015 });
+const slushMat = new THREE.MeshStandardMaterial({ color:0x9b9d9a, roughness:.96, metalness:.01, transparent:true, opacity:.92 });
+const roadWearMat = new THREE.MeshStandardMaterial({ color:0x34383b, roughness:.9, metalness:.02 });
+
+function streetEdgeDetail(a,b) {
+  const dx=b[0]-a[0], dz=b[1]-a[1];
+  const len=Math.hypot(dx,dz);
+  if (len<8) return;
+  const rot=Math.atan2(dx,dz);
+  const x=(a[0]+b[0])/2, z=(a[1]+b[1])/2;
+  for (const side of [-1,1]) {
+    const edgeX=x + Math.cos(rot)*side*4.15;
+    const edgeZ=z - Math.sin(rot)*side*4.15;
+    const curb=box(.22,.16,len,.0 + curbMat,edgeX,.11,edgeZ,{castShadow:false});
+    curb.rotation.y=rot;
+    const slush=box(.55,.055,len*.92,slushMat,x + Math.cos(rot)*side*4.52,.055,z - Math.sin(rot)*side*4.52,{castShadow:false});
+    slush.rotation.y=rot;
+  }
+  // Two restrained dark wear bands create tire-worn depth without painted lane markings.
+  for (const lateral of [-1.15,1.15]) {
+    const wear=box(.22,.008,len*.88,roadWearMat,x + Math.cos(rot)*lateral,.049,z - Math.sin(rot)*lateral,{castShadow:false});
+    wear.rotation.y=rot;
+  }
+}
+for (const road of VERIFIED_ROADS) streetEdgeDetail(road[1],road[2]);
+
 
 const parkShape = new THREE.Shape();
 PARK_POLYGON.forEach(([x,z],i) => i ? parkShape.lineTo(x,z) : parkShape.moveTo(x,z));
@@ -1172,6 +1202,8 @@ const carBodyMat = new THREE.MeshStandardMaterial({ color:0x24272b, roughness:.7
 const carGlassMat = new THREE.MeshStandardMaterial({ color:0x18232a, roughness:.24, metalness:.32 });
 const carLampMat = new THREE.MeshBasicMaterial({ color:0xffd5a1 });
 function parkedCar(x,z,rotation=0,scale=1) {
+  // Low-poly vehicle silhouette with enough secondary forms to read as a real parked car.
+
   const root = new THREE.Group();
   root.position.set(x,.22,z);
   root.rotation.y = rotation;
@@ -1184,6 +1216,24 @@ function parkedCar(x,z,rotation=0,scale=1) {
   cabin.position.set(0,.86,-.05);
   cabin.castShadow=true;
   root.add(cabin);
+  const hood = new THREE.Mesh(new THREE.BoxGeometry(1.66,.16,1.0),carBodyMat);
+  hood.position.set(0,.72,1.28);
+  hood.castShadow=true;
+  root.add(hood);
+  const trunk = new THREE.Mesh(new THREE.BoxGeometry(1.66,.14,.72),carBodyMat);
+  trunk.position.set(0,.70,-1.43);
+  trunk.castShadow=true;
+  root.add(trunk);
+  const wheelMat = new THREE.MeshStandardMaterial({ color:0x111315, roughness:.92, metalness:.05 });
+  for (const side of [-1,1]) {
+    for (const zOff of [-1.35,1.35]) {
+      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.12,12),wheelMat);
+      wheel.rotation.z=Math.PI/2;
+      wheel.position.set(side*.93,.34,zOff);
+      wheel.castShadow=true;
+      root.add(wheel);
+    }
+  }
   for (const side of [-1,1]) {
     const lamp = new THREE.Mesh(new THREE.BoxGeometry(.34,.16,.06),carLampMat);
     lamp.position.set(side*.52,.53,-2.06);
