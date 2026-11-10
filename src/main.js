@@ -2,7 +2,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.m
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0b1016);
-scene.fog = new THREE.FogExp2(0x0b1016, 0.0065);
+scene.fog = new THREE.FogExp2(0x101820, 0.0059);
 
 const camera = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, 0.1, 900);
 camera.position.set(0, 2.0, 8);
@@ -15,14 +15,14 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = mobileViewport ? 1.0 : 1.05;
+renderer.toneMappingExposure = mobileViewport ? 1.02 : 1.08;
 renderer.shadowMap.autoUpdate = true;
 document.querySelector('#game').appendChild(renderer.domElement);
 
-const hemi = new THREE.HemisphereLight(0x9db8d5, 0x20252b, mobileViewport ? 1.1 : 1.25);
+const hemi = new THREE.HemisphereLight(0xa8bfd8, 0x171b20, mobileViewport ? 1.02 : 1.16);
 scene.add(hemi);
 
-const moon = new THREE.DirectionalLight(0xc5d7ef, mobileViewport ? 1.85 : 2.0);
+const moon = new THREE.DirectionalLight(0xc9dcf4, mobileViewport ? 1.72 : 1.86);
 moon.position.set(-80, 95, 60);
 moon.castShadow = true;
 moon.shadow.mapSize.set(mobileViewport ? 1024 : 1536, mobileViewport ? 1024 : 1536);
@@ -32,7 +32,7 @@ moon.shadow.camera.top = 180;
 moon.shadow.camera.bottom = -180;
 scene.add(moon);
 
-const warm = new THREE.PointLight(0xffc78a, 18, 18, 2);
+const warm = new THREE.PointLight(0xffc78a, 16, 20, 2);
 warm.position.set(12, 4, -8);
 scene.add(warm);
 
@@ -82,6 +82,7 @@ const playerRadius = 0.48;
 const interactables = [];
 const streetLights = [];
 const livingWindows = [];
+const livingWindowLights = [];
 
 function addCollider(x, z, w, d, mesh=null) {
   colliders.push({ minX:x-w/2, maxX:x+w/2, minZ:z-d/2, maxZ:z+d/2 });
@@ -175,14 +176,14 @@ function building(w,d,h,x,z,mat=brickMat) {
 
 function lamp(x,z) {
   const pole = box(.16,5,.16,darkMat,x,2.5,z);
-  const light = new THREE.PointLight(0xffd7a3, 10, 11, 2);
+  const light = new THREE.PointLight(0xffd7a3, 8.5, 14, 2);
   light.position.set(x,5,z);
   scene.add(light);
   const bulb = new THREE.Mesh(new THREE.SphereGeometry(.12,8,6), new THREE.MeshBasicMaterial({ color:0xffd7a3 }));
   bulb.position.set(x,4.93,z);
   bulb.castShadow = false;
   scene.add(bulb);
-  streetLights.push({ light, bulb, base:10, seed:x * 7.13 + z * 3.71, restored:powerRestored });
+  streetLights.push({ light, bulb, base:8.5, seed:x * 7.13 + z * 3.71, restored:powerRestored });
   return pole;
 }
 
@@ -557,7 +558,7 @@ const savedSublevel = (() => { try { return localStorage.getItem(sublevelStorage
 let sublevelEntered = savedSublevel;
 const savedLowerSignal = (() => { try { return localStorage.getItem(lowerSignalStorageKey) === 'heard'; } catch { return false; } })();
 let lowerSignalHeard = savedLowerSignal;
-warm.intensity = powerRestored ? 24 : 18;
+warm.intensity = powerRestored ? 24 : 16;
 const savedDiscovery = (() => {
   try {
     const raw = localStorage.getItem(discoveryStorageKey);
@@ -1021,6 +1022,7 @@ function reachSignalTrail() {
   for (const source of streetLights) source.restored = true;
   warm.intensity = 24;
   for (const window of livingWindows) window.material = windowWarmMat;
+  for (const light of livingWindowLights) light.intensity *= 1.25;
   powerAccess.visible = true;
   powerAccess.userData.accessState = 'active';
   powerAccess.userData.interaction.title = accessOpen ? 'ACCESS / OPEN' : 'ACCESS / POWERED';
@@ -1064,6 +1066,19 @@ async function loadSourceBuildingGeometry() {
       footprintBuilding(points,h,brickMat);
       loaded++;
     }
+    // A small number of real facade windows receive physical warm spill.
+    // This keeps winter streets cold overall while giving inhabited buildings a human glow.
+    const maxWindowLights = mobileViewport ? 4 : 10;
+    for (let i = 0; i < livingWindows.length && livingWindowLights.length < maxWindowLights; i++) {
+      const window = livingWindows[i];
+      if (i % 5 !== 0) continue;
+      const light = new THREE.PointLight(0xffb56a, mobileViewport ? 0.32 : 0.42, 7.5, 2);
+      light.position.set(window.position.x, window.position.y, window.position.z + 0.45);
+      light.castShadow = false;
+      scene.add(light);
+      livingWindowLights.push(light);
+    }
+    window.__emptyhellLivingWindowLights = livingWindowLights.length;
     window.__emptyhellBuildingsLoaded = loaded;
     worldReady = loaded === 128;
     window.__emptyhellWorldReady = worldReady;
