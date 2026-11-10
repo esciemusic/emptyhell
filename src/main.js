@@ -1198,6 +1198,35 @@ function utilityPole(x,z) {
 }
 for (const p of [[-34,30],[22,45],[65,-5],[112,-52],[165,-105],[250,60],[-65,75]]) utilityPole(p[0],p[1]);
 
+// Connected street infrastructure: restrained overhead lines and signposts.
+// Visual-only; no traversal or authoritative geometry is changed.
+const wireMat = new THREE.LineBasicMaterial({ color:0x171b1f, transparent:true, opacity:.72 });
+const signMat = new THREE.MeshStandardMaterial({ color:0x59636a, roughness:.7, metalness:.32 });
+function utilityLine(a,b,y=7.0){
+  const curve=new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(a[0],y,a[1]),
+    new THREE.Vector3((a[0]+b[0])/2,y-.55,(a[1]+b[1])/2),
+    new THREE.Vector3(b[0],y,b[1])
+  );
+  const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(12)),wireMat);
+  line.frustumCulled=true;
+  scene.add(line);
+}
+const polePairs=[
+  [[-34,30],[22,45]], [[22,45],[65,-5]], [[65,-5],[112,-52]],
+  [[112,-52],[165,-105]], [[165,-105],[250,60]], [[-65,75],[-34,30]]
+];
+for(const pair of polePairs) utilityLine(pair[0],pair[1]);
+
+function streetSign(x,z,rotation=0){
+  const post=box(.055,2.7,.055,signMat,x,1.35,z,{castShadow:false});
+  const panel=box(.08,.62,.18,signMat,x,2.45,z,{castShadow:false});
+  panel.rotation.y=rotation;
+  return post;
+}
+for(const p of [[-18,31],[39,20],[92,-31],[148,-83],[205,-42]]) streetSign(p[0],p[1],Math.PI/2);
+
+
 // Low service structures remain sparse placeholders until parcel footprints are imported.
 function lowGarage(x,z,w=6,d=5) {
   const g=box(w,2.4,d,concreteMat,x,1.2,z);
