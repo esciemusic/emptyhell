@@ -227,6 +227,20 @@ function footprintBuilding(points, h, mat=brickMat) {
   roof.receiveShadow = !mobileViewport;
   scene.add(roof);
 
+  // Human-scale facade depth: restrained trim, sills and rooftop hardware.
+  // Decorative elements never alter the verified footprint or collision geometry.
+  const trimMat = new THREE.MeshStandardMaterial({ color:0x34383b, roughness:.72, metalness:.18 });
+  const sillMat = new THREE.MeshStandardMaterial({ color:0x727477, roughness:.82, metalness:.04 });
+  const facadeMinZ = Math.min(...points.map(p=>p[1]));
+  const facadeMinX = Math.min(...points.map(p=>p[0]));
+  const facadeMaxX = Math.max(...points.map(p=>p[0]));
+  const frontZ = facadeMinZ - .055;
+  const facadeW = Math.max(...points.map(p=>p[0])) - Math.min(...points.map(p=>p[0]));
+  if (!mobileViewport && facadeW > 8) {
+    box(Math.min(facadeW, 24), .11, .08, trimMat, (facadeMinX + facadeMaxX)/2, Math.max(2.2,h*.48), frontZ, {castShadow:false});
+    box(Math.min(facadeW, 24), .08, .12, sillMat, (Math.min(...points.map(p=>p[0])) + Math.max(...points.map(p=>p[0])))/2, h-.42, frontZ, {castShadow:false});
+  }
+
   const xs = points.map(p => p[0]), zs = points.map(p => p[1]);
   const minX=Math.min(...xs), maxX=Math.max(...xs), minZ=Math.min(...zs), maxZ=Math.max(...zs);
   const w=maxX-minX, d=maxZ-minZ;
