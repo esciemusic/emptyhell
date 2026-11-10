@@ -7,22 +7,23 @@ scene.fog = new THREE.FogExp2(0x101820, 0.0059);
 const camera = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, 0.1, 900);
 camera.position.set(0, 2.0, 8);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', logarithmicDepthBuffer: true });
 const mobileViewport = window.matchMedia('(max-width: 800px), (pointer: coarse)').matches;
 renderer.setPixelRatio(Math.min(devicePixelRatio, mobileViewport ? 1.35 : 1.8));
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.physicallyCorrectLights = true;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = mobileViewport ? 1.02 : 1.08;
+renderer.toneMappingExposure = mobileViewport ? 0.96 : 1.02;
 renderer.shadowMap.autoUpdate = true;
 document.querySelector('#game').appendChild(renderer.domElement);
 
-const hemi = new THREE.HemisphereLight(0xa8bfd8, 0x171b20, mobileViewport ? 1.02 : 1.16);
+const hemi = new THREE.HemisphereLight(0x9fb7d1, 0x11151a, mobileViewport ? 0.72 : 0.82);
 scene.add(hemi);
 
-const moon = new THREE.DirectionalLight(0xc9dcf4, mobileViewport ? 1.72 : 1.86);
+const moon = new THREE.DirectionalLight(0xc9dcf4, mobileViewport ? 1.45 : 1.58);
 moon.position.set(-80, 95, 60);
 moon.castShadow = true;
 moon.shadow.mapSize.set(mobileViewport ? 1024 : 1536, mobileViewport ? 1024 : 1536);
@@ -32,7 +33,7 @@ moon.shadow.camera.top = 180;
 moon.shadow.camera.bottom = -180;
 scene.add(moon);
 
-const warm = new THREE.PointLight(0xffc78a, 16, 20, 2);
+const warm = new THREE.PointLight(0xffc78a, 11, 18, 2);
 warm.position.set(12, 4, -8);
 scene.add(warm);
 
@@ -1427,38 +1428,37 @@ for (const p of [[-34,30],[22,45],[65,-5],[112,-52],[165,-105],[250,60]]) lamp(p
 const keys = new Set();
 function createPlayerCharacter() {
   const root = new THREE.Group();
-  const coatMat = new THREE.MeshStandardMaterial({ color:0x16181c, roughness:.82, metalness:.05 });
-  const clothMat = new THREE.MeshStandardMaterial({ color:0x2a2d32, roughness:.9 });
-  const skinMat = new THREE.MeshStandardMaterial({ color:0x6d5548, roughness:.95 });
-  const shoeMat = new THREE.MeshStandardMaterial({ color:0x090a0c, roughness:.78 });
-  const head = new THREE.Mesh(new THREE.SphereGeometry(.24,14,10), skinMat);
-  head.position.y = 1.72;
-  head.castShadow = true;
-  root.add(head);
-  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.34,.58,5,10), coatMat);
-  torso.position.y = 1.12;
-  torso.castShadow = true;
-  root.add(torso);
-  const hood = new THREE.Mesh(new THREE.TorusGeometry(.27,.055,8,16), clothMat);
-  hood.rotation.x = Math.PI / 2;
-  hood.position.set(0,1.73,0);
-  hood.castShadow = true;
-  root.add(hood);
-  for (const side of [-1,1]) {
-    const arm = new THREE.Mesh(new THREE.CapsuleGeometry(.09,.48,4,8), clothMat);
-    arm.position.set(side*.39,1.14,0);
-    arm.rotation.z = side*.08;
-    arm.castShadow = true;
-    root.add(arm);
-    const leg = new THREE.Mesh(new THREE.CapsuleGeometry(.105,.5,4,8), coatMat);
-    leg.position.set(side*.14,.55,0);
-    leg.castShadow = true;
-    root.add(leg);
-    const shoe = new THREE.Mesh(new THREE.BoxGeometry(.22,.12,.42), shoeMat);
-    shoe.position.set(side*.14,.22,-.07);
-    shoe.castShadow = true;
-    root.add(shoe);
+  const coatMat = new THREE.MeshStandardMaterial({color:0x111418,roughness:.9,metalness:.02});
+  const coatTrim = new THREE.MeshStandardMaterial({color:0x242a2f,roughness:.72,metalness:.08});
+  const skinMat = new THREE.MeshStandardMaterial({color:0x6d5548,roughness:.88});
+  const skinDark = new THREE.MeshStandardMaterial({color:0x4d3932,roughness:.92});
+  const shoeMat = new THREE.MeshStandardMaterial({color:0x08090a,roughness:.72,metalness:.12});
+  const metalMat = new THREE.MeshStandardMaterial({color:0x343a3e,roughness:.58,metalness:.5});
+  const mesh=(g,mat,pos)=>{const m=new THREE.Mesh(g,mat);m.position.set(...pos);m.castShadow=true;m.receiveShadow=true;root.add(m);return m;};
+  const torso=mesh(new THREE.CapsuleGeometry(.34,.58,6,12),coatMat,[0,1.13,0]);
+  const chest=mesh(new THREE.BoxGeometry(.48,.28,.12),coatTrim,[0,1.32,-.27]);
+  chest.rotation.x=-.08;
+  const neck=mesh(new THREE.CylinderGeometry(.115,.13,.14,10),skinDark,[0,1.58,0]);
+  const head=mesh(new THREE.SphereGeometry(.245,20,14),skinMat,[0,1.78,0]);
+  const hood=mesh(new THREE.TorusGeometry(.275,.052,10,20),coatTrim,[0,1.79,.005]);
+  hood.rotation.x=Math.PI/2;
+  const hoodTop=mesh(new THREE.SphereGeometry(.285,16,8,0,Math.PI*2,0,Math.PI*.48),coatMat,[0,1.79,0]);
+  hoodTop.scale.set(1.02,.72,1.02);
+  const face=mesh(new THREE.BoxGeometry(.22,.13,.035),skinMat,[0,1.73,-.235]);
+  const nose=mesh(new THREE.ConeGeometry(.035,.075,6),skinDark,[0,1.73,-.27]);
+  nose.rotation.x=-Math.PI/2;
+  for(const side of [-1,1]){
+    const shoulder=mesh(new THREE.SphereGeometry(.13,10,8),coatTrim,[side*.37,1.36,0]);
+    const arm=mesh(new THREE.CapsuleGeometry(.095,.46,5,10),coatMat,[side*.42,1.12,0]);
+    arm.rotation.z=side*.1;
+    const cuff=mesh(new THREE.CylinderGeometry(.10,.095,.09,10),metalMat,[side*.43,.86,0]);
+    const leg=mesh(new THREE.CapsuleGeometry(.11,.5,5,10),coatMat,[side*.14,.55,0]);
+    const knee=mesh(new THREE.BoxGeometry(.20,.13,.10),coatTrim,[side*.14,.48,-.13]);
+    const shoe=mesh(new THREE.BoxGeometry(.23,.13,.46),shoeMat,[side*.14,.22,-.10]);
+    shoe.rotation.y=-.04;
   }
+  const hoodString=mesh(new THREE.CylinderGeometry(.018,.018,.30,6),metalMat,[0,1.48,-.28]);
+  hoodString.rotation.z=.22;
   return root;
 }
 const touchDevice = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
