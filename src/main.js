@@ -8,7 +8,8 @@ const camera = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, 0.1, 90
 camera.position.set(0, 2.0, 8);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const mobileViewport = window.matchMedia('(max-width: 800px), (pointer: coarse)').matches;
+renderer.setPixelRatio(Math.min(devicePixelRatio, mobileViewport ? 1.35 : 1.8));
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -23,7 +24,7 @@ scene.add(hemi);
 const moon = new THREE.DirectionalLight(0xc5d7ef, 2.0);
 moon.position.set(-80, 95, 60);
 moon.castShadow = true;
-moon.shadow.mapSize.set(2048, 2048);
+moon.shadow.mapSize.set(mobileViewport ? 1024 : 1536, mobileViewport ? 1024 : 1536);
 moon.shadow.camera.left = -180;
 moon.shadow.camera.right = 180;
 moon.shadow.camera.top = 180;
@@ -205,14 +206,14 @@ function footprintBuilding(points, h, mat=brickMat) {
   geom.computeVertexNormals();
   const mesh = new THREE.Mesh(geom, mat);
   mesh.rotation.x = -Math.PI / 2;
-  mesh.castShadow = true;
+  mesh.castShadow = !mobileViewport;
   mesh.receiveShadow = true;
   scene.add(mesh);
 
   const roof = new THREE.Mesh(new THREE.ShapeGeometry(shape), darkMat);
   roof.rotation.x = -Math.PI / 2;
   roof.position.y = h + .04;
-  roof.receiveShadow = true;
+  roof.receiveShadow = !mobileViewport;
   scene.add(roof);
 
   const xs = points.map(p => p[0]), zs = points.map(p => p[1]);
