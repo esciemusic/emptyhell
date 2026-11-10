@@ -397,7 +397,7 @@ function streetEdgeDetail(a,b) {
   for (const side of [-1,1]) {
     const edgeX=x + Math.cos(rot)*side*4.15;
     const edgeZ=z - Math.sin(rot)*side*4.15;
-    const curb=box(.22,.16,len,.0 + curbMat,edgeX,.11,edgeZ,{castShadow:false});
+    const curb=box(.22,.16,len,curbMat,edgeX,.11,edgeZ,{castShadow:false});
     curb.rotation.y=rot;
     const slush=box(.55,.055,len*.92,slushMat,x + Math.cos(rot)*side*4.52,.055,z - Math.sin(rot)*side*4.52,{castShadow:false});
     slush.rotation.y=rot;
@@ -409,6 +409,33 @@ function streetEdgeDetail(a,b) {
   }
 }
 for (const road of VERIFIED_ROADS) streetEdgeDetail(road[1],road[2]);
+
+// Grounded environmental composition: deterministic wet/grime patches sit below
+// the player and keep large asphalt/sidewalk planes from reading as sterile.
+// They are decorative only and never affect collision or authoritative geometry.
+const wetMat = new THREE.MeshStandardMaterial({
+  color:0x303438, roughness:.38, metalness:.08, transparent:true, opacity:.34
+});
+const grimeMat = new THREE.MeshStandardMaterial({
+  color:0x555756, roughness:.98, metalness:0, transparent:true, opacity:.26
+});
+const surfacePatches = [
+  [-54,24,5.2,1.1,.14], [8,39,3.8,.72,-.22], [58,-18,6.5,.9,.08],
+  [103,-67,4.2,.8,-.16], [158,-119,5.8,1.0,.12], [231,47,4.6,.85,-.18],
+  [-92,-52,6.0,.9,.1], [292,84,4.4,.75,-.08]
+];
+for (const [x,z,w,d,rot] of surfacePatches) {
+  const patch=box(w,.006,d,wetMat,x,.052,z,{castShadow:false});
+  patch.rotation.y=rot;
+}
+const sidewalkPatches = [
+  [-27,17,1.4,.45,.2], [28,35,1.8,.5,-.1], [84,-25,1.3,.4,.16],
+  [137,-74,1.6,.48,-.2], [199,-31,1.5,.42,.1]
+];
+for (const [x,z,w,d,rot] of sidewalkPatches) {
+  const patch=box(w,.004,d,grimeMat,x,.142,z,{castShadow:false});
+  patch.rotation.y=rot;
+}
 
 
 const parkShape = new THREE.Shape();
@@ -1735,6 +1762,10 @@ function move(dt) {
   const hits = raycaster.intersectObjects(collisionMeshes, false);
   const safeDistance = hits.length ? Math.max(0.8, hits[0].distance - 0.18) : cameraLength;
   const cameraTarget = target.clone().addScaledVector(cameraRay, safeDistance);
+
+  const targetFov = reducedMotion ? 62 : THREE.MathUtils.lerp(62, 64.5, speedRatio);
+  camera.fov = THREE.MathUtils.damp(camera.fov, targetFov, 5, dt);
+  camera.updateProjectionMatrix();
 
   const cameraFollow = reducedMotion ? 1 - Math.pow(.0001, dt) : 1 - Math.pow(.0000015, dt);
   cameraPosition.copy(cameraTarget);
