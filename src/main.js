@@ -250,6 +250,8 @@ function footprintBuilding(points, h, mat=brickMat) {
   return mesh;
 }
 
+let worldReady = false;
+
 const WORLD = {
   // Verified first-sector envelope from the authoritative road centerlines.
   // Padding keeps the map/world edge from clipping the outermost verified segments.
@@ -1061,8 +1063,13 @@ async function loadSourceBuildingGeometry() {
       loaded++;
     }
     window.__emptyhellBuildingsLoaded = loaded;
+    worldReady = loaded === 128;
     console.info('Source-aligned building polygons loaded:',loaded);
-  } catch(error) { console.warn('Source building geometry failed to load:',error); }
+  } catch(error) {
+    window.__emptyhellBuildingsLoaded = 0;
+    worldReady = true;
+    console.warn('Source building geometry failed to load:',error);
+  }
 }
 loadSourceBuildingGeometry();
 
@@ -1281,7 +1288,7 @@ function setTouchControlsVisible(visible) {
 function togglePause(open) {
   pauseOpen = open;
   pause.classList.toggle('hidden', !open);
-  setTouchControlsVisible(!open && !mapOpen && !interactionPanel?.classList.contains('hidden'));
+  setTouchControlsVisible(!open && !mapOpen && interactionPanel?.classList.contains('hidden') === true);
   if (open && document.pointerLockElement) document.exitPointerLock();
 }
 
@@ -1523,7 +1530,7 @@ const direction = new THREE.Vector3();
 const clock = new THREE.Clock();
 
 function move(dt) {
-  if (!locked || pauseOpen) return;
+  if (!locked || pauseOpen || !worldReady) return;
 
   direction.set(0,0,0);
   if (keys.has('KeyW')) direction.z -= 1;
