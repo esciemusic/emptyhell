@@ -17,3 +17,12 @@
   .hud-crosshair { opacity:.28; }
   .interaction-prompt { bottom:30%; }
 }
+
+
+.touch-action:focus-visible, .pause button:focus-visible, .interaction-card button:focus-visible, .map-head button:focus-visible {
+  outline: 1px solid rgba(47,128,255,.9);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-controls, .touch-knob { transition: none !important; }
+}
