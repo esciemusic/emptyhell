@@ -240,6 +240,8 @@ test('EMPTYHELL mobile controls are usable and pause-safe', async ({ browser }) 
   await page.waitForFunction(() => window.__emptyhellWorldReady === true);
   await expect(page.locator('#mobile-controls')).toBeVisible();
   await expect(page.locator('#touch-stick')).toBeVisible();
+  await expect(page.locator('#touch-pause')).toBeVisible();
+  await expect(page.locator('#touch-stick')).toBeVisible();
   await expect(page.locator('#touch-map')).toBeVisible();
   await page.locator('#touch-pause').tap();
   await expect(page.locator('#pause')).not.toHaveClass(/hidden/);
