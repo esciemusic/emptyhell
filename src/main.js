@@ -1213,6 +1213,7 @@ function createPlayerCharacter() {
   return root;
 }
 const touchDevice = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+const controlsEnabled = touchDevice || window.matchMedia('(max-width: 600px)').matches;
 const touchAxes = { x: 0, z: 0 };
 let touchLookId = null;
 let touchStickId = null;
@@ -1284,10 +1285,11 @@ let pauseOpen = false;
 
 function setTouchControlsVisible(visible) {
   const controls = document.querySelector('#mobile-controls');
-  if (!controls || !touchDevice) return;
+  if (!controls || !controlsEnabled) return;
   controls.style.visibility = visible ? 'visible' : 'hidden';
   controls.style.opacity = visible ? '1' : '0';
 }
+setTouchControlsVisible(true);
 function togglePause(open) {
   pauseOpen = open;
   pause.classList.toggle('hidden', !open);
